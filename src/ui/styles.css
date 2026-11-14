@@ -2,7 +2,7 @@
 :root[data-theme=light]{--bg:#f8fafc;--panel:#fff;--text:#0f172a;--muted:#475569;--accent:#15803d;--danger:#b91c1c;--border:#cbd5e1}
 *{box-sizing:border-box}
 html{font-size:calc(16px*var(--fs))}
-body{margin:0;padding-right:16px;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;padding:env(safe-area-inset-top) 16px 88px}
+body{margin:0;padding-right:16px;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;padding:env(safe-area-inset-top) 16px 150px}
 h1{font-size:1.6rem;margin:1rem 0}
 .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;margin:12px 0}
 .btn{display:block;width:100%;min-height:56px;font-size:1.1rem;font-weight:600;border-radius:14px;border:2px solid var(--accent);background:transparent;color:var(--text);cursor:pointer}

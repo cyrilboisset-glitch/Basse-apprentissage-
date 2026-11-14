@@ -23,3 +23,7 @@
 - **Octave (étape 2)** : détectée si deux fondamentales à ≥ 12 demi-tons sont jouées dans la même mesure.
 - **Conseil de prof** : règles locales (hors ligne), 3 conseils max, priorisés (notes à éviter, densité sur mineur, % dans l'accord, retard/avance, fondamentale au temps 1, cibles).
 - **Limite connue** : la hauteur d'une note est confirmée ≥ 100 ms après l'attaque ; des notes plus rapides que ~100 ms peuvent être mal nommées (le rythme, lui, vient de l'attaque et reste exact).
+- **Groove** : chaque note attendue est appariée à l'attaque la plus proche dans une fenêtre de ±45 % de l'espacement (≥ 30 ms). « Réussi » = écart ≤ 50 ms ; « précis » ≤ 25 ms. Montée de tempo : +5 BPM à ≥ 90 %, mémorisée par exercice.
+- **Dérive sans clic** : pente des écarts moyens par mesure sur les mesures muettes (≥ 3), convertie en BPM effectif. Les séances « clic qui disparaît » sont courtes (4-16 mesures) car l'analyse compare à la grille d'origine.
+- **Alternance index/majeur** : le doigt n'est pas détectable ; on mesure l'asymétrie de durée entre intervalles pairs et impairs (> 12 ms = déséquilibre).
+- **Notes étouffées** : détectées comme attaques sans hauteur ; option d'auto-évaluation pour les ignorer du score.

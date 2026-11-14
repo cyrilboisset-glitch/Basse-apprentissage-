@@ -60,3 +60,8 @@ export const GRID_PRESETS: GridPreset[] = [
   { id: 'bossa', name: 'Bossa ii – V – I – vi', romans: 'ii7 | V7 | Imaj7 | vi7', style: 'bossa' },
   { id: 'minor-i-iv-v', name: 'Mineur i – iv – V', romans: 'i7 | iv7 | V7 | i7', style: 'blues' },
 ];
+
+/** Accepte des accords (« Am7 | D7 ») ou des degrés (« ii7 | V7 | Imaj7 ») dans la tonalité donnée. */
+export function parseAnyGrid(text: string, key: string, beatsPerBar = 4): Grid | null {
+  return parseGrid(text, beatsPerBar) ?? progressionToGrid(text, key, beatsPerBar);
+}

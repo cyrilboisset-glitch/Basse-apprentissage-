@@ -15,3 +15,6 @@
 - **Réussite d'une séance** = notes justes / (justes + fausses) ; « Passer » compte les notes restantes comme fausses.
 - **Carte de chaleur** par hauteur : maîtrisée ≥ 90 % et < 3 s ; lente > 3 s ; ratée < 70 %. Symboles ✓ ⏱ ✗ en plus des couleurs.
 - **Répétition espacée** : boîtes de Leitner (0/1/2/4/8/16 jours), tirage pondéré (jamais vu 2, raté 3 + retard, non dû 0,2).
+- **Backings 100 % synthétisés** (aucun fichier audio) : batterie bruit+oscillateurs, claviers, guitare, orgue. Planification pure (`plan.ts`, testée) séparée du rendu audio (`voices.ts`). Limiteur maître pour éviter toute saturation (crêtes mesurées ≤ 0,8).
+- **Swing** : retard de la 2ᵉ croche jusqu'à 1/3 de croche ; blues = grille ternaire à 12 pas (shuffle exact, sans réglage).
+- **Aucune basse** dans les accompagnements (test automatisé : voicings ≥ Ré2). La basse synthétisée n'existe que pour les phrases d'exemple (`playBassNote`).

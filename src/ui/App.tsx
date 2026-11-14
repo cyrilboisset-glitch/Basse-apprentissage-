@@ -3,6 +3,7 @@ import { DEFAULT_SETTINGS, type Settings } from '../storage/settings';
 import { Tuner } from './Tuner';
 import { Materiel } from './Materiel';
 import { MancheModule } from './Manche';
+import { Jam } from './Jam';
 import { Outils } from './Outils';
 import { loadSettings, saveSettings, requestPersistence, exportAll, importAll } from '../storage/db';
 
@@ -83,7 +84,7 @@ export function App() {
   switch (hash) {
     case '#/manche': page = <MancheModule s={s} />; break;
     case '#/impro': page = <Placeholder title="Improvisation" phase="phase 6" />; break;
-    case '#/jam': page = <Placeholder title="Jam" phase="phase 5" />; break;
+    case '#/jam': page = <Jam s={s} />; break;
     case '#/outils': page = <Outils />; break;
     case '#/materiel': page = <Materiel s={s} set={set} />; break;
     case '#/reglages': page = <Reglages s={s} set={set} />; break;

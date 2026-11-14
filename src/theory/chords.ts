@@ -63,3 +63,17 @@ const scaleSteps = (id: string) => getScale(id).steps;
 export const isChordTone = (note: number, c: Chord) => c.quality.steps.includes(pc(note - c.root));
 
 export const ARPEGGIOS = QUALITIES.filter(q => ['maj', 'm', '7', 'maj7', 'm7', 'm7b5', 'dim7', 'sus4', '6'].includes(q.id));
+
+const FR_NAMES = ['Do', 'Ré', 'Mi', 'Fa', 'Sol', 'La', 'Si'];
+const EN_NAMES = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+/** « Bbm7 » → « Sibm7 » en notation française. */
+export function formatSymbol(sym: string, notation: 'fr' | 'en'): string {
+  if (notation === 'en') return sym;
+  const r = parseRoot(sym); if (!r) return sym;
+  const rootLen = sym.length - r.rest.length; const root = sym.slice(0, rootLen);
+  const idx = EN_NAMES.indexOf(root[0]); if (idx < 0) return sym;
+  const slash = r.rest.indexOf('/');
+  let rest = r.rest;
+  if (slash >= 0) { const b = formatSymbol(rest.slice(slash + 1), 'fr'); rest = rest.slice(0, slash + 1) + b; }
+  return FR_NAMES[idx] + root.slice(1) + rest;
+}

@@ -70,3 +70,10 @@ describe('manche', () => {
     expect([...notes].sort((a, b) => a - b)).toEqual([2, 4, 7, 9, 11]);
   });
 });
+import { formatSymbol } from './chords';
+describe('affichage français des accords', () => {
+  it('Bbm7 → Sibm7, F#7 → Fa#7, C/E → Do/Mi', () => {
+    expect(formatSymbol('Bbm7', 'fr')).toBe('Sibm7'); expect(formatSymbol('F#7', 'fr')).toBe('Fa#7'); expect(formatSymbol('C/E', 'fr')).toBe('Do/Mi');
+    expect(formatSymbol('Am7', 'en')).toBe('Am7');
+  });
+});

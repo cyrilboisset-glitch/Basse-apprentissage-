@@ -14,6 +14,7 @@ import { useNotes } from './useNotes';
 import { db } from '../storage/db';
 import { saveDrill, today } from '../storage/stats';
 import { keepAwake } from './wakeLock';
+import { useFocus } from './focus';
 
 
 type Phase = 'intro' | 'quiz' | 'rhythm' | 'theory' | 'ear' | 'result';
@@ -21,6 +22,7 @@ const shuffle = <T,>(a: T[]) => [...a].sort(() => Math.random() - 0.5);
 
 export function Placement({ s }: { s: Settings }) {
   const [phase, setPhase] = useState<Phase>('intro'); const [sc, setSc] = useState({ a: 0, b: 0, rhythm: -1, theory: 0, ear: 0 });
+  useFocus(phase !== 'intro' && phase !== 'result');
   const tuning = getTuning(s.tuning).midi;
   // 1. quiz visuel : 4 questions cases 0-5, 4 questions cases 5-12
   const [qs] = useState(() => Array.from({ length: 8 }, (_, i) => makeRound('quiz', { tuning, frets: 12, zone: i < 4 ? { from: 0, to: 5 } : { from: 5, to: 12 }, notation: s.notation, srs: new Map(), rng: Math.random })));
@@ -63,7 +65,7 @@ export function Placement({ s }: { s: Settings }) {
     {phase === 'rhythm' && <div class="card"><h2>Rythme</h2><p>Jouez des noires (une note par clic) sur un clic à 80 BPM pendant 4 mesures, n'importe quelle note.</p><p role="status">{rMsg}</p>
       <button class="btn primary" disabled={rBusy} onClick={runRhythm}>Lancer</button><button class="btn" style="margin-top:8px" disabled={rBusy} onClick={() => setPhase('theory')}>Passer (pas de basse sous la main)</button></div>}
     {phase === 'theory' && <div class="card"><div class="muted">Théorie {ti + 1} / {tq.length}</div><p style="font-size:1.2rem">{tq[ti].q}</p>{tq[ti].choices.map((c, i) => <button class="btn" style="margin:6px 0" onClick={() => answerTheory(i)}>{c}</button>)}</div>}
-    {phase === 'ear' && <div class="card"><div class="muted">Oreille {ei + 1} / {iq.length}</div><button class="btn" onClick={playEar}>🔊 Écouter</button>
+    {phase === 'ear' && <div class="card"><div class="muted">Oreille {ei + 1} / {iq.length}</div><button class="btn" onClick={playEar}>Écouter</button>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px">{intervalChoices(1).map(c => <button class="btn" disabled={eAns !== null} onClick={() => answerEar(c.id)}>{c.label}</button>)}</div>{eAns !== null && <p role="status">{eAns ? 'Juste !' : 'Raté'}</p>}</div>}
     {phase === 'result' && <div class="card" role="status"><h2>Niveau conseillé : {level}</h2>
       <p>Repérage cases 0-5 : {Math.round(sc.a * 100)} % · cases 5-12 : {Math.round(sc.b * 100)} % · rythme : {sc.rhythm === -1 ? 'non évalué' : sc.rhythm ? 'solide' : 'à travailler'} · théorie : {Math.round(sc.theory * 100)} % · oreille : {Math.round(sc.ear * 100)} %</p>

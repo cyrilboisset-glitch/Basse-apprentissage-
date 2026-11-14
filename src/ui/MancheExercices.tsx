@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Settings } from '../storage/settings';
 import { getTuning, midiName } from '../audio/notes';
 import { ZONES, allPositions } from '../theory/fretboard';
-import { Fretboard, ROLE_COLOR, ROLE_NAME, type Mark } from './Fretboard';
+import { Fretboard, RoleGlyph, ROLE_NAME, type Mark } from './Fretboard';
+import { Icon } from './Icon';
+import { useFocus } from './focus';
 import { useNotes } from './useNotes';
 import { applyNote, DRILL_LABEL, heatStatus, makeRound, newState, unlockedZones, zoneMastered, type DrillKind, type Round, type RoundState } from '../exercises/manche';
 import { loadSrs, recordSrs } from '../storage/srs';
@@ -25,24 +27,25 @@ export function Exercices({ s }: { s: Settings }) {
   const open = unlockedZones(drills, s.unlockAll);
   if (run) return <DrillRunner s={s} kind={kind} zoneId={zone} onExit={() => setRun(false)} />;
   return (<>
-    <div class="card"><h2>Zone</h2>
-      {ZONES.map(z => {
-        const last = drills.filter(d => d.zone === z.id).slice(-3); const locked = !open.includes(z.id);
-        const avg = last.length ? Math.round(last.reduce((a, d) => a + d.accuracy, 0) / last.length * 100) : null;
-        return <label><span><input type="radio" name="zone" disabled={locked} checked={zone === z.id} onChange={() => setZone(z.id)} /> {locked ? '🔒 ' : ''}{z.label}</span>
-          <span class="muted">{zoneMastered(drills, z.id) ? '✔ validée' : avg === null ? '—' : `${avg} % (${last.length}/3 séances)`}</span></label>;
-      })}
-      <p class="muted">Zone suivante débloquée à 90 % de réussite en moyenne sur 3 séances.</p>
-    </div>
-    <div class="card"><h2>Exercice</h2>
-      {KINDS.map(k => <label><span><input type="radio" name="kind" checked={kind === k} onChange={() => setKind(k)} /> {DRILL_LABEL[k]}</span></label>)}
-    </div>
+    <h2>Zone</h2>
+    {ZONES.map(z => {
+      const last = drills.filter(d => d.zone === z.id).slice(-3); const locked = !open.includes(z.id);
+      const avg = last.length ? Math.round(last.reduce((a, d) => a + d.accuracy, 0) / last.length * 100) : null;
+      const done = zoneMastered(drills, z.id);
+      return <button class={'choice' + (zone === z.id ? ' on' : '')} disabled={locked} aria-pressed={zone === z.id} onClick={() => setZone(z.id)}>
+        <span><b style="font-weight:600">{z.label}</b><small>{locked ? 'Verrouillée : validez la zone précédente' : done ? 'Validée' : avg === null ? 'Pas encore commencée' : `${avg} % (${last.length}/3 séances)`}</small></span>
+        <span class={done ? 'ok' : 'muted'}>{locked ? <Icon name="lock" size={20} label="Verrouillée" /> : done ? <Icon name="check" size={22} label="Validée" /> : null}</span></button>;
+    })}
+    <p class="muted">Zone suivante débloquée à 90 % de réussite en moyenne sur 3 séances.</p>
+    <h2 style="margin-top:20px">Exercice</h2>
+    <div class="chips" style="margin-bottom:16px">{KINDS.map(k => <button class={'chip' + (kind === k ? ' on' : '')} aria-pressed={kind === k} onClick={() => setKind(k)}>{DRILL_LABEL[k]}</button>)}</div>
     <button class="btn primary" onClick={() => setRun(true)}>Commencer ({k2n(kind)} manches)</button>
   </>);
 }
 const k2n = (k: DrillKind) => (k === 'quiz' ? 12 : ROUNDS);
 
 export function DrillRunner({ s, kind, zoneId, onExit }: { s: Settings; kind: DrillKind; zoneId: string; onExit: () => void }) {
+  useFocus(true);
   const tuning = getTuning(s.tuning).midi, z = ZONES.find(x => x.id === zoneId)!;
   const total = k2n(kind), audio = kind !== 'quiz';
   const [idx, setIdx] = useState(0); const [, tick] = useState(0);
@@ -99,21 +102,22 @@ export function DrillRunner({ s, kind, zoneId, onExit }: { s: Settings; kind: Dr
 
   if (summary) return (<div class="card" role="status">
     <h1>{summary.acc >= 0.9 ? 'Bravo !' : summary.acc >= 0.7 ? 'Bien joué' : 'On continue'}</h1>
-    <p style="font-size:2.4rem;font-weight:800">{Math.round(summary.acc * 100)} %</p>
+    <p class="num" style="font-size:2.6rem;font-weight:500;margin:.2rem 0">{Math.round(summary.acc * 100)} %</p>
     <p>{summary.correct} justes · {summary.wrong} erreurs · {summary.sec} s</p>
-    {summary.unlocked && <p><b>🔓 Zone débloquée : {summary.unlocked}</b></p>}
+    {summary.unlocked && <p class="ok"><b>Zone débloquée : {summary.unlocked}</b></p>}
     <button class="btn primary" onClick={onExit}>Terminer</button></div>);
   const r = round.current; if (!r) return <p>Chargement…</p>;
   const marks = new Map<string, Mark>();
-  r.show.forEach((p, i) => marks.set(`${p.string}:${p.fret}`, { role: r.kind === 'quiz' ? 'plain' : (i === 0 && r.kind === 'interval' ? 'root' : 'plain'), label: r.kind === 'quiz' ? '' : midiName(p.midi, s.notation).name }));
+  r.show.forEach((p, i) => marks.set(`${p.string}:${p.fret}`, { role: r.kind === 'quiz' || (i === 0 && r.kind === 'interval') ? 'root' : 'plain', label: r.kind === 'quiz' ? '?' : midiName(p.midi, s.notation).name }));
   const done = r.ordered ? st.current.idx : st.current.found.size;
   const need = r.any ? 1 : r.targets.length;
   return (<>
-    <div style="display:flex;justify-content:space-between"><span>Manche {idx + 1}/{total}</span><button class="btn" style="width:auto;min-height:40px;padding:0 16px" onClick={onExit}>Quitter</button></div>
+    <div style="display:flex;align-items:center;gap:8px;margin:0 -8px"><button class="icon-btn" aria-label="Quitter" onClick={onExit}><Icon name="close" /></button>
+      <div style="flex:1"><div class="num muted" style="font-size:.85rem">Manche {idx + 1} / {total}</div><div style="height:4px;border-radius:2px;background:var(--border);margin-top:4px;overflow:hidden"><div style={`height:100%;width:${(idx / total) * 100}%;background:var(--accent)`} /></div></div></div>
     {audio && STATUS_MSG[status] && <div class="card" role="alert">{STATUS_MSG[status]}</div>}
-    <h1 style={`text-align:center;border-radius:12px;padding:8px;${flash === 'ok' ? 'background:#14532d' : flash === 'wrong' ? 'background:#7f1d1d' : ''}`}>{r.prompt}</h1>
+    <h1 class={flash === 'ok' ? 'flash-ok' : flash === 'wrong' ? 'flash-bad' : ''} style="text-align:center;border-radius:12px;padding:10px;font-size:1.35rem">{r.prompt}</h1>
     <Fretboard tuning={tuning} from={r.kind === 'quiz' || r.kind === 'interval' || r.kind === 'scale' || r.kind === 'arpeggio' ? Math.max(0, Math.min(...r.show.map(p => p.fret), z.from) - 0) : z.from} to={Math.min(z.to + (r.kind === 'interval' ? 3 : 0), s.frets, 24)} leftHanded={s.leftHanded} marks={marks} />
-    {audio && <p style="text-align:center;font-size:1.3rem">{need > 1 || r.ordered ? `${done} / ${r.ordered ? r.targets.length : need} notes` : 'Jouez la note'}</p>}
+    {audio && <p class="num" style="text-align:center;font-size:1.1rem;margin:12px 0">{need > 1 || r.ordered ? `${done} / ${r.ordered ? r.targets.length : need} notes` : 'Jouez la note'}</p>}
     {kind === 'quiz'
       ? <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">{Array.from({ length: 12 }, (_, p) => <button class="btn" onClick={() => answer(p)}>{midiName(p + 12, s.notation).name}</button>)}</div>
       : <button class="btn" onClick={skip}>Passer</button>}
@@ -128,14 +132,14 @@ export function Carte({ s }: { s: Settings }) {
   const marks = new Map<string, Mark>(); const counts: Record<string, number> = { ok: 0, slow: 0, bad: 0, unseen: 0 };
   for (const p of allPositions(tuning, s.frets)) {
     const h = heatStatus(stats.get(p.midi)); counts[h]++;
-    marks.set(`${p.string}:${p.fret}`, { role: h, label: { ok: '✓', slow: '⏱', bad: '✗', unseen: '·' }[h] });
+    marks.set(`${p.string}:${p.fret}`, { role: h, label: { ok: '✓', slow: '!', bad: '✗', unseen: '·' }[h] });
   }
   void pc;
   return (<>
     <Fretboard tuning={tuning} from={half ? 12 : 0} to={half ? Math.min(24, s.frets) : 12} leftHanded={s.leftHanded} marks={marks} />
-    <button class="btn" style="margin:8px 0" onClick={() => setHalf(h => (h ? 0 : 1))}>{half ? 'Cases 0 – 12' : 'Cases 12 – 24'}</button>
-    <div style="display:flex;flex-wrap:wrap;gap:12px">{(['ok', 'slow', 'bad', 'unseen'] as const).map(k =>
-      <span><span style={`display:inline-block;width:14px;height:14px;border-radius:50%;background:${ROLE_COLOR[k]}`} /> {ROLE_NAME[k]} ({counts[k]})</span>)}</div>
+    <button class="btn" style="margin:12px 0" onClick={() => setHalf(h => (h ? 0 : 1))}>{half ? 'Cases 0 – 12' : 'Cases 12 – 24'}</button>
+    <div style="display:flex;flex-wrap:wrap;gap:6px 16px">{(['ok', 'slow', 'bad', 'unseen'] as const).map(k =>
+      <span style="display:inline-flex;align-items:center;gap:6px;font-size:.9rem"><RoleGlyph role={k} size={20} />{ROLE_NAME[k]} ({counts[k]})</span>)}</div>
     <p class="muted">Maîtrisée : ≥ 90 % de réussite. Lente : plus de 3 s en moyenne. Ratée : moins de 70 %. Les notes sont suivies par hauteur : une même note jouée sur deux cordes compte pour ses deux positions.</p>
   </>);
 }

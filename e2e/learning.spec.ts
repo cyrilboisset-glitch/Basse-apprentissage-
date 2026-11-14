@@ -8,7 +8,7 @@ test('quiz visuel : 12 questions, résumé, la carte de chaleur se remplit', asy
 });
 
 test('séance du jour de 10 minutes : plan, étapes, passage, journal', async ({ page }) => {
-  await page.goto('./'); await page.getByRole('button', { name: '10 min' }).click(); await page.getByRole('link', { name: /Démarrer ma séance/ }).click();
+  await page.goto('./'); await page.getByRole('button', { name: '10 min' }).click(); await page.getByRole('link', { name: /Démarrer la séance/ }).click();
   await expect(page.getByRole('heading', { name: /Séance du jour — \d+ min/ })).toBeVisible(); await expect(page.getByText(/Échauffement/)).toBeVisible();
   await page.getByRole('button', { name: "C'est parti" }).click(); await expect(page.getByText('Étape 1/3')).toBeVisible();
   await page.getByRole('button', { name: "Passer l'étape" }).click(); await expect(page.getByText('Étape 2/3')).toBeVisible();
@@ -68,6 +68,6 @@ test('gammes en positions : certaines manches demandent de relier deux positions
   await page.goto('./#/reglages'); await page.locator('label', { hasText: /^Tout débloquer/ }).locator('input').check();
   await page.goto('./#/manche'); await page.getByText('Gammes en positions').click();
   let seen = false;
-  for (let i = 0; i < 6 && !seen; i++) { await page.getByRole('button', { name: /Commencer/ }).click(); for (let k = 0; k < 8; k++) { const t = await page.locator('h1').nth(1).innerText(); if (/reliez/.test(t)) { seen = true; break; } await page.getByRole('button', { name: 'Passer' }).click(); await page.waitForTimeout(900); } if (!seen) { await page.getByRole('button', { name: 'Quitter' }).click().catch(() => {}); } }
+  for (let i = 0; i < 6 && !seen; i++) { await page.getByRole('button', { name: /Commencer/ }).click(); for (let k = 0; k < 8; k++) { const t = await page.locator('h1').last().innerText(); if (/reliez/.test(t)) { seen = true; break; } await page.getByRole('button', { name: 'Passer' }).click(); await page.waitForTimeout(900); } if (!seen) { await page.getByRole('button', { name: 'Quitter' }).click().catch(() => {}); } }
   expect(seen).toBe(true);
 });

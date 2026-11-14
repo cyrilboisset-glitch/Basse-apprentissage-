@@ -8,6 +8,7 @@ import { db } from '../storage/db';
 import { today } from '../storage/stats';
 import { midiName } from '../audio/notes';
 import { keepAwake } from './wakeLock';
+import { useFocus } from './focus';
 
 export function Theorie({ s }: { s: Settings }) {
   const [id, setId] = useState<string | null>(null);
@@ -17,6 +18,7 @@ export function Theorie({ s }: { s: Settings }) {
 }
 
 export function LessonRunner({ s, lessonId, onExit }: { s: Settings; lessonId: string; onExit: () => void }) {
+  useFocus(true);
   useEffect(() => { keepAwake(true); return () => { keepAwake(false); }; }, []);
   const lesson: Lesson = getLesson(lessonId); const status = useEngineStatus();
   const [built] = useState(() => lesson.build(Math.random, s.notation));
@@ -37,11 +39,11 @@ export function LessonRunner({ s, lessonId, onExit }: { s: Settings; lessonId: s
     <button class="btn" style="min-height:44px" onClick={onExit}>← Retour</button><h1>{lesson.title}</h1>
     {phase === 'read' && <><div class="card">{lesson.text.map(t => <p>{t}</p>)}</div><button class="btn primary" onClick={() => setPhase(built.quiz.length ? 'quiz' : 'play')}>J'ai lu : à l'exercice</button></>}
     {phase === 'quiz' && <div class="card"><div class="muted">Question {qi + 1} / {built.quiz.length}</div><p style="font-size:1.2rem">{built.quiz[qi].q}</p>
-      {built.quiz[qi].choices.map((c, i) => <button class="btn" style={`margin:6px 0;${picked !== null ? (i === built.quiz[qi].answer ? 'background:#14532d' : i === picked ? 'background:#7f1d1d' : '') : ''}`} disabled={picked !== null} onClick={() => answer(i)}>{c}</button>)}
+      {built.quiz[qi].choices.map((c, i) => <button class="btn" style={`margin:6px 0;${picked !== null ? (i === built.quiz[qi].answer ? 'background:var(--ok-bg)' : i === picked ? 'background:var(--bad-bg)' : '') : ''}`} disabled={picked !== null} onClick={() => answer(i)}>{c}</button>)}
       {picked !== null && <button class="btn primary" onClick={afterQuiz}>Suivant</button>}</div>}
     {phase === 'play' && round && <>{STATUS_MSG[status] && <div class="card" role="alert">{STATUS_MSG[status]}</div>}
       <div class="muted">Exercice {ri + 1} / {built.rounds.length}</div>
-      <h2 style={`border-radius:12px;padding:8px;${flash === 'ok' ? 'background:#14532d' : flash === 'wrong' ? 'background:#7f1d1d' : ''}`}>{round.prompt}</h2>
+      <h2 style={`border-radius:12px;padding:8px;${flash === 'ok' ? 'background:var(--ok-bg)' : flash === 'wrong' ? 'background:var(--bad-bg)' : ''}`}>{round.prompt}</h2>
       <p style="font-size:1.4rem;text-align:center">{round.targets.map((m, i) => <span style={i < st.current.idx ? 'color:var(--accent)' : i === st.current.idx ? 'font-weight:800;text-decoration:underline' : 'opacity:.6'}>{midiName(m, s.notation).name} </span>)}</p>
       <button class="btn" onClick={() => { tot.current.w += round.targets.length - st.current.idx; next(); }}>Passer</button></>}
     {phase === 'done' && <div class="card" role="status"><h2>Leçon terminée</h2><p>{quizOk.current} bonne(s) réponse(s) · {tot.current.c} note(s) juste(s) · {tot.current.w} erreur(s)</p>

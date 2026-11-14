@@ -18,7 +18,7 @@ test('les réglages sont conservés après rechargement (IndexedDB) et le thème
 });
 
 test('export puis import des données : le journal revient', async ({ page }) => {
-  await page.goto('./'); await page.getByRole('button', { name: '10 min' }).click(); await page.getByRole('link', { name: /Démarrer ma séance/ }).click();
+  await page.goto('./'); await page.getByRole('button', { name: '10 min' }).click(); await page.getByRole('link', { name: /Démarrer la séance/ }).click();
   await page.getByRole('button', { name: "C'est parti" }).click();
   for (let i = 0; i < 3; i++) await page.getByRole('button', { name: "Passer l'étape" }).click();
   await page.locator('textarea').fill('note e2e'); await page.getByRole('button', { name: /Enregistrer dans mon journal/ }).click(); await expect(page.getByText('Enregistré')).toBeVisible();
@@ -35,7 +35,7 @@ test('export puis import des données : le journal revient', async ({ page }) =>
 test('fonctionne hors ligne après un premier chargement (service worker)', async ({ page, context }) => {
   await page.goto('./'); await page.evaluate(() => navigator.serviceWorker.ready); await page.waitForTimeout(1500);
   await context.setOffline(true); await page.reload();
-  await expect(page.getByRole('heading', { name: 'BassLab' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Séance du jour' })).toBeVisible();
   await page.getByRole('link', { name: 'Pratique' }).click(); await page.getByRole('link', { name: /Vocabulaire/ }).click();
   await page.getByRole('tab', { name: 'Jazz (walking)' }).click(); await expect(page.getByText('Walking de base II-V-I')).toBeVisible();
   await context.setOffline(false);

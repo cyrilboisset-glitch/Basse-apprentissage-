@@ -11,7 +11,7 @@ export default defineConfig({
       manifest: {
         name: 'BassLab', short_name: 'BassLab', lang: 'fr',
         description: "Apprendre l'improvisation à la basse",
-        theme_color: '#111418', background_color: '#111418',
+        theme_color: '#151515', background_color: '#151515',
         display: 'standalone', start_url: '.', scope: '.',
         icons: [
           { src: 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
@@ -20,7 +20,7 @@ export default defineConfig({
           { src: 'icon.svg', sizes: 'any', type: 'image/svg+xml' },
         ],
       },
-      workbox: { globPatterns: ['**/*.{js,css,html,svg,png,json,webmanifest}'] },
+      workbox: { globPatterns: ['**/*.{js,css,html,svg,png,json,webmanifest,woff2}'] },
     }),
   ],
   test: { environment: 'node', include: ['src/**/*.test.ts'] },

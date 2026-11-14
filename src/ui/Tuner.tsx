@@ -5,6 +5,7 @@ import { CustomTuningEditor } from './CustomTuning';
 import type { Settings } from '../storage/settings';
 import { STATUS_MSG, useEngineStatus } from './useEngine';
 import { nux } from '../nux/plugpro';
+import { Icon } from './Icon';
 import { useNuxStatus } from '../nux/presets';
 
 const median = (a: number[]) => [...a].sort((x, y) => x - y)[Math.floor(a.length / 2)];
@@ -54,43 +55,65 @@ export function Tuner({ s, set, onClose }: { s: Settings; set: (p: Partial<Setti
 
   const c = view ? Math.max(-50, Math.min(50, view.cents)) : 0;
   const inTune = view && Math.abs(view.cents) <= 3;
-  const color = !view ? 'var(--muted)' : inTune ? 'var(--accent)' : Math.abs(view.cents) < 15 ? '#facc15' : 'var(--danger)';
+  const near = view && !inTune && Math.abs(view.cents) < 15;
+  const color = !view ? 'var(--muted)' : inTune ? 'var(--ok)' : near ? 'var(--accent)' : 'var(--danger)';
+  const needle = !view ? 'var(--faint)' : inTune ? 'var(--ok)' : 'var(--accent)';
+  const hint = !view ? (weak ? 'Signal trop faible : jouez plus fort' : src === 'nux' ? 'Jouez une corde (accordeur Plug Pro)' : 'Jouez une corde à vide')
+    : inTune ? 'Juste' : view.cents < 0 ? (near ? 'Presque : serrez très légèrement' : 'Trop bas : serrez') : (near ? 'Presque : desserrez très légèrement' : 'Trop haut : desserrez');
 
   return (
-    <div role="dialog" aria-label="Accordeur" style="position:fixed;inset:0;z-index:10;background:var(--bg);padding:16px;overflow:auto">
-      <button class="btn" onClick={onClose} style="min-height:48px">Fermer</button>
-      <div style="display:flex;gap:8px;margin:8px 0" role="tablist" aria-label="Source de l'accordeur">
-        <button role="tab" aria-selected={src === 'app'} class="btn" style={src === 'app' ? 'background:var(--accent);color:var(--on-accent)' : ''} onClick={() => setSrc('app')}>Accordeur de l'appli</button>
-        <button role="tab" aria-selected={src === 'nux'} class="btn" disabled={nst !== 'connected' || nuxCap === 'unavailable'} style={src === 'nux' ? 'background:var(--accent);color:var(--on-accent)' : ''} onClick={() => setSrc('nux')}>Plug Pro</button></div>
-      {nst !== 'connected' && <p class="muted">Accordeur du Plug Pro : connectez-le dans Outils → Matériel.</p>}
-      {nuxCap === 'unavailable' && <p class="muted" role="note">Accordeur du Plug Pro non disponible (firmware trop ancien ?) : utilisez celui de l'appli.</p>}
-      {src === 'app' && status !== 'running' && status !== 'idle' && (
-        <div class="card" role="alert">{STATUS_MSG[status]}
-          {status !== 'starting' && <button class="btn" style="margin-top:8px" onClick={() => engine.reconnect(s.inputDeviceId || undefined)}>Réessayer</button>}
-        </div>)}
-      <div style={`text-align:center;color:${color};margin-top:16px`}>
-        <div style="font-size:7rem;font-weight:800;line-height:1" aria-live="polite">{view ? view.name : '—'}<small style="font-size:2rem">{src === 'app' ? view?.oct : ''}</small></div>
-        <div style="font-size:1.6rem">{view ? `${view.cents > 0 ? '+' : ''}${view.cents.toFixed(1)} cents${view.freq ? ` · ${view.freq.toFixed(2)} Hz` : ''}` : weak ? 'Signal trop faible' : src === 'nux' ? 'Jouez une corde (accordeur Plug Pro)' : 'Jouez une corde à vide'}</div>
-        <div role="img" aria-label="Aiguille" style="position:relative;height:90px;margin:16px 0;border-bottom:2px solid var(--border)">
-          <div style="position:absolute;left:44%;width:12%;top:0;bottom:0;background:var(--accent);opacity:.2"/>
-          <div style="position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--muted)"/>
-          <div style={`position:absolute;left:${50 + c}%;top:0;bottom:0;width:6px;margin-left:-3px;border-radius:3px;background:${color};transition:left .08s`}/>
-          <div class="muted" style="position:absolute;left:0;bottom:-24px">♭ −50</div><div class="muted" style="position:absolute;right:0;bottom:-24px">+50 ♯</div>
+    <div role="dialog" aria-label="Accordeur" style="position:fixed;inset:0;z-index:10;background:var(--bg);overflow:auto">
+      <div style="max-width:560px;margin:0 auto;padding:0 20px 32px">
+        <div style="height:64px;display:grid;grid-template-columns:56px 1fr 56px;align-items:center;margin:0 -12px">
+          <button class="icon-btn" aria-label="Fermer" onClick={onClose}><Icon name="close" /></button>
+          <div style="text-align:center;font-size:1.05rem;font-weight:600">Accordeur</div><span />
         </div>
-        {view && <div style="font-size:1.4rem;margin-top:32px">{inTune ? '✔ Juste' : view.cents < 0 ? '↑ Trop bas : serrez' : '↓ Trop haut : desserrez'}</div>}
+        <div class="seg" role="tablist" aria-label="Source de l'accordeur">
+          <button role="tab" aria-selected={src === 'app'} onClick={() => setSrc('app')}>Accordeur de l'appli</button>
+          <button role="tab" aria-selected={src === 'nux'} disabled={nst !== 'connected' || nuxCap === 'unavailable'} onClick={() => setSrc('nux')}>Plug Pro</button></div>
+        {nst !== 'connected' && <p class="muted" style="font-size:.85rem">Accordeur du Plug Pro : connectez-le dans Outils → Matériel.</p>}
+        {nuxCap === 'unavailable' && <p class="muted" role="note">Accordeur du Plug Pro non disponible (firmware trop ancien ?) : utilisez celui de l'appli.</p>}
+        {src === 'app' && status !== 'running' && status !== 'idle' && (
+          <div class="card" role="alert">{STATUS_MSG[status]}
+            {status !== 'starting' && <button class="btn" style="margin-top:8px" onClick={() => engine.reconnect(s.inputDeviceId || undefined)}>Réessayer</button>}
+          </div>)}
+
+        <div style="text-align:center;margin-top:20px" aria-live="polite">
+          <div style={`font-size:clamp(6rem,34vw,9rem);font-weight:600;letter-spacing:-.04em;line-height:1;display:flex;justify-content:center;color:${view ? 'var(--text)' : 'var(--faint)'}`}>{view ? view.name : '—'}<span style="font-size:.34em;font-weight:500;color:var(--muted);letter-spacing:0;margin:.35em 0 0 .08em">{src === 'app' ? view?.oct : ''}</span></div>
+          <div class="num" style="font-size:1.2rem;margin-top:6px">{view ? <>{`${view.freq ? `${view.freq.toFixed(2)} Hz · ` : ''}`}<span style={`color:${color}`}>{`${view.cents > 0 ? '+' : ''}${view.cents.toFixed(1)} cents`}</span></> : <span class="muted" style="font-family:var(--font)">{hint}</span>}</div>
+        </div>
+
+        <div style="margin-top:24px" role="img" aria-label={view ? `Aiguille à ${view.cents.toFixed(1)} cents` : 'Aiguille : aucun signal'}>
+          <div style="position:relative;height:64px">
+            <div style="position:absolute;left:47%;width:6%;top:10px;height:36px;border-radius:6px;background:var(--ok-bg);border:1px solid var(--ok);box-sizing:border-box;opacity:.9" />
+            <div style="position:absolute;left:0;right:0;top:20px;height:16px;background:repeating-linear-gradient(90deg,var(--border-strong) 0 1px,transparent 1px 5%)" />
+            {[0, 25, 75, 100].map(l => <div style={`position:absolute;left:${l}%;top:14px;width:1px;height:28px;background:var(--faint)`} />)}
+            <div style="position:absolute;left:50%;top:8px;width:2px;height:40px;margin-left:-1px;background:var(--ok)" />
+            <div style={`position:absolute;left:${50 + c}%;top:4px;width:4px;height:48px;margin-left:-2px;border-radius:2px;background:${needle};box-shadow:0 0 0 3px var(--bg);transition:left .08s;opacity:${view ? 1 : .5}`} />
+            <div style={`position:absolute;left:${50 + c}%;top:0;margin-left:-6px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid ${needle};opacity:${view ? 1 : .5}`} />
+          </div>
+          <div class="num muted" style="display:flex;justify-content:space-between;font-size:.8rem"><span>♭ −50</span><span>0</span><span>+50 ♯</span></div>
+        </div>
+
+        {view && <div class="card" style="display:flex;align-items:center;justify-content:center;gap:10px;margin:18px 0 8px;min-height:52px">
+          <span style={`color:${color};display:flex`}><Icon name={inTune ? 'check' : 'chevron'} size={20} /></span><b style="font-weight:600">{hint}</b></div>}
+
+        <div style="margin-top:18px">
+          <label style="margin:4px 0">Mode guidé corde par corde <input type="checkbox" checked={guided} onChange={e => { setGuided((e.target as HTMLInputElement).checked); setTarget(0); }} /></label>
+          {guided && <div style={`display:grid;grid-template-columns:repeat(${tuning.midi.length},1fr);gap:8px;margin:8px 0`}>{tuning.midi.map((m, i) => {
+            const n = midiName(m, s.notation);
+            return <button class={'chip' + (i === target ? ' on' : '')} style="justify-content:center;min-height:52px;border-radius:10px;font-weight:600" aria-pressed={i === target} onClick={() => setTarget(i)}>{n.name}{n.octave}</button>; })}</div>}
+        </div>
+
+        <div class="card" style="padding:4px 16px">
+          <label>Accordage
+            <select value={s.tuning} onChange={e => { const id = (e.target as HTMLSelectElement).value; set({ tuning: id, strings: getTuning(id).midi.length >= 5 ? 5 : 4 }); setTarget(0); }}>
+              {allTunings().map(t => <option value={t.id}>{t.label}</option>)}</select></label>
+          {s.tuning === 'custom' && <CustomTuningEditor s={s} set={set} />}
+          <label>La de référence (Hz) <input type="number" min="415" max="466" value={s.refA} onChange={e => set({ refA: Number((e.target as HTMLInputElement).value) })} /></label>
+        </div>
+        <p class="muted" style="font-size:.85rem">Ordre conseillé : de la corde la plus grave à la plus aiguë.</p>
       </div>
-      <div class="card">
-        <label>Accordage
-          <select value={s.tuning} onChange={e => { const id = (e.target as HTMLSelectElement).value; set({ tuning: id, strings: getTuning(id).midi.length >= 5 ? 5 : 4 }); setTarget(0); }}>
-            {allTunings().map(t => <option value={t.id}>{t.label}</option>)}</select></label>
-        {s.tuning === 'custom' && <CustomTuningEditor s={s} set={set} />}
-        <label>La de référence (Hz) <input type="number" min="415" max="466" value={s.refA} onChange={e => set({ refA: Number((e.target as HTMLInputElement).value) })} /></label>
-        <label>Mode guidé corde par corde <input type="checkbox" checked={guided} onChange={e => { setGuided((e.target as HTMLInputElement).checked); setTarget(0); }} /></label>
-        {guided && <div style="display:flex;gap:8px">{tuning.midi.map((m, i) => {
-          const n = midiName(m, s.notation);
-          return <button class="btn" style={i === target ? 'background:var(--accent);color:var(--on-accent)' : ''} onClick={() => setTarget(i)}>{n.name}{n.octave}</button>; })}</div>}
-      </div>
-      <p class="muted">Ordre conseillé : de la corde la plus grave à la plus aiguë. L'accordeur du Plug Pro sera proposé en phase 9 si le firmware le permet.</p>
     </div>
   );
 }

@@ -52,3 +52,4 @@
 - **Performance** : pas de découpage de code (96 Ko gzip, démarrage 0,38 s à CPU ×4) ; page Pratique comme point d'entrée des modules.
 - **Test d'endurance de 160 s** (pas 1 h) : voir `docs/qualite.md` pour la portée exacte de la conclusion.
 - **Licence** : non choisie (décision de l'auteur).
+- **Charte graphique v2** (validée avant application) : graphite + laiton, Inter + IBM Plex Mono embarquées, manche réaliste en SVG, mode exercice plein écran, barre du bas à icônes. Variables CSS centralisées ; `--accent-text` plus foncé en thème clair pour les fonds teintés (contraste). Les tests d'accessibilité ont trouvé et fait corriger : une zone défilante non focalisable (manche) et un niveau de titre sauté.

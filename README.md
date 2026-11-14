@@ -17,7 +17,7 @@ Application web installable (PWA), **entièrement en français, sans compte, san
 | **Outils** | Métronome avancé, matériel et calibration, jouer sur un morceau (boucle A-B, ralenti sans changer la hauteur) |
 | **Plug Pro** | Contrôle BLE MIDI : presets par style, volume, accordeur |
 
-Détail de la pédagogie : [`docs/pedagogie.md`](docs/pedagogie.md) · branchements : [`docs/branchements.md`](docs/branchements.md) · protocole NUX : [`docs/nux-protocol.md`](docs/nux-protocol.md) · qualité mesurée : [`docs/qualite.md`](docs/qualite.md) · conformité au cahier des charges : [`docs/conformite.md`](docs/conformite.md) · décisions : [`DECISIONS.md`](DECISIONS.md).
+Charte graphique : [`docs/charte-graphique.md`](docs/charte-graphique.md) · détail de la pédagogie : [`docs/pedagogie.md`](docs/pedagogie.md) · branchements : [`docs/branchements.md`](docs/branchements.md) · protocole NUX : [`docs/nux-protocol.md`](docs/nux-protocol.md) · qualité mesurée : [`docs/qualite.md`](docs/qualite.md) · conformité au cahier des charges : [`docs/conformite.md`](docs/conformite.md) · décisions : [`DECISIONS.md`](DECISIONS.md).
 
 ## Installation et lancement local
 Prérequis : Node.js 22.

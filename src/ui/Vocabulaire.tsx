@@ -17,6 +17,8 @@ import { Metronome } from '../audio/metronome';
 import { applyPresetFor } from '../nux/presets';
 import { useOnDisconnect } from './useEngine';
 import { useRemote } from './useRemote';
+import { useFocus } from './focus';
+import { Icon } from './Icon';
 
 const BACK: Record<string, string> = { blues: 'blues-shuffle', funk: 'funk', rock: 'rock', pop: 'pop', reggae: 'reggae', soul: 'soul', jazz: 'jazz', latin: 'bossa', perso: 'pop' };
 const GLYPH = (d: number) => (d >= 3.5 ? '𝅝' : d >= 1.75 ? '𝅗𝅥' : d >= 0.9 ? '♩' : d >= 0.45 ? '♪' : '𝅘𝅥𝅯');
@@ -84,6 +86,7 @@ export function PhraseDetail({ s, base, onExit, onDelete }: { s: Settings; base:
     await db.sessions.add({ date: today(), module: `vocab:${base.id}`, seconds: 60, score: Math.round(r.success * 100) });
   };
   useOnDisconnect(() => { if (mode === 'play') stop(); });
+  useFocus(mode !== 'off');
   useRemote(() => { if (mode === 'off') run('listen'); else stop(); }, s);
   return (<>
     <button class="btn" style="min-height:44px" onClick={() => { stop(); onExit(); }}>← Retour</button>
@@ -97,7 +100,7 @@ export function PhraseDetail({ s, base, onExit, onDelete }: { s: Settings; base:
       <label>Partition simplifiée (durées) <input type="checkbox" checked={score} onChange={e => setScore((e.target as HTMLInputElement).checked)} /></label>
       {score && <p class="muted">{p.notes.map(n => `${midiName(n.midi, s.notation).name}${GLYPH(n.dur)}`).join(' ')}</p>}
     </div>
-    {mode === 'off' ? <><button class="btn primary" onClick={() => run('listen')}>▶ Écouter</button><button class="btn" style="margin-top:8px" onClick={() => run('play')}>🎸 À moi de jouer (3 tours)</button></>
+    {mode === 'off' ? <><button class="btn primary" onClick={() => run('listen')}><Icon name="play" size={20} />Écouter</button><button class="btn" style="margin-top:8px" onClick={() => run('play')}>À moi de jouer (3 tours)</button></>
       : <button class="btn primary" onClick={stop}>Arrêter</button>}
     {res && <div class="card" role="status"><h2>{Math.round(res.success * 100)} % · {res.verdict.bias === 'centré' ? 'centré' : res.verdict.bias === 'retard' ? `en retard (${Math.round(res.meanMs)} ms)` : `en avance (${Math.round(-res.meanMs)} ms)`}</h2>{res.advice.map(a => <p>• {a}</p>)}
       <p class="muted">{res.success >= 0.8 ? 'Phrase validée : elle reviendra moins souvent.' : 'Elle reviendra plus souvent dans vos séances.'}</p></div>}

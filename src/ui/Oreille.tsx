@@ -10,6 +10,8 @@ import { today } from '../storage/stats';
 import { midiName } from '../audio/notes';
 import { useNotes } from './useNotes';
 import { keepAwake } from './wakeLock';
+import { Icon } from './Icon';
+import { useFocus } from './focus';
 
 type Kind = 'interval' | 'chord' | 'degree' | 'line';
 const KINDS: [Kind, string][] = [['interval', 'Intervalles'], ['chord', 'Accords'], ['degree', 'Degrés'], ['line', 'Relevé de ligne']];
@@ -25,6 +27,7 @@ export function Oreille({ s }: { s: Settings }) {
 export function EarQuiz({ s, kind, onExit }: { s: Settings; kind: Kind; onExit: () => void }) {
   const [level, setLevel] = useState(0); const [i, setI] = useState(-1); const [q, setQ] = useState<any>(null); const [fb, setFb] = useState<{ ok: boolean; text: string } | null>(null);
   const [ok, setOk] = useState(0); const [done, setDone] = useState(false); const [replays, setReplays] = useState(0);
+  useFocus(i >= 0 && !done);
   const srs = useRef<Map<string, SrsItem>>(new Map()); const out = useRef<ReturnType<typeof makeBuses> | null>(null);
   const [lineActive, setLineActive] = useState(false); const round = useRef<Round | null>(null); const st = useRef(newState()); const [prog, setProg] = useState(0);
   useEffect(() => { keepAwake(true); loadSrs().then(m => { srs.current = m; }); return () => { keepAwake(false); out.current?.out.disconnect(); }; }, []);
@@ -63,7 +66,7 @@ export function EarQuiz({ s, kind, onExit }: { s: Settings; kind: Kind; onExit: 
       <div class="card" style="text-align:center"><div class="muted">Question {i + 1} / {N}</div>
         {kind === 'degree' && q && <p style="font-size:1.2rem">Après la cadence I-IV-V-I, quel est le degré du <b>{q.ask + 1}ᵉ</b> accord de la suite ?</p>}
         {kind === 'line' && q && <p style="font-size:1.2rem">Rejouez les {q.length} notes · {prog} / {q.length}{replays >= 1 && ` · 1ʳᵉ note : ${midiName(q.notes[0], s.notation).name}`}</p>}
-        <button class="btn" onClick={() => { setReplays(r => r + 1); play(q); }}>🔊 Réécouter</button></div>
+        <button class="btn" onClick={() => { setReplays(r => r + 1); play(q); }}><Icon name="volume" size={20} />Réécouter</button></div>
       {kind !== 'line' && <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">{choices.map(c => <button class="btn" disabled={!!fb} onClick={() => answer(c.id, c.label)}>{c.label}</button>)}</div>}
       {kind === 'line' && !fb && <button class="btn" style="margin-top:8px" onClick={() => { setLineActive(false); setFb({ ok: false, text: `Ligne : ${q.notes.map((m: number) => midiName(m, s.notation).name).join(' – ')}` }); recordSrs(q.srsId, false); }}>Je passe</button>}
       {fb && <div class="card" role="status" style={`border-color:${fb.ok ? 'var(--accent)' : 'var(--danger)'}`}><b>{fb.text}</b>{kind === 'degree' && !fb.ok && <p class="muted">{q.chords.join(' – ')}</p>}<button class="btn primary" style="margin-top:8px" onClick={next}>Suivant</button></div>}

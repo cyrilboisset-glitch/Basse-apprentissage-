@@ -12,6 +12,7 @@ import { Recorder } from '../audio/recorder';
 import { db } from '../storage/db';
 import { useNotes } from './useNotes';
 import { useRemote } from './useRemote';
+import { useFocus } from './focus';
 import { today } from '../storage/stats';
 
 export const KEYS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
@@ -68,6 +69,7 @@ export function Jam({ s }: { s: Settings }) {
     keepAwake(true); applyPresetFor(BACKING_CATEGORY[styleId] ?? 'clean', s);
   };
   useOnDisconnect(() => { if (bk.current) { const b = bk.current; b.dispose(); bk.current = null; setOn(false); setCur(null); keepAwake(false); finishRec(b); } });
+  useFocus(on);
   useRemote(() => { toggle(); }, s);
   const chords = cur && grid ? grid.bars[cur.bar] : null;
   return (<>
@@ -82,7 +84,7 @@ export function Jam({ s }: { s: Settings }) {
       {err && <p role="alert">{err}</p>}
     </div>
     {grid && <div class="card" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px" aria-label="Grille">
-      {grid.bars.map((bar, i) => <div style={`border:2px solid ${cur && !cur.countIn && cur.bar === i ? 'var(--accent)' : 'var(--border)'};border-radius:8px;padding:8px;text-align:center;font-weight:700;${cur && !cur.countIn && cur.bar === i ? 'background:rgba(74,222,128,.15)' : ''}`}>
+      {grid.bars.map((bar, i) => <div style={`border:2px solid ${cur && !cur.countIn && cur.bar === i ? 'var(--accent)' : 'var(--border)'};border-radius:8px;padding:8px;text-align:center;font-weight:700;${cur && !cur.countIn && cur.bar === i ? 'background:var(--accent-soft)' : ''}`}>
         {bar.map(c => formatSymbol(c.chord.symbol, s.notation)).join(' ')}</div>)}
     </div>}
     <div class="card">

@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Settings } from '../storage/settings';
-import { buildSession, totalMinutes, type Step } from '../progress/session';
+import { totalMinutes, type Step } from '../progress/session';
+import { getPlan, clearPlan } from './plan';
+import { useFocus } from './focus';
+import { Icon } from './Icon';
 import { evaluateLevels } from '../progress/levels';
 import { loadProgress, getPlacement } from '../storage/progress';
 import { db } from '../storage/db';
@@ -18,20 +21,21 @@ import { getPhrase } from '../exercises/vocab';
 export function Session({ s, onClose }: { s: Settings; onClose: () => void }) {
   const [steps, setSteps] = useState<Step[] | null>(null); const [i, setI] = useState(-1); const [note, setNote] = useState(''); const [saved, setSaved] = useState(false);
   const t0 = useRef(0);
-  useEffect(() => { (async () => { const d = await loadProgress(); const pl = await getPlacement(); setSteps(buildSession(s.sessionMinutes, d, Math.max(evaluateLevels(d).current, pl?.level ?? 1), Math.random, s.unlockAll)); })(); }, []);
+  useEffect(() => { (async () => { const d = await loadProgress(); const pl = await getPlacement(); setSteps(getPlan(s.sessionMinutes, d, Math.max(evaluateLevels(d).current, pl?.level ?? 1), s.unlockAll)); })(); }, []);
+  useFocus(!!steps && i >= 0 && i < steps.length);
   if (!steps) return <p>Préparation de votre séance…</p>;
   const next = () => setI(x => x + 1);
-  const finish = async () => { await db.journal.add({ date: today(), text: note.trim(), minutes: Math.round((performance.now() - t0.current) / 60000) }); setSaved(true); };
+  const finish = async () => { await db.journal.add({ date: today(), text: note.trim(), minutes: Math.round((performance.now() - t0.current) / 60000) }); setSaved(true); clearPlan(s.sessionMinutes, today()); };
   if (i < 0) return (<>
     <h1>Séance du jour — {totalMinutes(steps)} min</h1>
     <div class="card">{steps.map((st, k) => <div style="display:flex;justify-content:space-between;padding:6px 0"><span>{k + 1}. {st.title}</span><span class="muted">{st.minutes} min</span></div>)}</div>
     <p class="muted">Casque branché, Plug Pro en USB. Chaque étape démarre quand vous appuyez sur Démarrer ; « Passer l'étape » est toujours possible.</p>
     <button class="btn primary" onClick={() => { t0.current = performance.now(); next(); }}>C'est parti</button><button class="btn" style="margin-top:8px" onClick={onClose}>Plus tard</button></>);
   if (i >= steps.length) return (<>
-    <h1>Séance terminée 🎉</h1>
+    <h1>Séance terminée</h1>
     <div class="card"><label style="display:block">Note de séance (facultatif)</label>
       <textarea style="width:100%;min-height:90px;font-size:1rem" placeholder="Ce qui a marché, ce qui coince, à retravailler…" value={note} onInput={e => setNote((e.target as HTMLTextAreaElement).value)} disabled={saved} />
-      {!saved ? <button class="btn primary" style="margin-top:8px" onClick={finish}>Enregistrer dans mon journal</button> : <p role="status">Enregistré ✔</p>}</div>
+      {!saved ? <button class="btn primary" style="margin-top:8px" onClick={finish}>Enregistrer dans mon journal</button> : <p role="status" class="ok">Enregistré</p>}</div>
     <button class="btn" onClick={onClose}>Retour à l'accueil</button></>);
   const st = steps[i];
   const bar = <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px" aria-label="Progression de la séance">

@@ -11,6 +11,7 @@ import { keepAwake } from './wakeLock';
 import { applyPresetFor } from '../nux/presets';
 import { useOnDisconnect } from './useEngine';
 import { useRemote } from './useRemote';
+import { useFocus } from './focus';
 import { CalibGate, needsCalibration } from './CalibGate';
 
 const VANISH = [{ v: '', l: 'Clic permanent' }, { v: '2', l: 'Clic 1 mesure sur 2' }, { v: '4', l: 'Clic 1 mesure sur 4 (3/4 muettes)' }, { v: '8', l: 'Clic 1 mesure sur 8 (7/8 muettes)' }];
@@ -70,6 +71,7 @@ export function GrooveRun({ s, p, onExit }: { s: Settings; p: GroovePattern; onE
   const stop = () => { m.current?.stop(); keepAwake(false); setPhase('setup'); };
 
   useOnDisconnect(() => { if (phase === 'run') stop(); });
+  useFocus(phase === 'run');
   useRemote(() => { if (phase === 'run') stop(); else if (phase === 'setup' && !gated) start(); }, s);
   if (phase === 'result' && res) {
     const nt = nextTempo(used.current, res.success);
@@ -100,7 +102,7 @@ export function GrooveRun({ s, p, onExit }: { s: Settings; p: GroovePattern; onE
     </> : <>
       <div class="card" style="text-align:center" aria-live="polite"><div style="font-size:3rem;font-weight:800">{bar === 0 ? 'Décompte' : `${Math.min(bar, total)} / ${total}`}</div>
         <div style="display:flex;gap:8px;justify-content:center">{[0, 1, 2, 3].map(i => <div style={`width:34px;height:34px;border-radius:50%;background:${beat === i ? (i === 0 ? 'var(--danger)' : 'var(--accent)') : 'var(--border)'}`} />)}</div>
-        {vanish && bar >= 1 && !bars.current[bar - 1]?.audible && <p class="muted">🔇 clic coupé — gardez le tempo</p>}</div>
+        {vanish && bar >= 1 && !bars.current[bar - 1]?.audible && <p class="muted">Clic coupé : gardez le tempo</p>}</div>
       <button class="btn" onClick={stop}>Arrêter</button>
     </>}
   </>);
@@ -113,7 +115,7 @@ function Curve({ res }: { res: GrooveResult }) {
       <rect x="0" y={y(50)} width={W} height={y(-50) - y(50)} fill="var(--accent)" opacity=".12" />
       <line x1="0" x2={W} y1={H / 2} y2={H / 2} stroke="var(--muted)" /><text x="4" y={y(50) - 2} font-size="9" fill="var(--muted)">+50 (tard)</text><text x="4" y={y(-50) + 10} font-size="9" fill="var(--muted)">−50 (tôt)</text>
       <polyline points={d.map((v, i) => `${x(i)},${y(v.devMs)}`).join(' ')} fill="none" stroke="var(--muted)" stroke-width="1" />
-      {d.map((v, i) => <circle cx={x(i)} cy={y(v.devMs)} r="3" fill={v.wrongPitch ? '#c084fc' : Math.abs(v.devMs) <= 25 ? 'var(--accent)' : Math.abs(v.devMs) <= 50 ? '#facc15' : 'var(--danger)'} />)}
-      <line x1="0" x2={W} y1={y(res.meanMs)} y2={y(res.meanMs)} stroke="#60a5fa" stroke-dasharray="4 3" /></svg>
+      {d.map((v, i) => <circle cx={x(i)} cy={y(v.devMs)} r="3" fill={v.wrongPitch ? '#B9A6D6' : Math.abs(v.devMs) <= 25 ? 'var(--accent)' : Math.abs(v.devMs) <= 50 ? 'var(--warn)' : 'var(--danger)'} />)}
+      <line x1="0" x2={W} y1={y(res.meanMs)} y2={y(res.meanMs)} stroke="#8FB8DC" stroke-dasharray="4 3" /></svg>
     <p class="muted">Vert ≤ 25 ms · jaune ≤ 50 ms · rouge au-delà. Ligne bleue : écart moyen.</p></div>;
 }

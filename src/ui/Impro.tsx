@@ -18,6 +18,8 @@ import { KEYS } from './Jam';
 import { db } from '../storage/db';
 import { today } from '../storage/stats';
 import { keepAwake } from './wakeLock';
+import { Icon } from './Icon';
+import { useFocus } from './focus';
 import { applyPresetFor, BACKING_CATEGORY } from '../nux/presets';
 import { useOnDisconnect } from './useEngine';
 import { useRemote } from './useRemote';
@@ -74,12 +76,13 @@ export function ImproRunner({ s, ex, onExit }: { s: Settings; ex: ExDef; onExit:
     <div class="card" role="status"><div style="font-size:3rem;font-weight:800">{res.score} %</div>
       <p>{res.metrics.notes} notes · {Math.round(res.metrics.inChordPct * 100)} % dans l'accord · placement {Math.round(res.metrics.rhythmPct * 100)} % · {res.metrics.meanOffsetMs >= 0 ? '+' : ''}{Math.round(res.metrics.meanOffsetMs)} ms en moyenne</p></div>
     <div class="card"><h2>Conseil du prof</h2>{res.advice.map(a => <p>• {a}</p>)}</div>
-    {res.items.length > 0 && <div class="card"><h2>Détail</h2><div style="display:flex;flex-wrap:wrap;gap:6px">{res.items.map(i => <span title={i.label} style={`padding:4px 10px;border-radius:12px;background:${i.ok ? '#14532d' : '#7f1d1d'}`}>{i.ok ? '✓' : '✗'} {i.label.replace('Mesure ', 'M')}</span>)}</div></div>}
+    {res.items.length > 0 && <div class="card"><h2>Détail</h2><div style="display:flex;flex-wrap:wrap;gap:6px">{res.items.map(i => <span title={i.label} style={`padding:4px 10px;border-radius:12px;background:${i.ok ? 'var(--ok-bg)' : 'var(--bad-bg)'}`}>{i.ok ? '✓' : '✗'} {i.label.replace('Mesure ', 'M')}</span>)}</div></div>}
     <button class="btn primary" onClick={() => setPhase('setup')}>Refaire</button>
     <button class="btn" style="margin-top:8px" onClick={onExit}>Retour</button>
   </>);
 
   useOnDisconnect(() => { if (phase === 'run') stop(); });
+  useFocus(phase === 'run');
   useRemote(() => { if (phase === 'run') stop(); else if (phase === 'setup' && !gated) start(); }, s);
   const idx = cur ? cur.seq - 1 : -1; const sc: BarScript | undefined = idx >= 0 ? scripts.current[idx] : undefined;
   const g = grid.current; const chord = cur && g && !cur.countIn ? g.bars[cur.bar][0].chord : null;
@@ -102,7 +105,7 @@ export function ImproRunner({ s, ex, onExit }: { s: Settings; ex: ExDef; onExit:
       <div class="card" style="text-align:center" aria-live="polite">
         <div class="muted">{cur?.countIn ? 'Décompte…' : cur ? `Tour ${cur.lap + 1}/${ex.laps} · mesure ${cur.bar + 1}` : ''}</div>
         <div style="font-size:4.2rem;font-weight:800">{cur?.countIn ? '1 2 3 4' : chord ? formatSymbol(chord.symbol, s.notation) : '…'}</div>
-        <div style="font-size:1.4rem;color:var(--accent)">{sc?.mode === 'listen' ? '🎧 Écoutez' : sc?.prompt}</div>
+        <div style="font-size:1.4rem;color:var(--accent)">{sc?.mode === 'listen' ? <span style="display:inline-flex;align-items:center;gap:8px"><Icon name="headphones" size={24} />Écoutez</span> : sc?.prompt}</div>
         {sc?.targetLabel && <div class="muted">{sc.targetLabel}</div>}
       </div>
       {help && <><Fretboard tuning={tuning} from={0} to={Math.min(12, s.frets)} leftHanded={s.leftHanded} marks={marks} live={live} /><Legend /></>}

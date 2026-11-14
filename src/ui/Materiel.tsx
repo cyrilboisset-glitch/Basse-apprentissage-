@@ -52,7 +52,7 @@ export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) 
         <select value={s.inputMode} onChange={e => set({ inputMode: (e.target as HTMLSelectElement).value as Settings['inputMode'] })}>
           <option value="usb">USB (Plug Pro branché) — recommandé</option>
           <option value="bluetooth">Bluetooth + micro du téléphone</option></select></label>
-      {s.inputMode === 'bluetooth' && <p class="muted" role="note">⚠ Le micro du téléphone capte aussi la pièce et le Bluetooth ajoute ~200 ms de retard : accordeur et mesures de rythme moins fiables. Calibrez la latence.</p>}
+      {s.inputMode === 'bluetooth' && <p class="muted" role="note">Le micro du téléphone capte aussi la pièce et le Bluetooth ajoute ~200 ms de retard : accordeur et mesures de rythme moins fiables. Calibrez la latence.</p>}
       <label>Entrée audio
         <select value={s.inputDeviceId} onChange={e => set({ inputDeviceId: (e.target as HTMLSelectElement).value })}>
           <option value="">Par défaut</option>{devs.map(d => <option value={d.id}>{d.label}</option>)}</select></label>
@@ -79,7 +79,7 @@ export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) 
           <p role="status" class="muted">{note}</p>
           <label>Changer de preset automatiquement <input type="checkbox" checked={s.nuxAuto} onChange={e => set({ nuxAuto: (e.target as HTMLInputElement).checked })} /></label>
           {s.nuxAuto && CATEGORIES.map(([k, l]) => <label>{l} <select value={s.presetMap[k] ?? 0} onChange={e => set({ presetMap: { ...s.presetMap, [k]: Number((e.target as HTMLSelectElement).value) } })}><option value="0">Ne pas changer</option>{[1, 2, 3, 4, 5, 6, 7].map(n => <option value={n}>Preset {n}</option>)}</select></label>)}
-          <p class="muted">Accordeur du Plug Pro : {nux.caps.tuner === 'unavailable' ? 'non disponible (firmware ancien ?)' : nux.caps.tuner === 'available' ? 'disponible' : 'à tester depuis l\'accordeur (bouton ♩)'}.</p></>}
+          <p class="muted">Accordeur du Plug Pro : {nux.caps.tuner === 'unavailable' ? 'non disponible (firmware ancien ?)' : nux.caps.tuner === 'available' ? 'disponible' : 'à tester depuis l\'accordeur (icône en haut à droite)'}.</p></>}
       </>}
     </div>
     <div class="card"><h2>Démarrer / arrêter sans toucher l'écran</h2>
@@ -92,8 +92,8 @@ export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) 
       {fst === 'error' && <p role="alert">Connexion impossible : le footswitch doit être en mode BLE MIDI.</p>}</div>
     <div class="card">
       <h2>Calibration de latence</h2>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><label style="display:block">USB (ms)<input type="number" min="-100" max="600" value={s.latencyUsbMs} onChange={e => set({ latencyUsbMs: Number((e.target as HTMLInputElement).value), calibrated: { ...s.calibrated, usb: true } })} /></label>
-        <label style="display:block">Bluetooth (ms)<input type="number" min="-100" max="600" value={s.latencyBluetoothMs} onChange={e => set({ latencyBluetoothMs: Number((e.target as HTMLInputElement).value), calibrated: { ...s.calibrated, bluetooth: true } })} /></label></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><label style="display:block">USB (ms)<input type="number" min="-100" max="600" value={s.latencyUsbMs} onInput={e => set({ latencyUsbMs: Number((e.target as HTMLInputElement).value), calibrated: { ...s.calibrated, usb: true } })} /></label>
+        <label style="display:block">Bluetooth (ms)<input type="number" min="-100" max="600" value={s.latencyBluetoothMs} onInput={e => set({ latencyBluetoothMs: Number((e.target as HTMLInputElement).value), calibrated: { ...s.calibrated, bluetooth: true } })} /></label></div>
       <p class="muted">Valeurs mesurées par la calibration, modifiables à la main. À faire avant les exercices de rythme, casque branché.</p>
       <button class="btn" disabled={calib === 'run'} onClick={calibrate}>Calibrer ({s.inputMode === 'usb' ? 'USB' : 'Bluetooth'})</button>
       <p role="status">{result}</p>

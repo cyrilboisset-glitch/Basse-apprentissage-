@@ -23,9 +23,9 @@ export function AudioFile() {
     try { const ctx = await engine.getContext(); const buf = await ctx.decodeAudioData(await f.arrayBuffer()); const d = buf.getChannelData(0), n = 600, step = Math.floor(d.length / n); setPeaks(Array.from({ length: n }, (_, i) => { let m = 0; for (let j = i * step; j < (i + 1) * step; j += 16) m = Math.max(m, Math.abs(d[j])); return m; })); } catch { setMsg('Forme d\'onde indisponible pour ce format (la lecture fonctionne).'); }
   };
   useEffect(() => { const c = cv.current; if (!c || !dur) return; const g = c.getContext('2d')!; const css = getComputedStyle(document.documentElement); g.clearRect(0, 0, c.width, c.height);
-    if (A !== null && B !== null && B > A) { g.fillStyle = 'rgba(74,222,128,.25)'; g.fillRect(A / dur * c.width, 0, (B - A) / dur * c.width, c.height); }
-    g.fillStyle = css.getPropertyValue('--muted') || '#94a3b8'; peaks.forEach((p, i) => { const h = Math.max(1, p * c.height * 0.9); g.fillRect(i * c.width / peaks.length, (c.height - h) / 2, Math.max(1, c.width / peaks.length - 1), h); });
-    g.fillStyle = '#f87171'; g.fillRect(t / dur * c.width - 1, 0, 2, c.height); }, [peaks, A, B, t, dur]);
+    if (A !== null && B !== null && B > A) { g.fillStyle = 'rgba(201,164,92,.25)'; g.fillRect(A / dur * c.width, 0, (B - A) / dur * c.width, c.height); }
+    g.fillStyle = css.getPropertyValue('--muted') || '#A39E95'; peaks.forEach((p, i) => { const h = Math.max(1, p * c.height * 0.9); g.fillRect(i * c.width / peaks.length, (c.height - h) / 2, Math.max(1, c.width / peaks.length - 1), h); });
+    g.fillStyle = '#E07B6F'; g.fillRect(t / dur * c.width - 1, 0, 2, c.height); }, [peaks, A, B, t, dur]);
   const seek = (e: MouseEvent) => { const c = cv.current!, r = c.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width; if (au.current) au.current.currentTime = x * dur; };
   return (<>
     <h1>Jouer sur un morceau</h1>
@@ -37,7 +37,7 @@ export function AudioFile() {
         <canvas ref={cv} width="600" height="90" style="width:100%;height:90px;background:var(--bg);border-radius:8px;cursor:pointer" onClick={seek} aria-label="Forme d'onde : touchez pour vous placer" />
         <div style="display:flex;justify-content:space-between" class="muted"><span>{mmss(t)}</span><span>A : {A === null ? '—' : mmss(A)} · B : {B === null ? '—' : mmss(B)}</span><span>{mmss(dur)}</span></div>
         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px">
-          <button class="btn primary" style="min-height:64px" onClick={() => { const el = au.current!; el.paused ? el.play() : el.pause(); }}>▶ / ⏸</button>
+          <button class="btn primary" style="min-height:64px" onClick={() => { const el = au.current!; el.paused ? el.play() : el.pause(); }}>Lecture / pause</button>
           <button class="btn" onClick={() => { if (au.current) au.current.currentTime = A ?? 0; }}>⏮ Début de boucle</button>
           <button class="btn" onClick={() => setA(au.current!.currentTime)}>A ici</button><button class="btn" onClick={() => setB(au.current!.currentTime)}>B ici</button>
           <button class="btn" onClick={() => { setA(null); setB(null); }}>Effacer A-B</button><button class="btn" aria-pressed={loop} style={loop ? 'background:var(--accent);color:var(--on-accent)' : ''} onClick={() => setLoop(l => !l)}>Boucle A-B {loop ? 'activée' : 'coupée'}</button></div></div>

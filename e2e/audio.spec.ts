@@ -67,6 +67,6 @@ test('improvisation : Question/réponse alterne écoute et réponse puis donne u
   await page.goto('./#/impro'); await page.getByText('Question / réponse').click(); await page.getByRole('button', { name: /Continuer sans calibration/ }).click();
   await page.locator('input[type=range]').evaluate((el: HTMLInputElement) => { el.value = '140'; el.dispatchEvent(new Event('input', { bubbles: true })); });
   await page.getByRole('button', { name: 'Démarrer' }).click();
-  await expect(page.getByText('🎧 Écoutez')).toBeVisible({ timeout: 10_000 }); await expect(page.getByText('À vous de répondre !')).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByText('Écoutez', { exact: true })).toBeVisible({ timeout: 10_000 }); await expect(page.getByText('À vous de répondre !')).toBeVisible({ timeout: 10_000 });
   await expect(page.getByText('Conseil du prof')).toBeVisible({ timeout: 70_000 });
 });

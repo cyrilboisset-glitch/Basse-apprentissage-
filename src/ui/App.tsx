@@ -2,7 +2,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { DEFAULT_SETTINGS, type Settings } from '../storage/settings';
 import { Tuner } from './Tuner';
 import { Materiel } from './Materiel';
-import { Explorer } from './Manche';
+import { MancheModule } from './Manche';
 import { Outils } from './Outils';
 import { loadSettings, saveSettings, requestPersistence, exportAll, importAll } from '../storage/db';
 
@@ -50,6 +50,7 @@ function Reglages({ s, set }: { s: Settings; set: (p: Partial<Settings>) => void
           <option value="4">4</option><option value="5">5</option></select></label>
       <label>Cases <input type="number" min="12" max="24" value={s.frets} onChange={e => set({ frets: Number((e.target as HTMLInputElement).value) })} /></label>
       <label>La de référence (Hz) <input type="number" min="415" max="466" value={s.refA} onChange={e => set({ refA: Number((e.target as HTMLInputElement).value) })} /></label>
+      <label>Tout débloquer (zones) <input type="checkbox" checked={s.unlockAll} onChange={e => set({ unlockAll: (e.target as HTMLInputElement).checked })} /></label>
       <label>Durée de séance
         <select value={s.sessionMinutes} onChange={e => set({ sessionMinutes: Number((e.target as HTMLSelectElement).value) as Settings['sessionMinutes'] })}>
           <option value="10">10 min</option><option value="20">20 min</option><option value="30">30 min</option></select></label>
@@ -80,7 +81,7 @@ export function App() {
 
   let page;
   switch (hash) {
-    case '#/manche': page = <><h1>Manche</h1><Explorer s={s} /></>; break;
+    case '#/manche': page = <MancheModule s={s} />; break;
     case '#/impro': page = <Placeholder title="Improvisation" phase="phase 6" />; break;
     case '#/jam': page = <Placeholder title="Jam" phase="phase 5" />; break;
     case '#/outils': page = <Outils />; break;

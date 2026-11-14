@@ -10,3 +10,8 @@
 - **Calibration de latence** : médiane (attaque − clic), temps de réaction humain inclus volontairement. Valeurs séparées USB / Bluetooth.
 - **Contexte audio partagé** entre accordeur, métronome et futurs backings ; le micro est libéré à la fermeture de l'accordeur.
 - Accordeur du Plug Pro (BLE) repoussé à la phase 9.
+- **Validation par hauteur, pas par case** : l'audio ne distingue pas les cordes. « Toutes les positions » = toutes les hauteurs distinctes de la zone ; « note sur une corde » accepte toute octave présente sur cette corde dans la zone.
+- **Déblocage des zones** : moyenne des 3 dernières séances de la zone ≥ 90 % (3 séances minimum). Option « Tout débloquer » dans les réglages (le test de positionnement pourra aussi débloquer).
+- **Réussite d'une séance** = notes justes / (justes + fausses) ; « Passer » compte les notes restantes comme fausses.
+- **Carte de chaleur** par hauteur : maîtrisée ≥ 90 % et < 3 s ; lente > 3 s ; ratée < 70 %. Symboles ✓ ⏱ ✗ en plus des couleurs.
+- **Répétition espacée** : boîtes de Leitner (0/1/2/4/8/16 jours), tirage pondéré (jamais vu 2, raté 3 + retard, non dû 0,2).

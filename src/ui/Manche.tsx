@@ -6,6 +6,7 @@ import { INTERVAL_NAMES, SCALES, getScale, pc } from '../theory/scales';
 import { allPositions } from '../theory/fretboard';
 import { Fretboard, ROLE_COLOR, ROLE_NAME, type Mark } from './Fretboard';
 import { useNotes } from './useNotes';
+import { Exercices, Carte } from './MancheExercices';
 
 const ROOTS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
@@ -50,4 +51,16 @@ export function Legend() {
   return <div style="display:flex;flex-wrap:wrap;gap:12px;margin:12px 0" aria-label="Légende">
     {['root', 'third', 'fifth', 'seventh', 'extension'].map(r => <span><span style={`display:inline-block;width:14px;height:14px;background:${ROLE_COLOR[r]};border-radius:${r === 'root' ? '50%' : r === 'fifth' ? '3px' : r === 'third' ? '2px;transform:rotate(45deg)' : '50%'}`} /> {ROLE_NAME[r]}</span>)}
   </div>;
+}
+
+export function MancheModule({ s }: { s: Settings }) {
+  const [tab, setTab] = useState<'ex' | 'explorer' | 'carte'>('ex');
+  return (<>
+    <h1>Manche</h1>
+    <div style="display:flex;gap:8px;margin-bottom:8px" role="tablist">
+      {([['ex', 'Exercices'], ['explorer', 'Explorer'], ['carte', 'Carte']] as const).map(([k, l]) =>
+        <button role="tab" aria-selected={tab === k} class="btn" style={tab === k ? 'background:var(--accent);color:#04210f' : ''} onClick={() => setTab(k)}>{l}</button>)}
+    </div>
+    {tab === 'ex' ? <Exercices s={s} /> : tab === 'explorer' ? <Explorer s={s} /> : <Carte s={s} />}
+  </>);
 }

@@ -1,15 +1,16 @@
 import type { NoteRole } from '../theory/chords';
 
-export type Mark = { role: NoteRole | 'plain'; label?: string };
+export type Mark = { role: NoteRole | 'plain' | 'ok' | 'slow' | 'bad' | 'unseen'; label?: string };
 export interface FretboardProps {
   tuning: number[]; from?: number; to?: number; leftHanded?: boolean;
   marks?: Map<string, Mark>; live?: number | null; onTap?: (string: number, fret: number) => void; showAllTaps?: boolean;
 }
 export const ROLE_COLOR: Record<string, string> = {
   root: '#f87171', third: '#4ade80', fifth: '#60a5fa', seventh: '#c084fc', extension: '#94a3b8', avoid: '#fb923c', passing: '#64748b', plain: '#94a3b8',
+  ok: '#4ade80', slow: '#facc15', bad: '#f87171', unseen: '#475569',
 };
 export const ROLE_NAME: Record<string, string> = {
-  root: 'fondamentale', third: 'tierce', fifth: 'quinte', seventh: 'septième', extension: 'extension', avoid: 'à éviter', passing: 'passage', plain: 'note',
+  root: 'fondamentale', third: 'tierce', fifth: 'quinte', seventh: 'septième', extension: 'extension', avoid: 'à éviter', passing: 'passage', plain: 'note', ok: 'maîtrisée', slow: 'lente', bad: 'ratée', unseen: 'pas encore vue',
 };
 const INLAYS = [3, 5, 7, 9, 12, 15, 17, 19, 21, 24];
 

@@ -5,7 +5,7 @@ import { describeFreq } from '../audio/notes';
 import { nux } from '../nux/plugpro';
 import { useNuxStatus } from '../nux/presets';
 import { db } from '../storage/db';
-import { judgeAudio, judgeEnv, MARK, toDb, worst, type AudioStats, type EnvInfo, type Finding } from '../diag/verdict';
+import { judgeAudio, judgeEnv, judgeInputs, MARK, toDb, worst, type AudioStats, type EnvInfo, type Finding } from '../diag/verdict';
 import { STATUS_MSG, useEngineStatus } from './useEngine';
 
 const COLOR = { ok: 'var(--ok)', warn: 'var(--accent-text)', fail: 'var(--danger)' } as const;
@@ -67,18 +67,20 @@ export function Diagnostic({ s }: { s: Settings }) {
   };
   const stopMine = () => { if (mine.current) { mine.current = false; engine.stop(); } setPhase('idle'); };
 
-  const report = () => {
+  const sel0 = () => devs.find(d => d.id === s.inputDeviceId)?.label;
+  const report = () => { const sel = sel0();
     const i = info ?? engine.info(); const L: string[] = [];
     L.push(`BassLab — rapport de diagnostic (${new Date().toISOString().slice(0, 16).replace('T', ' ')})`, `Navigateur : ${env.ua}`, `Installée (PWA) : ${env.standalone ? 'oui' : 'non'} · HTTPS : ${env.secure ? 'oui' : 'non'}`, '');
     L.push('Compatibilité :', ...envF.map(f => `  [${MARK[f.level]}] ${f.title}${f.level === 'ok' ? '' : ' — ' + f.detail}`), '');
     L.push(`Micro : permission ${perm} · état moteur ${status}${engine.lastError ? ` · dernière erreur ${engine.lastError}` : ''}`, `Entrées (${devs.length}) : ${devs.map(d => d.label).join(' | ') || 'aucune'}`, `Entrée choisie : ${devs.find(d => d.id === s.inputDeviceId)?.label ?? 'par défaut'} · mode ${s.inputMode}`);
     L.push(`Audio : ${i.sampleRate ?? '?'} Hz · latence de base ${i.baseLatencyMs ?? '?'} ms · sortie ${i.outputLatencyMs ?? '?'} ms · contexte ${i.ctxState} · piste ${i.trackState}`, `Traitement navigateur : écho ${i.echoCancellation} · bruit ${i.noiseSuppression} · gain auto ${i.autoGainControl} · canaux ${i.channelCount}`);
+    L.push(...judgeInputs(devs.map(d => d.label), s.inputMode === 'usb', sel).map(f => `  [${MARK[f.level]}] ${f.title} — ${f.detail}`));
     if (audioF.length) L.push('Test audio :', ...audioF.map(f => `  [${MARK[f.level]}] ${f.title} — ${f.detail}`));
     L.push(`Plug Pro (Bluetooth) : ${nst}${nux.connected ? ` · ${nux.deviceName} · accordeur ${nux.caps.tuner}` : ''}`, `Latence calibrée : USB ${s.latencyUsbMs} ms (${s.calibrated.usb ? 'oui' : 'non'}) · Bluetooth ${s.latencyBluetoothMs} ms (${s.calibrated.bluetooth ? 'oui' : 'non'})`, `Stockage : ${store}`);
     return L.join('\n');
   };
   const copy = async () => { const t = report(); try { await navigator.clipboard.writeText(t); setCopied('Rapport copié : collez-le dans un message.'); } catch { setCopied('Copie impossible : sélectionnez le texte ci-dessous.'); } };
-  const sel = devs.find(d => d.id === s.inputDeviceId)?.label;
+  const sel = devs.find(d => d.id === s.inputDeviceId)?.label; const inF = judgeInputs(devs.map(d => d.label), s.inputMode === 'usb', sel);
   const db_ = toDb(lvl);
 
   return (<>
@@ -90,6 +92,7 @@ export function Diagnostic({ s }: { s: Settings }) {
     <div class="card"><div style="display:flex;justify-content:space-between"><h2 style="margin:0">2. Entrée audio</h2>{audioF.length > 0 && <Badge fs={audioF} />}</div>
       <p class="muted" style="font-size:.88rem">Autorisation du micro : <b>{perm}</b> · {devs.length} entrée(s) détectée(s){sel ? ` · choisie : ${sel}` : ' · entrée par défaut'}</p>
       {devs.length > 0 && <p class="muted" style="font-size:.82rem;margin:0">{devs.map(d => d.label).join(' · ')}</p>}
+      {devs.length > 0 && <List fs={inF} />}
       {STATUS_MSG[status] && <p role="alert">{STATUS_MSG[status]}</p>}
       {status === 'denied' || status === 'unavailable' ? engine.lastError && <p class="muted num" style="font-size:.8rem">Détail technique : {engine.lastError}</p> : null}
       {phase === 'idle' || phase === 'done' ? <button class="btn primary" onClick={run}>{phase === 'done' ? 'Refaire le test' : 'Lancer le test audio (9 s)'}</button> : <button class="btn" onClick={stopMine}>Arrêter</button>}

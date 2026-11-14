@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { judgeAudio, judgeEnv, toDb, worst, type EnvInfo } from './verdict';
+import { judgeAudio, judgeEnv, judgeInputs, toDb, worst, type EnvInfo } from './verdict';
 
 const st = (o: Partial<Parameters<typeof judgeAudio>[0]> = {}) => ({ seconds: 5, levels: Array(50).fill(0.0005), peak: 0.0006, pitchEvents: 100, detected: 0, ...o });
 const has = (fs: ReturnType<typeof judgeAudio>, t: RegExp, level?: string) => fs.some(f => t.test(f.title) && (!level || f.level === level));
@@ -26,4 +26,11 @@ describe('diagnostic environnement', () => {
     expect(b.level).toBe('warn'); expect(b.detail).toMatch(/iPhone/); expect(worst(f)).toBe('warn');
   });
   it('HTTP = échec', () => expect(worst(judgeEnv({ ...base, secure: false }))).toBe('fail'));
+});
+
+describe('diagnostic entrées', () => {
+  it('seulement le micro intégré en mode USB = échec explicite', () => { const f = judgeInputs(['Par défaut', 'Speakerphone'], true); expect(f[0].level).toBe('fail'); expect(f[0].detail).toMatch(/micro de l'appareil/); });
+  it('interface NUX détectée', () => expect(judgeInputs(['Par défaut', 'NUX MIGHTY PLUG PRO'], true)[0].level).toBe('ok'));
+  it('interface détectée mais autre entrée choisie : on le dit', () => expect(judgeInputs(['Speakerphone', 'USB Audio'], true, 'Speakerphone')[0].detail).toMatch(/pas l'entrée choisie/));
+  it('mode Bluetooth : pas de reproche', () => expect(judgeInputs(['Par défaut', 'Speakerphone'], false)).toEqual([]));
 });

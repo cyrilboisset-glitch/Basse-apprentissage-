@@ -33,6 +33,14 @@ export function judgeAudio(st: AudioStats, played: boolean): Finding[] {
   return out;
 }
 
+/** Le Plug Pro branché en USB doit apparaître comme une entrée audio distincte du micro intégré. */
+export function judgeInputs(labels: string[], usbMode: boolean, chosenLabel?: string): Finding[] {
+  const usb = labels.filter(l => /nux|mighty|plug|usb/i.test(l));
+  if (usb.length) return [{ level: 'ok', title: 'Interface USB détectée', detail: `${usb.join(', ')}${chosenLabel && !usb.includes(chosenLabel) && usbMode ? ' — mais ce n\'est pas l\'entrée choisie : sélectionnez-la dans Réglages → Matériel.' : '.'}` }];
+  if (!usbMode) return [];
+  return [{ level: 'fail', title: 'Le Plug Pro n\'apparaît pas comme entrée audio', detail: `Seules ces entrées existent : ${labels.join(', ') || 'aucune'}. Le test écoute donc le micro de l'appareil. Vérifiez : câble USB-C de données (pas un câble de charge seule), branché sur le port USB-C du Plug Pro, Plug Pro allumé, puis rebranchez et relancez le test. Sur Android, un adaptateur OTG peut être nécessaire.` }];
+}
+
 export interface EnvInfo {
   secure: boolean; getUserMedia: boolean; audioContext: boolean; audioWorklet: boolean; bluetooth: boolean; wakeLock: boolean; indexedDB: boolean; serviceWorker: boolean;
   standalone: boolean; ua: string;

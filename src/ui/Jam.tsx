@@ -5,6 +5,7 @@ import { Backing, type BackingOptions, type BarInfo } from '../audio/backing/Bac
 import { getStyle, STYLES } from '../audio/backing/styles';
 import { GRID_PRESETS, parseAnyGrid, progressionToGrid, type Grid } from '../theory/grid';
 import { formatSymbol } from '../theory/chords';
+import { keepAwake } from './wakeLock';
 
 export const KEYS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 const sel = (e: Event) => (e.target as HTMLSelectElement).value;
@@ -27,22 +28,22 @@ export function Jam({ s }: { s: Settings }) {
   const bk = useRef<Backing | null>(null);
 
   const grid = gridId === 'custom' ? parseAnyGrid(custom, key) : gridFromPreset(gridId, key);
-  useEffect(() => () => { bk.current?.dispose(); }, []);
+  useEffect(() => () => { bk.current?.dispose(); keepAwake(false); }, []);
   useEffect(() => { if (bk.current) { bk.current.opts.mute = mute; bk.current.applyMute(); } }, [mute]);
   useEffect(() => { if (bk.current) bk.current.opts.bpm = bpm; }, [bpm]);
   useEffect(() => { if (bk.current) bk.current.opts.swing = swing; }, [swing]);
 
   const changeStyle = (id: string) => { const n = getStyle(id); setStyleId(id); setBpm(n.bpm); setSwing(n.swing); setKey(n.defaultKey); setGridId(n.defaultGrid); };
   const toggle = async () => {
-    if (on) { bk.current?.dispose(); bk.current = null; setOn(false); setCur(null); return; }
+    if (on) { bk.current?.dispose(); bk.current = null; setOn(false); setCur(null); keepAwake(false); return; }
     if (!grid) { setErr('Grille invalide. Exemple : Am7 | D7 | Gmaj7 | Gmaj7'); return; }
     setErr('');
     const ctx = await engine.getContext();
     const opts: BackingOptions = { style: styleId, bpm, swing, laps: laps, countIn: countIn ? 1 : 0, accelPerLap: accel, mute,
       section: loopOn ? { from: Math.max(0, loopFrom - 1), to: Math.min(grid.bars.length, loopTo) - 1 } : undefined };
-    const b = new Backing(ctx, grid, opts); b.onBar = setCur; b.onEnd = () => { b.dispose(); setOn(false); setCur(null); };
+    const b = new Backing(ctx, grid, opts); b.onBar = setCur; b.onEnd = () => { b.dispose(); setOn(false); setCur(null); keepAwake(false); };
     bk.current = b; b.start(); setOn(true);
-    try { (navigator as any).wakeLock?.request('screen').catch(() => {}); } catch { /* facultatif */ }
+    keepAwake(true);
   };
   const chords = cur && grid ? grid.bars[cur.bar] : null;
   return (<>

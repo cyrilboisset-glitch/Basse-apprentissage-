@@ -17,6 +17,8 @@ export class Backing {
   private timer: number | null = null; private nextT = 0; private seq = 0;
   barTimes: BarInfo[] = [];
   onBar?: (b: BarInfo) => void; onEnd?: () => void;
+  /** Appelé au moment de planifier une mesure (instant exact `info.time` encore dans le futur) : sert à programmer des événements en plus. */
+  onSchedule?: (b: BarInfo) => void;
   constructor(private ctx: AudioContext, public grid: Grid, public opts: BackingOptions, dest: AudioNode = ctx.destination) {
     this.bus = masterChain(ctx, dest);
     const mk = () => { const g = ctx.createGain(); g.connect(this.bus); return g; };
@@ -59,6 +61,7 @@ export class Backing {
         const events = planBar(style, this.grid.bars[bar], bt, bpm, this.opts.swing);
         for (const e of events) renderEvent(this.ctx, this.buses, e);
       }
+      this.onSchedule?.(info);
       setTimeout(() => this.onBar?.(info), Math.max(0, (bt - this.ctx.currentTime) * 1000));
       this.nextT += bdur; this.seq++; void len;
     }

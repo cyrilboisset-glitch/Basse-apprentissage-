@@ -18,3 +18,8 @@
 - **Backings 100 % synthétisés** (aucun fichier audio) : batterie bruit+oscillateurs, claviers, guitare, orgue. Planification pure (`plan.ts`, testée) séparée du rendu audio (`voices.ts`). Limiteur maître pour éviter toute saturation (crêtes mesurées ≤ 0,8).
 - **Swing** : retard de la 2ᵉ croche jusqu'à 1/3 de croche ; blues = grille ternaire à 12 pas (shuffle exact, sans réglage).
 - **Aucune basse** dans les accompagnements (test automatisé : voicings ≥ Ré2). La basse synthétisée n'existe que pour les phrases d'exemple (`playBassNote`).
+- **Improvisation** : chaque exercice = un script par mesure (`makeScripts`) + une analyse pure (`analyze`) testée avec des « joueurs » simulés (parfait = 100 %, fautif = sanctionné). Tolérance rythmique = min(90 ms, 0,2 temps). La latence calibrée est soustraite aux instants des notes.
+- **« Une seule corde »** (contraintes) : l'audio ne détecte pas la corde ; approximé par un ambitus ≤ 7 demi-tons.
+- **Octave (étape 2)** : détectée si deux fondamentales à ≥ 12 demi-tons sont jouées dans la même mesure.
+- **Conseil de prof** : règles locales (hors ligne), 3 conseils max, priorisés (notes à éviter, densité sur mineur, % dans l'accord, retard/avance, fondamentale au temps 1, cibles).
+- **Limite connue** : la hauteur d'une note est confirmée ≥ 100 ms après l'attaque ; des notes plus rapides que ~100 ms peuvent être mal nommées (le rythme, lui, vient de l'attaque et reste exact).

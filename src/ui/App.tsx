@@ -9,6 +9,8 @@ import { Dashboard } from './Dashboard';
 import { Placement } from './Placement';
 import { Theorie } from './Theory';
 import { makeIcs } from './reminder';
+import { Recordings } from './Recordings';
+import { AudioFile } from './AudioFile';
 import { Vocabulaire } from './Vocabulaire';
 import { Oreille } from './Oreille';
 import { Groove } from './Groove';
@@ -21,7 +23,7 @@ import { loadSettings, saveSettings, requestPersistence, exportAll, importAll } 
 
 const TABS = [['#/', 'Séance'], ['#/manche', 'Manche'], ['#/pratique', 'Pratique'], ['#/outils', 'Outils'], ['#/reglages', 'Réglages']] as const;
 const PRATIQUE = [['#/impro', 'Improvisation', '9 exercices sur backing track'], ['#/groove', 'Groove', 'Mise en place, clic qui disparaît'], ['#/jam', 'Jam', 'Backings 9 styles, grilles'],
-  ['#/vocabulaire', 'Vocabulaire', '64 phrases, 12 tonalités'], ['#/oreille', 'Oreille', 'Intervalles, accords, degrés, relevé'], ['#/theorie', 'Théorie appliquée', '6 leçons courtes + exercice joué']] as const;
+  ['#/vocabulaire', 'Vocabulaire', '64 phrases, 12 tonalités'], ['#/oreille', 'Oreille', 'Intervalles, accords, degrés, relevé'], ['#/theorie', 'Théorie appliquée', '6 leçons courtes + exercice joué'], ['#/fichier', 'Jouer sur un morceau', 'Fichier audio : boucle A-B, ralenti'], ['#/enregistrements', 'Mes enregistrements', 'Réécoute, export WAV / WebM']] as const;
 const tabOf = (h: string) => (['#/seance', '#/bord', '#/placement'].includes(h) ? '#/' : PRATIQUE.some(p => p[0] === h) || h === '#/pratique' ? '#/pratique' : h === '#/materiel' ? '#/outils' : h);
 function Pratique() {
   return <><h1>Pratique</h1>{PRATIQUE.map(([h, t, d]) => <a class="card" href={h} style="display:block;text-decoration:none;color:inherit"><b style="font-size:1.2rem">{t}</b><div class="muted">{d}</div></a>)}</>;
@@ -99,6 +101,8 @@ export function App() {
     case '#/bord': page = <Dashboard s={s} />; break;
     case '#/placement': page = <Placement s={s} />; break;
     case '#/theorie': page = <Theorie s={s} />; break;
+    case '#/fichier': page = <AudioFile />; break;
+    case '#/enregistrements': page = <Recordings s={s} />; break;
     case '#/pratique': page = <Pratique />; break;
     case '#/vocabulaire': page = <Vocabulaire s={s} />; break;
     case '#/oreille': page = <Oreille s={s} />; break;
@@ -112,7 +116,7 @@ export function App() {
   return (<>
     {est === 'disconnected' && <div role="alert" style="position:sticky;top:0;z-index:20;background:var(--danger);color:#fff;padding:12px;border-radius:0 0 12px 12px;margin:0 -16px">
       Entrée audio déconnectée : exercice en pause. Rebranchez le Plug Pro (reconnexion automatique).
-      <button class="btn" style="margin-top:8px;border-color:#fff;color:#fff;min-height:44px" onClick={() => engine.start(s.inputDeviceId || undefined)}>Réessayer maintenant</button></div>}
+      <button class="btn" style="margin-top:8px;border-color:#fff;color:#fff;min-height:44px" onClick={() => engine.reconnect(s.inputDeviceId || undefined)}>Réessayer maintenant</button></div>}
     <main>{page}</main>
     <button class="tuner-fab" aria-label="Accordeur" onClick={() => setTuner(true)}>♩</button>
     {tuner && <Tuner s={s} set={set} onClose={() => setTuner(false)} />}

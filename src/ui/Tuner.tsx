@@ -65,7 +65,7 @@ export function Tuner({ s, set, onClose }: { s: Settings; set: (p: Partial<Setti
       {nuxCap === 'unavailable' && <p class="muted" role="note">Accordeur du Plug Pro non disponible (firmware trop ancien ?) : utilisez celui de l'appli.</p>}
       {src === 'app' && status !== 'running' && status !== 'idle' && (
         <div class="card" role="alert">{STATUS_MSG[status]}
-          {status !== 'starting' && <button class="btn" style="margin-top:8px" onClick={() => engine.start(s.inputDeviceId || undefined)}>Réessayer</button>}
+          {status !== 'starting' && <button class="btn" style="margin-top:8px" onClick={() => engine.reconnect(s.inputDeviceId || undefined)}>Réessayer</button>}
         </div>)}
       <div style={`text-align:center;color:${color};margin-top:16px`}>
         <div style="font-size:7rem;font-weight:800;line-height:1" aria-live="polite">{view ? view.name : '—'}<small style="font-size:2rem">{src === 'app' ? view?.oct : ''}</small></div>

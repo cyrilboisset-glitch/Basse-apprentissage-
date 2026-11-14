@@ -5,6 +5,7 @@ export interface KV { key: string; value: unknown }
 export interface NoteStat { midi: number; ok: number; miss: number; totalMs: number; n: number; last: number }
 export interface Drill { id?: number; date: string; kind: string; zone: string; accuracy: number; correct: number; wrong: number; seconds: number }
 export interface SrsItem { id: string; box: number; due: number; ok: number; miss: number; last: number }
+export interface Recording { id?: number; date: string; name: string; mime: string; duration: number; blob: Blob; notes: { t: number; midi: number }[]; bars: { time: number; bar: number; bpm: number; countIn: boolean }[]; chords: string[]; style: string; key: string; bpm: number; withBacking: boolean }
 export interface JournalEntry { id?: number; date: string; text: string; minutes: number }
 export interface PracticeSession { id?: number; date: string; module: string; seconds: number; score?: number; note?: string }
 
@@ -15,11 +16,13 @@ class BassLabDB extends Dexie {
   drills!: Table<Drill, number>;
   srs!: Table<SrsItem, string>;
   journal!: Table<JournalEntry, number>;
+  recordings!: Table<Recording, number>;
   constructor(name = 'basslab') {
     super(name);
     this.version(1).stores({ kv: 'key', sessions: '++id, date, module' });
     this.version(2).stores({ kv: 'key', sessions: '++id, date, module', noteStats: 'midi', drills: '++id, zone, date', srs: 'id, due' });
     this.version(3).stores({ kv: 'key', sessions: '++id, date, module', noteStats: 'midi', drills: '++id, zone, date', srs: 'id, due', journal: '++id, date' });
+    this.version(4).stores({ kv: 'key', sessions: '++id, date, module', noteStats: 'midi', drills: '++id, zone, date', srs: 'id, due', journal: '++id, date', recordings: '++id, date' });
   }
 }
 

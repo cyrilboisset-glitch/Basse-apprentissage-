@@ -20,6 +20,7 @@ import { today } from '../storage/stats';
 import { keepAwake } from './wakeLock';
 import { applyPresetFor, BACKING_CATEGORY } from '../nux/presets';
 import { useOnDisconnect } from './useEngine';
+import { useRemote } from './useRemote';
 
 export function Impro({ s }: { s: Settings }) {
   const [ex, setEx] = useState<ExDef | null>(null);
@@ -77,6 +78,7 @@ export function ImproRunner({ s, ex, onExit }: { s: Settings; ex: ExDef; onExit:
   </>);
 
   useOnDisconnect(() => { if (phase === 'run') stop(); });
+  useRemote(() => { if (phase === 'run') stop(); else if (phase === 'setup') start(); }, s);
   const idx = cur ? cur.seq - 1 : -1; const sc: BarScript | undefined = idx >= 0 ? scripts.current[idx] : undefined;
   const g = grid.current; const chord = cur && g && !cur.countIn ? g.bars[cur.bar][0].chord : null;
   const marks = new Map<string, Mark>();

@@ -8,6 +8,11 @@ import { formatSymbol } from '../theory/chords';
 import { keepAwake } from './wakeLock';
 import { applyPresetFor, BACKING_CATEGORY } from '../nux/presets';
 import { useOnDisconnect } from './useEngine';
+import { Recorder } from '../audio/recorder';
+import { db } from '../storage/db';
+import { useNotes } from './useNotes';
+import { useRemote } from './useRemote';
+import { today } from '../storage/stats';
 
 export const KEYS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 const sel = (e: Event) => (e.target as HTMLSelectElement).value;
@@ -28,6 +33,8 @@ export function Jam({ s }: { s: Settings }) {
   const [on, setOn] = useState(false); const [cur, setCur] = useState<BarInfo | null>(null);
   const [err, setErr] = useState('');
   const bk = useRef<Backing | null>(null);
+  const [rec, setRec] = useState<'off' | 'bass' | 'mix'>('off'); const recorder = useRef<Recorder | null>(null); const recNotes = useRef<{ t: number; midi: number }[]>([]); const [recMsg, setRecMsg] = useState('');
+  useNotes(on && rec !== 'off', s.refA, e => { if (e.midi !== null) recNotes.current.push({ t: e.t, midi: e.midi }); }, s.inputDeviceId);
 
   const grid = gridId === 'custom' ? parseAnyGrid(custom, key) : gridFromPreset(gridId, key);
   useEffect(() => () => { bk.current?.dispose(); keepAwake(false); }, []);
@@ -36,18 +43,32 @@ export function Jam({ s }: { s: Settings }) {
   useEffect(() => { if (bk.current) bk.current.opts.swing = swing; }, [swing]);
 
   const changeStyle = (id: string) => { const n = getStyle(id); setStyleId(id); setBpm(n.bpm); setSwing(n.swing); setKey(n.defaultKey); setGridId(n.defaultGrid); };
+  const finishRec = async (b: Backing | null) => {
+    const r = recorder.current; recorder.current = null; if (!r) return;
+    const out = await r.stop(); const t0 = r.startedAt; r.dispose(); engine.stop();
+    if (!out || !b || !grid) { setRecMsg('Enregistrement vide.'); return; }
+    await db.recordings.add({ date: today(), name: `Jam ${getStyle(styleId).name} ${key} ${bpm} BPM`, mime: out.mime, duration: out.duration, blob: out.blob, notes: recNotes.current.map(n => ({ t: n.t - t0, midi: n.midi })).filter(n => n.t >= 0),
+      bars: b.barTimes.map(x => ({ time: x.time - t0, bar: x.bar, bpm: x.bpm, countIn: x.countIn })), chords: grid.bars.map(bar => bar.map(c => c.chord.symbol).join(' ')), style: styleId, key, bpm, withBacking: rec === 'mix' });
+    setRecMsg('Enregistrement sauvegardé : voir « Mes enregistrements ».');
+  };
   const toggle = async () => {
-    if (on) { bk.current?.dispose(); bk.current = null; setOn(false); setCur(null); keepAwake(false); return; }
+    if (on) { const b = bk.current; b?.dispose(); bk.current = null; setOn(false); setCur(null); keepAwake(false); finishRec(b); return; }
     if (!grid) { setErr('Grille invalide. Exemple : Am7 | D7 | Gmaj7 | Gmaj7'); return; }
     setErr('');
-    const ctx = await engine.getContext();
+    const ctx = await engine.getContext(); recNotes.current = []; setRecMsg('');
+    if (rec !== 'off') {
+      await engine.start(s.inputDeviceId || undefined);
+      if (engine.status !== 'running') { setErr("Entrée audio indisponible : enregistrement impossible (voir Matériel)."); engine.stop(); return; }
+      recorder.current = new Recorder(ctx, rec === 'mix');
+    }
     const opts: BackingOptions = { style: styleId, bpm, swing, laps: laps, countIn: countIn ? 1 : 0, accelPerLap: accel, mute,
       section: loopOn ? { from: Math.max(0, loopFrom - 1), to: Math.min(grid.bars.length, loopTo) - 1 } : undefined };
-    const b = new Backing(ctx, grid, opts); b.onBar = setCur; b.onEnd = () => { b.dispose(); setOn(false); setCur(null); keepAwake(false); };
-    bk.current = b; b.start(); setOn(true);
+    const b = new Backing(ctx, grid, opts, recorder.current?.mix); b.onBar = setCur; b.onEnd = () => { b.dispose(); setOn(false); setCur(null); keepAwake(false); finishRec(b); };
+    bk.current = b; b.start(); recorder.current?.start(); setOn(true);
     keepAwake(true); applyPresetFor(BACKING_CATEGORY[styleId] ?? 'clean', s);
   };
-  useOnDisconnect(() => { if (bk.current) { bk.current.dispose(); bk.current = null; setOn(false); setCur(null); keepAwake(false); } });
+  useOnDisconnect(() => { if (bk.current) { const b = bk.current; b.dispose(); bk.current = null; setOn(false); setCur(null); keepAwake(false); finishRec(b); } });
+  useRemote(() => { toggle(); }, s);
   const chords = cur && grid ? grid.bars[cur.bar] : null;
   return (<>
     <h1>Jam</h1>
@@ -82,6 +103,9 @@ export function Jam({ s }: { s: Settings }) {
         {(['drums', 'keys', 'gtr'] as const).map(k => <button class="btn" aria-pressed={mute[k]} style={mute[k] ? 'opacity:.5;text-decoration:line-through' : ''} onClick={() => setMute(m => ({ ...m, [k]: !m[k] }))}>{{ drums: 'Batterie', keys: 'Claviers', gtr: 'Guitare' }[k]}</button>)}
       </div>
     </div>
+    <div class="card"><label>Enregistrer <select value={rec} onChange={e => setRec(sel(e) as typeof rec)} disabled={on}><option value="off">Non</option><option value="bass">Ma basse seule</option><option value="mix">Basse + accompagnement</option></select></label>
+      {rec !== 'off' && <p class="muted">Utilise l'entrée audio (Plug Pro en USB). Votre basse n'est pas renvoyée dans le casque par l'appli : le Plug Pro la monitore lui-même.</p>}
+      {recMsg && <p role="status">{recMsg}</p>}<a href="#/enregistrements">Mes enregistrements →</a></div>
     <p class="muted">Aucune basse dans l'accompagnement : c'est vous.</p>
   </>);
 }

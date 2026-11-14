@@ -35,7 +35,7 @@ export function tunerSettingsMessage(t: TunerSettings): number[] {
 }
 export const tunerRequestMessage = () => sysexPro(SYX.PRIVATE, SYX.TUNER_SETTINGS, SYX.DIR_GET, [0, 0, 0, 0, 0, 0, 0]);
 
-export type Incoming = { kind: 'cc'; cc: number; value: number } | { kind: 'pc'; program: number } | { kind: 'sysex'; data: number[] };
+export type Incoming = { kind: 'cc'; cc: number; value: number } | { kind: 'pc'; program: number } | { kind: 'note'; note: number; velocity: number; on: boolean } | { kind: 'sysex'; data: number[] };
 
 /** Décode un paquet BLE MIDI (en-tête, puis [horodatage, statut, données…]*, SysEx possibles). */
 export function parseIncoming(bytes: ArrayLike<number>): Incoming[] {
@@ -50,6 +50,7 @@ export function parseIncoming(bytes: ArrayLike<number>): Incoming[] {
       out.push({ kind: 'sysex', data }); continue;
     }
     if ((b & 0xf0) === 0xb0 && i + 2 < d.length + 0 && d[i + 1] < 0x80 && d[i + 2] < 0x80) { out.push({ kind: 'cc', cc: d[i + 1], value: d[i + 2] }); i += 3; continue; }
+    if (((b & 0xf0) === 0x90 || (b & 0xf0) === 0x80) && i + 2 < d.length && d[i + 1] < 0x80 && d[i + 2] < 0x80) { const on = (b & 0xf0) === 0x90 && d[i + 2] > 0; out.push({ kind: 'note', note: d[i + 1], velocity: d[i + 2], on }); i += 3; continue; }
     if ((b & 0xf0) === 0xc0 && i + 1 < d.length) { out.push({ kind: 'pc', program: d[i + 1] }); i += 2; continue; }
     i++;
   }

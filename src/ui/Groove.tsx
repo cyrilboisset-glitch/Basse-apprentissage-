@@ -10,6 +10,7 @@ import { today } from '../storage/stats';
 import { keepAwake } from './wakeLock';
 import { applyPresetFor } from '../nux/presets';
 import { useOnDisconnect } from './useEngine';
+import { useRemote } from './useRemote';
 
 const VANISH = [{ v: '', l: 'Clic permanent' }, { v: '2', l: 'Clic 1 mesure sur 2' }, { v: '4', l: 'Clic 1 mesure sur 4 (3/4 muettes)' }, { v: '8', l: 'Clic 1 mesure sur 8 (7/8 muettes)' }];
 
@@ -68,6 +69,7 @@ export function GrooveRun({ s, p, onExit }: { s: Settings; p: GroovePattern; onE
   const stop = () => { m.current?.stop(); keepAwake(false); setPhase('setup'); };
 
   useOnDisconnect(() => { if (phase === 'run') stop(); });
+  useRemote(() => { if (phase === 'run') stop(); else if (phase === 'setup') start(); }, s);
   if (phase === 'result' && res) {
     const nt = nextTempo(used.current, res.success);
     return (<>

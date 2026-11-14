@@ -42,3 +42,8 @@
 - **Rappel quotidien** : impossible en push sans serveur → fichier .ics (événement quotidien + alarme).
 - **Théorie appliquée** : 6 leçons ≤ 260 mots, quiz + exercice joué validé à l'audio.
 - **Badges** : 12, tous liés à des progrès mesurés.
+- **Entrée audio comptée** : `engine.start/stop` sont comptés (accordeur + exercice + enregistrement + note commande peuvent coexister) ; `reconnect()` ne compte pas.
+- **Enregistrement** : MediaRecorder (WebM/Opus ou MP4 selon le navigateur) sur un nœud de destination alimenté par l'entrée (basse) et, au choix, le bus de l'accompagnement ; limiteur avant l'enregistreur (la première version saturait à pleine échelle). La basse n'est jamais renvoyée aux haut-parleurs. Notes détectées et mesures enregistrées avec l'audio pour la réécoute. Export WebM natif ou WAV 16 bits (décodage puis encodage RIFF, testé).
+- **Sauvegarde JSON** : n'inclut pas les enregistrements audio (volumineux) ; export fichier par fichier. Pas de ZIP (pas de dépendance ajoutée).
+- **Import audio** : lecture via `<audio>` avec `preservesPitch` (ralenti 50-100 % sans changer la hauteur), boucle A-B mémorisée par fichier, forme d'onde décodée localement.
+- **Note commande** : même note deux fois (≤ 1 s) après ≥ 1,2 s de silence ; footswitch : toute note-on / CC ≥ 64 / Program Change, anti-rebond 300 ms. Les deux pilotent l'exercice ouvert (démarrer/arrêter).

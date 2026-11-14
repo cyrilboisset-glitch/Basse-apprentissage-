@@ -23,11 +23,23 @@ class AudioEngine {
   private setStatus(s: EngineStatus) { this.status = s; this.statusL.forEach(l => l(s)); }
 
   private lastDevice?: string;
+  /** Nombre d'utilisateurs de l'entrée (accordeur, exercice, enregistrement…) : le micro n'est libéré que quand le dernier a fini. */
+  private users = 0;
   constructor() {
-    try { navigator.mediaDevices?.addEventListener?.('devicechange', () => { if (this.status === 'disconnected') this.start(this.lastDevice); }); } catch { /* hors navigateur */ }
+    try { navigator.mediaDevices?.addEventListener?.('devicechange', () => { if (this.status === 'disconnected' && this.users > 0) this.connect(this.lastDevice); }); } catch { /* hors navigateur */ }
+  }
+  get userCount() { return this.users; }
+
+  async start(deviceId?: string): Promise<void> { this.users++; return this.connect(deviceId); }
+  /** Nouvelle tentative sans compter un utilisateur de plus (bouton « Réessayer », reconnexion). */
+  reconnect(deviceId?: string) { return this.connect(deviceId ?? this.lastDevice); }
+  /** Branche l'entrée sur un nœud (enregistrement) ; renvoie la fonction de débranchement. */
+  tapInput(dest: AudioNode): () => void {
+    const src = this.source; if (!src) return () => {};
+    src.connect(dest); return () => { try { src.disconnect(dest); } catch { /* déjà débranché */ } };
   }
 
-  async start(deviceId?: string): Promise<void> {
+  private async connect(deviceId?: string): Promise<void> {
     if (this.status === 'running' || this.status === 'starting') return;
     this.lastDevice = deviceId;
     if (!navigator.mediaDevices?.getUserMedia) { this.setStatus('unavailable'); return; }
@@ -71,7 +83,10 @@ class AudioEngine {
     this.source?.disconnect(); this.source = null;
     this.stream?.getTracks().forEach(t => t.stop()); this.stream = null;
   }
-  stop() { this.release(); if (this.status !== 'disconnected') this.setStatus('idle'); }
+  stop() {
+    this.users = Math.max(0, this.users - 1); if (this.users > 0) return;
+    this.release(); if (this.status !== 'disconnected') this.setStatus('idle');
+  }
 
   async getContext(): Promise<AudioContext> {
     this.ctx ??= new AudioContext({ latencyHint: 'interactive' });

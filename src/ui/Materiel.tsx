@@ -5,6 +5,7 @@ import { detectOnsets, estimateLatencyMs, type LevelFrame } from '../audio/onset
 import type { Settings } from '../storage/settings';
 import { STATUS_MSG, useEngineStatus } from './useEngine';
 import { nux } from '../nux/plugpro';
+import { footswitch } from '../nux/footswitch';
 import { CATEGORIES, useNuxStatus } from '../nux/presets';
 
 export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) => void }) {
@@ -14,14 +15,16 @@ export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) 
   const [calib, setCalib] = useState<'idle' | 'run' | 'done'>('idle');
   const [result, setResult] = useState('');
   const nst = useNuxStatus(); const [vol, setVol] = useState(80); const [usb, setUsb] = useState<'dryOut' | 'normal' | 'reamp'>('dryOut'); const [note, setNote] = useState('');
+  const [fst, setFst] = useState(footswitch.status); useEffect(() => footswitch.subscribe(setFst), []);
   const frames = useRef<LevelFrame[]>([]); const rec = useRef(false);
 
+  const mine = useRef(false); const stopMine = () => { if (mine.current) { mine.current = false; engine.stop(); } };
   const refresh = async () => setDevs(await listInputs());
-  useEffect(() => { refresh(); return () => engine.stop(); }, []);
+  useEffect(() => { refresh(); return stopMine; }, []);
   useEffect(() => engine.onLevel(e => { setLevel(l => l * 0.7 + e.rms * 0.3); if (rec.current) frames.current.push(e); }), []);
 
   const start = async () => {
-    await engine.start(s.inputDeviceId || undefined); await refresh();
+    if (!mine.current) { mine.current = true; await engine.start(s.inputDeviceId || undefined); } await refresh();
     if (!s.inputDeviceId) { const g = guessUsbInput(await listInputs()); if (g && s.inputMode === 'usb') set({ inputDeviceId: g.id }); }
   };
 
@@ -53,7 +56,7 @@ export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) 
       <label>Entrée audio
         <select value={s.inputDeviceId} onChange={e => set({ inputDeviceId: (e.target as HTMLSelectElement).value })}>
           <option value="">Par défaut</option>{devs.map(d => <option value={d.id}>{d.label}</option>)}</select></label>
-      <button class="btn" onClick={engine.status === 'running' ? () => engine.stop() : start}>{status === 'running' ? "Arrêter l'écoute" : "Tester l'entrée"}</button>
+      <button class="btn" onClick={engine.status === 'running' && mine.current ? stopMine : start}>{status === 'running' ? "Arrêter l'écoute" : "Tester l'entrée"}</button>
       {STATUS_MSG[status] && <p role="alert">{STATUS_MSG[status]}</p>}
       <div style="height:20px;background:var(--bg);border-radius:10px;margin-top:12px;overflow:hidden" aria-label="Niveau d'entrée">
         <div style={`height:100%;width:${Math.min(100, level * 400)}%;background:var(--accent)`}/></div>
@@ -79,6 +82,14 @@ export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) 
           <p class="muted">Accordeur du Plug Pro : {nux.caps.tuner === 'unavailable' ? 'non disponible (firmware ancien ?)' : nux.caps.tuner === 'available' ? 'disponible' : 'à tester depuis l\'accordeur (bouton ♩)'}.</p></>}
       </>}
     </div>
+    <div class="card"><h2>Démarrer / arrêter sans toucher l'écran</h2>
+      <label>Note commande <input type="checkbox" checked={s.cmdNoteOn} onChange={e => set({ cmdNoteOn: (e.target as HTMLInputElement).checked })} /></label>
+      {s.cmdNoteOn && <><label>Note <select value={s.cmdNote} onChange={e => set({ cmdNote: Number((e.target as HTMLSelectElement).value) })}>{[[28, 'Mi grave (corde à vide)'], [33, 'La (corde à vide)'], [38, 'Ré (corde à vide)'], [43, 'Sol (corde à vide)']].map(([m, l]) => <option value={m}>{l}</option>)}</select></label>
+        <p class="muted">Jouez cette note deux fois de suite, après un silence d'au moins 1,2 s. Pendant un exercice, évitez de jouer cette note isolée deux fois.</p></>}
+      <h3>Footswitch Bluetooth MIDI</h3>
+      {fst === 'unsupported' ? <p class="muted">Web Bluetooth indisponible.</p> : fst === 'connected' ? <><p class="muted">Connecté : {footswitch.name}. Une pression démarre ou arrête l'exercice ouvert.</p><button class="btn" onClick={() => footswitch.disconnect()}>Déconnecter</button></>
+        : <button class="btn" disabled={fst === 'connecting'} onClick={() => footswitch.connect()}>Connecter un footswitch</button>}
+      {fst === 'error' && <p role="alert">Connexion impossible : le footswitch doit être en mode BLE MIDI.</p>}</div>
     <div class="card">
       <h2>Calibration de latence</h2>
       <p class="muted">Réglée : USB {s.latencyUsbMs} ms · Bluetooth {s.latencyBluetoothMs} ms. À faire avant les exercices de rythme, casque branché.</p>

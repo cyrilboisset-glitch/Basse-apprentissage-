@@ -16,6 +16,7 @@ import { keepAwake } from './wakeLock';
 import { Metronome } from '../audio/metronome';
 import { applyPresetFor } from '../nux/presets';
 import { useOnDisconnect } from './useEngine';
+import { useRemote } from './useRemote';
 
 const BACK: Record<string, string> = { blues: 'blues-shuffle', funk: 'funk', rock: 'rock', pop: 'pop', reggae: 'reggae', soul: 'soul', jazz: 'jazz', latin: 'bossa', perso: 'pop' };
 const GLYPH = (d: number) => (d >= 3.5 ? '𝅝' : d >= 1.75 ? '𝅗𝅥' : d >= 0.9 ? '♩' : d >= 0.45 ? '♪' : '𝅘𝅥𝅯');
@@ -83,6 +84,7 @@ export function PhraseDetail({ s, base, onExit, onDelete }: { s: Settings; base:
     await db.sessions.add({ date: today(), module: `vocab:${base.id}`, seconds: 60, score: Math.round(r.success * 100) });
   };
   useOnDisconnect(() => { if (mode === 'play') stop(); });
+  useRemote(() => { if (mode === 'off') run('listen'); else stop(); }, s);
   return (<>
     <button class="btn" style="min-height:44px" onClick={() => { stop(); onExit(); }}>← Retour</button>
     <h1>{base.name}</h1><p class="muted">{base.tip}</p>

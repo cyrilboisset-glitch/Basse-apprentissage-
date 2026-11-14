@@ -11,7 +11,7 @@ test('la calibration de latence est requise avant un exercice de rythme, puis la
 
 test('la calibration est propre à chaque mode : le mode Bluetooth redemande une calibration', async ({ page }) => {
   await page.goto('./#/materiel'); await page.getByLabel('USB (ms)').fill('35'); await page.getByLabel('USB (ms)').blur();
-  await page.locator('label', { hasText: /^Mode/ }).locator('select').selectOption('bluetooth');
+  await page.getByText("Réglages avancés de l'entrée").click(); await page.locator('label', { hasText: /^Mode/ }).locator('select').selectOption('bluetooth');
   await page.goto('./#/groove'); await page.getByRole('button', { name: 'Noires', exact: true }).click(); await expect(page.getByText('Calibration de latence requise')).toBeVisible();
 });
 

@@ -47,3 +47,19 @@ test('manifeste PWA installable (icônes 192/512 PNG, mode standalone)', async (
   expect(m.display).toBe('standalone'); expect(m.lang).toBe('fr');
   const sizes = m.icons.map((i: any) => `${i.sizes}:${i.type}`); expect(sizes).toContain('192x192:image/png'); expect(sizes).toContain('512x512:image/png');
 });
+
+test('connexion USB : sans interface USB, un message clair explique quoi vérifier', async ({ page }) => {
+  await page.goto('./#/materiel');
+  await page.getByRole('button', { name: 'Connecter', exact: true }).click();
+  await expect(page.getByText('Plug Pro introuvable')).toBeVisible(); await expect(page.getByRole('button', { name: 'Chercher à nouveau' })).toBeVisible();
+});
+
+test('connexion USB : une interface « USB Audio » est repérée, sélectionnée, et la basse reçue est confirmée', async ({ page }) => {
+  await page.addInitScript(() => {
+    const md = navigator.mediaDevices; const orig = md.enumerateDevices.bind(md);
+    md.enumerateDevices = async () => { const l = await orig(); return [...l.filter(d => d.kind === 'audioinput').slice(0, 1), { deviceId: l.find(d => d.kind === 'audioinput')!.deviceId, kind: 'audioinput', label: 'NUX MIGHTY PLUG PRO USB Audio', groupId: 'x', toJSON() { return {}; } } as MediaDeviceInfo]; };
+  });
+  await page.goto('./#/materiel'); await page.getByRole('button', { name: 'Connecter', exact: true }).click();
+  await expect(page.getByText('NUX MIGHTY PLUG PRO USB Audio').first()).toBeVisible();
+  await expect(page.getByText(/Connecté : la basse est reçue/)).toBeVisible({ timeout: 8000 });
+});

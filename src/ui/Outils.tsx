@@ -35,6 +35,7 @@ export function Outils() {
       <button class="btn primary" onClick={toggle}>{on ? 'Arrêter' : 'Démarrer'}</button>
     </div>
     <DrumBox />
+    <a class="btn primary" href="#/materiel" style="display:block;text-align:center;line-height:56px;text-decoration:none;margin-bottom:8px">Connecter le Plug Pro (USB)</a>
     <a class="btn" href="#/diagnostic" style="display:block;text-align:center;line-height:56px;text-decoration:none;margin-bottom:8px">Diagnostic : ça ne marche pas ?</a>
     <a class="btn" href="#/materiel" style="display:block;text-align:center;line-height:56px;text-decoration:none">Matériel et calibration</a>
     <a class="btn" href="#/manche" style="display:block;text-align:center;line-height:56px;text-decoration:none;margin-top:8px">Manche de référence (gammes, arpèges)</a>

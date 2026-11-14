@@ -7,6 +7,7 @@ import { STATUS_MSG, useEngineStatus } from './useEngine';
 import { nux } from '../nux/plugpro';
 import { footswitch } from '../nux/footswitch';
 import { CATEGORIES, useNuxStatus } from '../nux/presets';
+import { UsbConnect } from './UsbConnect';
 
 export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) => void }) {
   const status = useEngineStatus();
@@ -48,7 +49,8 @@ export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) 
   return (<>
     <h1>Matériel</h1>
     <a class="btn" href="#/diagnostic" style="display:block;text-align:center;line-height:48px;text-decoration:none;margin-bottom:8px">Un problème ? Lancer le diagnostic</a>
-    <div class="card">
+    <UsbConnect s={s} set={set} />
+    <details class="section"><summary>Réglages avancés de l'entrée</summary><div class="body"><div>
       <label>Mode
         <select value={s.inputMode} onChange={e => set({ inputMode: (e.target as HTMLSelectElement).value as Settings['inputMode'] })}>
           <option value="usb">USB (Plug Pro branché) — recommandé</option>
@@ -62,7 +64,7 @@ export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) 
       <div style="height:20px;background:var(--bg);border-radius:10px;margin-top:12px;overflow:hidden" role="progressbar" aria-label="Niveau d'entrée" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.min(100, Math.round(level * 400))}>
         <div style={`height:100%;width:${Math.min(100, level * 400)}%;background:var(--accent)`}/></div>
       <p class="muted">Dans le Plug Pro, choisissez le routage USB « Dry Out » (basse seule) ; évitez « Loopback », qui renverrait le backing dans l'entrée.</p>
-    </div>
+    </div></div></details>
     <div class="card">
       <h2>Plug Pro (Bluetooth MIDI)</h2>
       {nst === 'unsupported' ? <p role="note">Web Bluetooth indisponible : utilisez Chrome sur Android, en HTTPS. Le contrôle du Plug Pro est désactivé ; le reste de l'appli fonctionne.</p> : <>

@@ -18,4 +18,4 @@ URL : `https://<utilisateur>.github.io/Basse-apprentissage-/`
 Ouvrir l'URL dans Chrome → menu ⋮ → « Installer l'application ».
 
 ## État
-Phase 1 (socle) terminée : PWA, stockage IndexedDB, navigation, thème, réglages, export/import.
+Phases 1-2 terminées : socle PWA ; audio (détection YIN en AudioWorklet), accordeur, métronome, calibration de latence.

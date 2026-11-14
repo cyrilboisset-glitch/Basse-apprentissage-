@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'preact/hooks';
 import { DEFAULT_SETTINGS, type Settings } from '../storage/settings';
+import { Tuner } from './Tuner';
+import { Materiel } from './Materiel';
+import { Outils } from './Outils';
 import { loadSettings, saveSettings, requestPersistence, exportAll, importAll } from '../storage/db';
 
 const TABS = [
   ['#/', 'Séance'], ['#/manche', 'Manche'], ['#/impro', 'Impro'],
-  ['#/jam', 'Jam'], ['#/reglages', 'Réglages'],
+  ['#/jam', 'Jam'], ['#/outils', 'Outils'], ['#/reglages', 'Réglages'],
 ] as const;
 
 function Placeholder({ title, phase }: { title: string; phase: string }) {
@@ -61,6 +64,7 @@ function Reglages({ s, set }: { s: Settings; set: (p: Partial<Settings>) => void
 
 export function App() {
   const [s, setS] = useState<Settings>(DEFAULT_SETTINGS);
+  const [tuner, setTuner] = useState(false);
   const [hash, setHash] = useState(location.hash || '#/');
   useEffect(() => {
     loadSettings().then(setS); requestPersistence();
@@ -78,12 +82,15 @@ export function App() {
     case '#/manche': page = <Placeholder title="Manche" phase="phases 3-4" />; break;
     case '#/impro': page = <Placeholder title="Improvisation" phase="phase 6" />; break;
     case '#/jam': page = <Placeholder title="Jam" phase="phase 5" />; break;
+    case '#/outils': page = <Outils />; break;
+    case '#/materiel': page = <Materiel s={s} set={set} />; break;
     case '#/reglages': page = <Reglages s={s} set={set} />; break;
     default: page = <Home s={s} />;
   }
   return (<>
     <main>{page}</main>
-    <button class="tuner-fab" aria-label="Accordeur" disabled title="Accordeur : phase 2">♩</button>
+    <button class="tuner-fab" aria-label="Accordeur" onClick={() => setTuner(true)}>♩</button>
+    {tuner && <Tuner s={s} set={set} onClose={() => setTuner(false)} />}
     <nav aria-label="Navigation principale">
       {TABS.map(([h, label]) => <a href={h} aria-current={hash === h ? 'page' : undefined}>{label}</a>)}
     </nav>

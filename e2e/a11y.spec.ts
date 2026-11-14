@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
 const axe = readFileSync('node_modules/axe-core/axe.min.js', 'utf8');
-const routes = ['#/', '#/manche', '#/pratique', '#/impro', '#/groove', '#/jam', '#/vocabulaire', '#/oreille', '#/theorie', '#/outils', '#/materiel', '#/reglages', '#/bord', '#/placement', '#/fichier', '#/enregistrements', '#/seance'];
+const routes = ['#/', '#/manche', '#/pratique', '#/impro', '#/groove', '#/jam', '#/vocabulaire', '#/oreille', '#/theorie', '#/outils', '#/materiel', '#/diagnostic', '#/reglages', '#/bord', '#/placement', '#/fichier', '#/enregistrements', '#/seance'];
 for (const theme of ['dark', 'light'] as const) test(`accessibilité (axe, WCAG 2.1 AA) : aucun défaut en thème ${theme}`, async ({ page }) => {
   await page.goto('./#/reglages'); await page.getByLabel('Thème').selectOption(theme);
   const bad: string[] = [];

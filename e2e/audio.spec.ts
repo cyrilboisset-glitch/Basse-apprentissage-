@@ -70,3 +70,25 @@ test('improvisation : Question/réponse alterne écoute et réponse puis donne u
   await expect(page.getByText('Écoutez', { exact: true })).toBeVisible({ timeout: 10_000 }); await expect(page.getByText('À vous de répondre !')).toBeVisible({ timeout: 10_000 });
   await expect(page.getByText('Conseil du prof')).toBeVisible({ timeout: 70_000 });
 });
+
+test('diagnostic : compatibilité, test audio de 9 s avec verdict, détecteur et note reconnus, rapport copiable', async ({ page }) => {
+  const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
+  await page.goto('./#/diagnostic'); await expect(page.getByRole('heading', { name: 'Diagnostic' })).toBeVisible();
+  await expect(page.getByRole('listitem').filter({ hasText: 'Moteur audio (AudioWorklet)' })).toBeVisible();
+  await page.getByRole('button', { name: /Lancer le test audio/ }).click();
+  await expect(page.getByText(/Ne jouez pas/)).toBeVisible(); await expect(page.getByText(/Jouez une note longue/)).toBeVisible({ timeout: 6000 });
+  await expect(page.getByRole('listitem').filter({ hasText: 'Le détecteur de notes tourne' })).toBeVisible({ timeout: 12_000 });
+  await expect(page.getByRole('button', { name: 'Refaire le test' })).toBeVisible();
+  await expect(page.getByRole('listitem').filter({ hasText: 'Notes reconnues' })).toBeVisible();
+  const rep = await page.getByLabel('Texte du rapport').innerText();
+  expect(rep).toMatch(/rapport de diagnostic/); expect(rep).toMatch(/Traitement navigateur : écho false · bruit false · gain auto false/); expect(rep).toMatch(/Test audio :/);
+  expect(errors).toEqual([]);
+});
+
+test('diagnostic : un micro refusé est expliqué et la cause technique apparaît dans le rapport', async ({ page }) => {
+  await page.addInitScript(() => { navigator.mediaDevices.getUserMedia = async () => { throw new DOMException('Permission denied', 'NotAllowedError'); }; });
+  await page.goto('./#/diagnostic'); await page.getByRole('button', { name: /Lancer le test audio/ }).click();
+  await expect(page.getByRole('alert')).toContainText('Accès au micro refusé');
+  await expect(page.getByText(/Détail technique : NotAllowedError/)).toBeVisible();
+  expect(await page.getByLabel('Texte du rapport').innerText()).toMatch(/dernière erreur NotAllowedError/);
+});

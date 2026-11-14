@@ -22,6 +22,19 @@ class AudioEngine {
   onStatus(l: (s: EngineStatus) => void) { this.statusL.add(l); return () => this.statusL.delete(l); }
   private setStatus(s: EngineStatus) { this.status = s; this.statusL.forEach(l => l(s)); }
 
+  /** Dernière erreur d'ouverture de l'entrée (nom + message), pour le mode diagnostic. */
+  lastError = '';
+  /** Réglages réellement appliqués par le navigateur à la piste d'entrée (le traitement de voix doit être coupé). */
+  info() {
+    const t = this.stream?.getAudioTracks()[0]; const st = t?.getSettings?.();
+    return {
+      label: t?.label ?? '', trackState: t?.readyState ?? 'aucune', muted: t?.muted ?? false,
+      echoCancellation: st?.echoCancellation, noiseSuppression: st?.noiseSuppression, autoGainControl: st?.autoGainControl, channelCount: st?.channelCount,
+      sampleRate: this.ctx?.sampleRate, baseLatencyMs: this.ctx ? Math.round(this.ctx.baseLatency * 1000) : undefined,
+      outputLatencyMs: this.ctx && 'outputLatency' in this.ctx ? Math.round((this.ctx as AudioContext & { outputLatency: number }).outputLatency * 1000) : undefined,
+      ctxState: this.ctx?.state ?? 'aucun',
+    };
+  }
   private lastDevice?: string;
   /** Nombre d'utilisateurs de l'entrée (accordeur, exercice, enregistrement…) : le micro n'est libéré que quand le dernier a fini. */
   private users = 0;
@@ -52,7 +65,7 @@ class AudioEngine {
         },
       });
     } catch (e) {
-      const name = (e as DOMException).name;
+      const name = (e as DOMException).name; this.lastError = `${name}: ${(e as Error).message}`;
       this.setStatus(name === 'NotAllowedError' || name === 'SecurityError' ? 'denied' : 'unavailable');
       return;
     }
@@ -72,8 +85,8 @@ class AudioEngine {
       this.source.connect(this.node);
       this.stream.getAudioTracks().forEach(t => t.addEventListener('ended', () => { this.release(); this.setStatus('disconnected'); }));
       this.setStatus('running');
-    } catch {
-      this.release(); this.setStatus('unavailable');
+    } catch (e) {
+      this.lastError = `${(e as Error).name}: ${(e as Error).message}`; this.release(); this.setStatus('unavailable');
     }
   }
 

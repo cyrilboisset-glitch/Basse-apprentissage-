@@ -26,7 +26,7 @@
 | Web Bluetooth (BLE MIDI) | ✅ (simulé) | Contrôleur + 17 tests unitaires + 2 e2e avec faux GATT |
 | Entrée/sortie USB-C via `getUserMedia` | ✅ (simulé) | Contraintes sans écho/bruit/AGC ; jamais essayé sur un vrai Plug Pro |
 | Déploiement GitHub Pages + workflow Actions | 🟡 | Workflows `deploy.yml` et `ci.yml` écrits ; **non exécutés** (nécessite `main` + activation de Pages) |
-| Vitest (théorie, détection sur WAV, scoring) | ✅ | **192 tests** dont 45 WAV de référence |
+| Vitest (théorie, détection sur WAV, scoring) | ✅ | **205 tests** dont 45 WAV de référence |
 | Playwright (parcours clés) | ✅ | **31 parcours** + 1 test d'endurance optionnel |
 | Modules `audio/ theory/ nux/ exercises/ ui/ storage/` | ✅ | + `progress/` |
 

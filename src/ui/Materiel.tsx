@@ -47,6 +47,7 @@ export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) 
 
   return (<>
     <h1>Matériel</h1>
+    <a class="btn" href="#/diagnostic" style="display:block;text-align:center;line-height:48px;text-decoration:none;margin-bottom:8px">Un problème ? Lancer le diagnostic</a>
     <div class="card">
       <label>Mode
         <select value={s.inputMode} onChange={e => set({ inputMode: (e.target as HTMLSelectElement).value as Settings['inputMode'] })}>

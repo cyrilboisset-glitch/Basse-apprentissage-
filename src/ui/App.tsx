@@ -10,6 +10,7 @@ import { Session } from './Session';
 import { Dashboard } from './Dashboard';
 import { Placement } from './Placement';
 import { Theorie } from './Theory';
+import { Diagnostic } from './Diagnostic';
 import { makeIcs } from './reminder';
 import { Recordings } from './Recordings';
 import { AudioFile } from './AudioFile';
@@ -28,7 +29,7 @@ import { loadSettings, saveSettings, requestPersistence, exportAll, importAll } 
 const TABS = [['#/', 'Séance', 'session'], ['#/manche', 'Manche', 'neck'], ['#/pratique', 'Pratique', 'practice'], ['#/outils', 'Outils', 'tools'], ['#/reglages', 'Réglages', 'settings']] as const;
 const PRATIQUE = [['#/impro', 'Improvisation', '9 exercices sur backing track', 'guitar'], ['#/groove', 'Groove', 'Mise en place, clic qui disparaît', 'tools'], ['#/jam', 'Jam', 'Backings 9 styles, grilles', 'headphones'],
   ['#/vocabulaire', 'Vocabulaire', '64 phrases, 12 tonalités', 'practice'], ['#/oreille', 'Oreille', 'Intervalles, accords, degrés, relevé', 'volume'], ['#/theorie', 'Théorie appliquée', '6 leçons courtes + exercice joué', 'check'], ['#/fichier', 'Jouer sur un morceau', 'Fichier audio : boucle A-B, ralenti', 'file'], ['#/enregistrements', 'Mes enregistrements', 'Réécoute, export WAV / WebM', 'record']] as const;
-const tabOf = (h: string) => (['#/seance', '#/bord', '#/placement'].includes(h) ? '#/' : PRATIQUE.some(p => p[0] === h) || h === '#/pratique' ? '#/pratique' : h === '#/materiel' ? '#/outils' : h);
+const tabOf = (h: string) => (['#/seance', '#/bord', '#/placement'].includes(h) ? '#/' : PRATIQUE.some(p => p[0] === h) || h === '#/pratique' ? '#/pratique' : h === '#/materiel' || h === '#/diagnostic' ? '#/outils' : h);
 function Pratique() {
   return <><h1>Pratique</h1>{PRATIQUE.map(([h, t, d, ic]) => <a class="card" href={h} style="display:flex;align-items:center;gap:14px"><span style="width:44px;height:44px;border-radius:12px;background:var(--panel-2);display:grid;place-items:center;color:var(--accent);flex-shrink:0"><Icon name={ic} /></span><span style="flex:1"><b style="font-size:1.05rem;font-weight:600">{t}</b><span class="muted" style="display:block;font-size:.9rem">{d}</span></span><span class="muted"><Icon name="chevron" size={20} /></span></a>)}</>;
 }
@@ -123,6 +124,7 @@ export function App() {
     case '#/groove': page = <Groove s={s} />; break;
     case '#/jam': page = <Jam s={s} />; break;
     case '#/outils': page = <Outils />; break;
+    case '#/diagnostic': page = <Diagnostic s={s} />; break;
     case '#/materiel': page = <Materiel s={s} set={set} />; break;
     case '#/reglages': page = <Reglages s={s} set={set} />; break;
     default: page = <Home s={s} set={set} />;

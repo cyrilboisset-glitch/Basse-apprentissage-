@@ -74,3 +74,9 @@ export function masterChain(ctx: BaseAudioContext, dest: AudioNode): GainNode {
   lim.threshold.value = -8; lim.knee.value = 4; lim.ratio.value = 20; lim.attack.value = 0.002; lim.release.value = 0.12;
   input.connect(lim).connect(dest); return input;
 }
+
+/** Bus prêts à l'emploi pour jouer des sons hors Backing (exercices d'oreille). */
+export function makeBuses(ctx: BaseAudioContext, dest: AudioNode = ctx.destination): { buses: Buses; out: GainNode } {
+  const out = masterChain(ctx, dest); const mk = () => { const g = ctx.createGain(); g.gain.value = 0.9; g.connect(out); return g; };
+  return { buses: { drums: mk(), keys: mk(), gtr: mk() }, out };
+}

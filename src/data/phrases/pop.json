@@ -1,0 +1,125 @@
+{
+ "style": "pop",
+ "phrases": [
+  {
+   "id": "pop-01",
+   "name": "Croches pulsées",
+   "bpm": 110,
+   "key": "E",
+   "grid": "I | V | vi | IV",
+   "swing": 0.0,
+   "tip": "Huit croches par mesure : le moteur de la chanson.",
+   "bars": [
+    "0:E0:.5 .5:E0:.5 1:E0:.5 1.5:E0:.5 2:E0:.5 2.5:E0:.5 3:E0:.5 3.5:E0:.5",
+    "0:A2:.5 .5:A2:.5 1:A2:.5 1.5:A2:.5 2:A2:.5 2.5:A2:.5 3:A2:.5 3.5:A2:.5",
+    "0:A4:.5 .5:A4:.5 1:A4:.5 1.5:A4:.5 2:A4:.5 2.5:A4:.5 3:A4:.5 3.5:A4:.5",
+    "0:A0:.5 .5:A0:.5 1:A0:.5 1.5:A0:.5 2:A0:.5 2.5:A0:.5 3:A0:.5 3.5:A0:.5"
+   ]
+  },
+  {
+   "id": "pop-02",
+   "name": "Racines tenues",
+   "bpm": 110,
+   "key": "E",
+   "grid": "I | V | vi | IV",
+   "swing": 0.0,
+   "tip": "Une note par mesure : la plus simple, mais elle doit sonner pleine et durer.",
+   "bars": [
+    "0:E0:4",
+    "0:A2:4",
+    "0:A4:4",
+    "0:A0:4"
+   ]
+  },
+  {
+   "id": "pop-03",
+   "name": "Racine et octave",
+   "bpm": 110,
+   "key": "E",
+   "grid": "I | V | vi | IV",
+   "swing": 0.0,
+   "tip": "Octave sur les « et » : légère et dansante.",
+   "bars": [
+    "0:E0:1.5 1.5:D2:.5 2:E0:1.5 3.5:D2:.5",
+    "0:A2:1.5 1.5:G4:.5 2:A2:1.5 3.5:G4:.5",
+    "0:A4:1.5 1.5:G6:.5 2:A4:1.5 3.5:G6:.5",
+    "0:A0:1.5 1.5:G2:.5 2:A0:1.5 3.5:G2:.5"
+   ]
+  },
+  {
+   "id": "pop-04",
+   "name": "Racine et quinte",
+   "bpm": 110,
+   "key": "E",
+   "grid": "I | V | vi | IV",
+   "swing": 0.0,
+   "tip": "Alternance racine-quinte : structure l’harmonie sans la surcharger.",
+   "bars": [
+    "0:E0:1 1:A2:1 2:E0:1 3:A2:1",
+    "0:A2:1 1:D4:1 2:A2:1 3:D4:1",
+    "0:A4:1 1:G1:1 2:A4:1 3:G1:1",
+    "0:A0:1 1:D2:1 2:A0:1 3:D2:1"
+   ]
+  },
+  {
+   "id": "pop-05",
+   "name": "Approche de fin de mesure",
+   "bpm": 110,
+   "key": "E",
+   "grid": "I | V | vi | IV",
+   "swing": 0.0,
+   "tip": "La note d’approche au dernier « et » conduit à la fondamentale suivante.",
+   "bars": [
+    "0:E0:2 2:E0:1.5 3.5:A1:.5",
+    "0:A2:2 2:A2:1.5 3.5:A3:.5",
+    "0:A4:2 2:A4:1.5 3.5:E4:.5",
+    "0:A0:2 2:A0:1.5 3.5:E1:.5"
+   ]
+  },
+  {
+   "id": "pop-06",
+   "name": "Syncope pop",
+   "bpm": 110,
+   "key": "E",
+   "grid": "I | V | vi | IV",
+   "swing": 0.0,
+   "tip": "La syncope sur le « et » du 2 donne l’élan typique du pop.",
+   "bars": [
+    "0:E0:1.5 1.5:E0:.5 2.5:E0:.5 3:E0:1",
+    "0:A2:1.5 1.5:A2:.5 2.5:A2:.5 3:A2:1",
+    "0:A4:1.5 1.5:A4:.5 2.5:A4:.5 3:A4:1",
+    "0:A0:1.5 1.5:A0:.5 2.5:A0:.5 3:A0:1"
+   ]
+  },
+  {
+   "id": "pop-07",
+   "name": "Ligne mélodique",
+   "bpm": 110,
+   "key": "E",
+   "grid": "I | V | vi | IV",
+   "swing": 0.0,
+   "tip": "Arpège aller-retour : la basse chante en restant dans l’accord.",
+   "bars": [
+    "0:E0:1 1:E4:1 2:A2:1 3:E4:1",
+    "0:A2:1 1:D1:1 2:D4:1 3:D1:1",
+    "0:A4:1 1:D2:1 2:G1:1 3:D2:1",
+    "0:A0:1 1:A4:1 2:D2:1 3:A4:1"
+   ]
+  },
+  {
+   "id": "pop-08",
+   "name": "Pop en doubles",
+   "bpm": 110,
+   "key": "E",
+   "grid": "I | V | vi | IV",
+   "swing": 0.0,
+   "tip": "Une double croche en anticipation : sentez-la juste avant le temps.",
+   "bars": [
+    "0:E0:.5 .75:E0:.25 1:A2:.5 2:E0:.5 2.75:E0:.25 3:A2:.5",
+    "0:A2:.5 .75:A2:.25 1:D4:.5 2:A2:.5 2.75:A2:.25 3:D4:.5",
+    "0:A4:.5 .75:A4:.25 1:G1:.5 2:A4:.5 2.75:A4:.25 3:G1:.5",
+    "0:A0:.5 .75:A0:.25 1:D2:.5 2:A0:.5 2.75:A0:.25 3:D2:.5"
+   ]
+  }
+ ]
+}

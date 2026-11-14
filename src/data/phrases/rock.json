@@ -1,0 +1,109 @@
+{
+ "style": "rock",
+ "phrases": [
+  {
+   "id": "rock-01",
+   "name": "Pédale de croches",
+   "bpm": 120,
+   "key": "E",
+   "grid": "I | I",
+   "swing": 0.0,
+   "tip": "Régularité avant tout : le médiator va et vient sans interruption.",
+   "bars": [
+    "0:E0:.5 .5:E0:.5 1:E0:.5 1.5:E0:.5 2:E0:.5 2.5:E0:.5 3:E0:.5 3.5:E0:.5",
+    "0:E0:.5 .5:E0:.5 1:E0:.5 1.5:E0:.5 2:E0:.5 2.5:E0:.5 3:E0:.5 3.5:E0:.5"
+   ]
+  },
+  {
+   "id": "rock-02",
+   "name": "Pédale et quinte",
+   "bpm": 120,
+   "key": "E",
+   "grid": "I | IV",
+   "swing": 0.0,
+   "tip": "La quinte au dernier temps relance la mesure.",
+   "bars": [
+    "0:E0:.5 .5:E0:.5 1:E0:.5 1.5:E0:.5 2:E0:.5 2.5:E0:.5 3:A2:.5 3.5:A2:.5",
+    "0:A0:.5 .5:A0:.5 1:A0:.5 1.5:A0:.5 2:A0:.5 2.5:A0:.5 3:D2:.5 3.5:D2:.5"
+   ]
+  },
+  {
+   "id": "rock-03",
+   "name": "Un, cinq, six, cinq",
+   "bpm": 120,
+   "key": "E",
+   "grid": "I | I",
+   "swing": 0.0,
+   "tip": "Le motif rock’n’roll traditionnel, à garder jusqu’au bout de la grille.",
+   "bars": [
+    "0:E0:.5 .5:A2:.5 1:A4:.5 1.5:A2:.5 2:E0:.5 2.5:A2:.5 3:A4:.5 3.5:A2:.5",
+    "0:E0:.5 .5:A2:.5 1:A4:.5 1.5:A2:.5 2:E0:.5 2.5:A2:.5 3:A4:.5 3.5:A2:.5"
+   ]
+  },
+  {
+   "id": "rock-04",
+   "name": "Montée vers le IV",
+   "bpm": 120,
+   "key": "E",
+   "grid": "I | IV",
+   "swing": 0.0,
+   "tip": "Montée par degrés conjoints : on annonce le changement d’accord.",
+   "bars": [
+    "0:E0:1 1:E0:1 2:E0:.5 2.5:E2:.5 3:E4:.5 3.5:A0:.5",
+    "0:A0:.5 .5:A0:.5 1:A0:.5 1.5:A0:.5 2:A0:2"
+   ]
+  },
+  {
+   "id": "rock-05",
+   "name": "Descente vers le bVII",
+   "bpm": 120,
+   "key": "E",
+   "grid": "I | bVII",
+   "swing": 0.0,
+   "tip": "Le bVII est l’accord signature du rock : jouez-le franchement.",
+   "bars": [
+    "0:E0:.5 .5:E0:.5 1:E0:.5 1.5:E0:.5 2:E0:1 3:D0:.5 3.5:A2:.5",
+    "0:D0:.5 .5:D0:.5 1:D0:.5 1.5:D0:.5 2:D0:1 3:A0:1"
+   ]
+  },
+  {
+   "id": "rock-06",
+   "name": "Galop",
+   "bpm": 120,
+   "key": "E",
+   "grid": "I | I",
+   "swing": 0.0,
+   "tip": "Croche pointée + double : gardez la double bien courte.",
+   "bars": [
+    "0:E0:.75 .75:E0:.25 1:E0:.75 1.75:E0:.25 2:E0:.75 2.75:E0:.25 3:E0:.75 3.75:E0:.25",
+    "0:E0:.75 .75:E0:.25 1:E0:.75 1.75:E0:.25 2:E0:.75 2.75:E0:.25 3:E0:.75 3.75:E0:.25"
+   ]
+  },
+  {
+   "id": "rock-07",
+   "name": "Riff mineur",
+   "bpm": 120,
+   "key": "E",
+   "grid": "i | i",
+   "swing": 0.0,
+   "tip": "Pentatonique mineure en doublant chaque note.",
+   "bars": [
+    "0:E0:.5 .5:E0:.5 1:E3:.5 1.5:E3:.5 2:A0:.5 2.5:A0:.5 3:E3:.5 3.5:E0:.5",
+    "0:E0:.5 .5:E0:.5 1:E3:.5 1.5:E3:.5 2:A0:.5 2.5:A0:.5 3:E3:.5 3.5:E0:.5"
+   ]
+  },
+  {
+   "id": "rock-08",
+   "name": "Octaves rock",
+   "bpm": 120,
+   "key": "E",
+   "grid": "I | I",
+   "swing": 0.0,
+   "tip": "Forme d’octave : le doigt libre étouffe la corde du dessus.",
+   "bars": [
+    "0:E0:.5 .5:D2:.5 1:E0:.5 1.5:D2:.5 2:E0:.5 2.5:D2:.5 3:E0:.5 3.5:D2:.5",
+    "0:E0:.5 .5:D2:.5 1:E0:.5 1.5:D2:.5 2:E0:.5 2.5:D2:.5 3:E0:.5 3.5:D2:.5"
+   ]
+  }
+ ]
+}

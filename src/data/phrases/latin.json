@@ -1,0 +1,125 @@
+{
+ "style": "latin",
+ "phrases": [
+  {
+   "id": "latin-01",
+   "name": "Bossa de base",
+   "bpm": 124,
+   "key": "C",
+   "grid": "ii7 | V7 | Imaj7 | vi7",
+   "swing": 0.0,
+   "tip": "La bossa : deux appuis, le deuxième anticipé.",
+   "bars": [
+    "0:D0:1.5 1.5:G2:.5 2:D0:1.5 3.5:G2:.5",
+    "0:E3:1.5 1.5:D0:.5 2:E3:1.5 3.5:D0:.5",
+    "0:A3:1.5 1.5:G0:.5 2:A3:1.5 3.5:G0:.5",
+    "0:A0:1.5 1.5:D2:.5 2:A0:1.5 3.5:D2:.5"
+   ]
+  },
+  {
+   "id": "latin-02",
+   "name": "Bossa avec tierce",
+   "bpm": 124,
+   "key": "C",
+   "grid": "ii7 | V7 | Imaj7 | vi7",
+   "swing": 0.0,
+   "tip": "On ajoute la tierce pour colorer l’accord.",
+   "bars": [
+    "0:D0:1.5 1.5:G2:.5 2:D3:1 3:G2:1",
+    "0:E3:1.5 1.5:D0:.5 2:A2:1 3:D0:1",
+    "0:A3:1.5 1.5:G0:.5 2:D2:1 3:G0:1",
+    "0:A0:1.5 1.5:D2:.5 2:A3:1 3:D2:1"
+   ]
+  },
+  {
+   "id": "latin-03",
+   "name": "Tumbao léger",
+   "bpm": 124,
+   "key": "C",
+   "grid": "ii7 | V7 | Imaj7 | vi7",
+   "swing": 0.0,
+   "tip": "Le tumbao anticipe le temps : le 1 est silencieux.",
+   "bars": [
+    "1.5:D0:.5 2:G2:1 3.5:D0:.5",
+    "1.5:E3:.5 2:D0:1 3.5:E3:.5",
+    "1.5:A3:.5 2:G0:1 3.5:A3:.5",
+    "1.5:A0:.5 2:D2:1 3.5:A0:.5"
+   ]
+  },
+  {
+   "id": "latin-04",
+   "name": "Bossa octave",
+   "bpm": 124,
+   "key": "C",
+   "grid": "ii7 | V7 | Imaj7 | vi7",
+   "swing": 0.0,
+   "tip": "Un saut d’octave au « et » du 2.",
+   "bars": [
+    "0:D0:1 1.5:G7:.5 2:D0:1 3.5:G2:.5",
+    "0:E3:1 1.5:G0:.5 2:E3:1 3.5:D0:.5",
+    "0:A3:1 1.5:G5:.5 2:A3:1 3.5:G0:.5",
+    "0:A0:1 1.5:G2:.5 2:A0:1 3.5:D2:.5"
+   ]
+  },
+  {
+   "id": "latin-05",
+   "name": "Samba légère",
+   "bpm": 124,
+   "key": "C",
+   "grid": "ii7 | V7 | Imaj7 | vi7",
+   "swing": 0.0,
+   "tip": "Croche pointée et double : jouez-les bien sèches.",
+   "bars": [
+    "0:D0:.75 .75:D0:.25 1:G2:.75 1.75:G2:.25 2:D0:.75 2.75:D0:.25 3:G2:.75 3.75:G2:.25",
+    "0:E3:.75 .75:E3:.25 1:D0:.75 1.75:D0:.25 2:E3:.75 2.75:E3:.25 3:D0:.75 3.75:D0:.25",
+    "0:A3:.75 .75:A3:.25 1:G0:.75 1.75:G0:.25 2:A3:.75 2.75:A3:.25 3:G0:.75 3.75:G0:.25",
+    "0:A0:.75 .75:A0:.25 1:D2:.75 1.75:D2:.25 2:A0:.75 2.75:A0:.25 3:D2:.75 3.75:D2:.25"
+   ]
+  },
+  {
+   "id": "latin-06",
+   "name": "Montuno",
+   "bpm": 124,
+   "key": "C",
+   "grid": "ii7 | V7 | Imaj7 | vi7",
+   "swing": 0.0,
+   "tip": "Le motif décalé typique de la salsa.",
+   "bars": [
+    "1:D0:.5 1.5:D0:.5 2.5:G2:.5 3:G7:1",
+    "1:E3:.5 1.5:E3:.5 2.5:D0:.5 3:G0:1",
+    "1:A3:.5 1.5:A3:.5 2.5:G0:.5 3:G5:1",
+    "1:A0:.5 1.5:A0:.5 2.5:D2:.5 3:G2:1"
+   ]
+  },
+  {
+   "id": "latin-07",
+   "name": "Arpège latin",
+   "bpm": 124,
+   "key": "C",
+   "grid": "ii7 | V7 | Imaj7 | vi7",
+   "swing": 0.0,
+   "tip": "Racine, tierce, quinte, octave : l’arpège complet.",
+   "bars": [
+    "0:D0:1 1:D3:.5 1.5:G2:.5 2:G7:1 3:G2:1",
+    "0:E3:1 1:A2:.5 1.5:D0:.5 2:G0:1 3:D0:1",
+    "0:A3:1 1:D2:.5 1.5:G0:.5 2:G5:1 3:G0:1",
+    "0:A0:1 1:A3:.5 1.5:D2:.5 2:G2:1 3:D2:1"
+   ]
+  },
+  {
+   "id": "latin-08",
+   "name": "Approche chromatique",
+   "bpm": 124,
+   "key": "C",
+   "grid": "ii7 | V7 | Imaj7 | vi7",
+   "swing": 0.0,
+   "tip": "Dernier « et » : un demi-ton sous (ou sur) la prochaine fondamentale.",
+   "bars": [
+    "0:D0:1.5 1.5:G2:.5 2:D0:1 3:G2:.5 3.5:E2:.5",
+    "0:E3:1.5 1.5:D0:.5 2:E3:1 3:D0:.5 3.5:A2:.5",
+    "0:A3:1.5 1.5:G0:.5 2:A3:1 3:G0:.5 3.5:E4:.5",
+    "0:A0:1.5 1.5:D2:.5 2:A0:1 3:D2:.5 3.5:A4:.5"
+   ]
+  }
+ ]
+}

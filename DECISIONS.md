@@ -27,3 +27,8 @@
 - **Dérive sans clic** : pente des écarts moyens par mesure sur les mesures muettes (≥ 3), convertie en BPM effectif. Les séances « clic qui disparaît » sont courtes (4-16 mesures) car l'analyse compare à la grille d'origine.
 - **Alternance index/majeur** : le doigt n'est pas détectable ; on mesure l'asymétrie de durée entre intervalles pairs et impairs (> 12 ms = déséquilibre).
 - **Notes étouffées** : détectées comme attaques sans hauteur ; option d'auto-évaluation pour les ignorer du score.
+- **Vocabulaire** : 64 phrases originales (8 par style), stockées en JSON (`src/data/phrases/*.json`), notation compacte `temps:corde+case:durée` par mesure, grille en degrés (transposable). Un test valide chaque phrase (grille, cases, cohérence harmonique ≥ 60 % de notes d'accord ; gamme blues pour le blues) dans 12 tonalités. Transposition : tessiture conservée, cases ≤ 19 au pire.
+- **Partition simplifiée** = noms de notes + glyphes de durée (pas de portée réelle).
+- **Capture audio → phrase** : attaques quantifiées à la double croche, durée = jusqu'à la note suivante ; à corriger via la saisie en tablature si besoin.
+- **Oreille** : 4 exercices (intervalles, accords, degrés, relevé de ligne), 3 niveaux, répétition espacée ; sons 100 % synthétisés.
+- **Navigation** : 5 onglets (Séance, Manche, Pratique, Outils, Réglages) ; « Pratique » regroupe Impro, Groove, Jam, Vocabulaire, Oreille.

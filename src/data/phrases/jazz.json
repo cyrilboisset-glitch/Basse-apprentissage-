@@ -1,0 +1,125 @@
+{
+ "style": "jazz",
+ "phrases": [
+  {
+   "id": "jazz-01",
+   "name": "Walking de base II-V-I",
+   "bpm": 120,
+   "key": "F",
+   "grid": "ii7 | V7 | Imaj7 | Imaj7",
+   "swing": 0.66,
+   "tip": "Temps 1 : note d’accord. Temps 4 : approche de la fondamentale suivante.",
+   "bars": [
+    "0:E3:1 1:A1:1 2:D0:1 3:A2:1",
+    "0:A3:1 1:D2:1 2:G0:1 3:D2:1",
+    "0:E1:1 1:A0:1 2:A3:1 3:D2:1",
+    "0:D3:1 1:D2:1 2:A3:1 3:A0:1"
+   ]
+  },
+  {
+   "id": "jazz-02",
+   "name": "Montée-descente",
+   "bpm": 120,
+   "key": "F",
+   "grid": "ii7 | V7 | Imaj7 | Imaj7",
+   "swing": 0.66,
+   "tip": "Alternez sauts et notes conjointes pour que la ligne respire.",
+   "bars": [
+    "0:E3:1 1:D0:1 2:A1:1 3:A2:1",
+    "0:A3:1 1:G0:1 2:D2:1 3:D2:1",
+    "0:E1:1 1:A3:1 2:A0:1 3:A0:1",
+    "0:D3:1 1:A3:1 2:A0:1 3:A3:1"
+   ]
+  },
+  {
+   "id": "jazz-03",
+   "name": "Arpèges et approches",
+   "bpm": 120,
+   "key": "F",
+   "grid": "ii7 | V7 | Imaj7 | Imaj7",
+   "swing": 0.66,
+   "tip": "Approche chromatique par le haut (Réb vers Do) puis par le bas.",
+   "bars": [
+    "0:E3:1 1:D0:1 2:D3:1 3:A4:1",
+    "0:A3:1 1:A1:1 2:E3:1 3:E0:1",
+    "0:E1:1 1:A0:1 2:A3:1 3:A0:1",
+    "0:E1:2 2:A3:1 3:D2:1"
+   ]
+  },
+  {
+   "id": "jazz-04",
+   "name": "Croches swinguées",
+   "bpm": 120,
+   "key": "F",
+   "grid": "ii7 | V7 | Imaj7 | Imaj7",
+   "swing": 0.66,
+   "tip": "Les croches se jouent en triolets swing : la deuxième est plus courte.",
+   "bars": [
+    "0:E3:1 1:A1:.5 1.5:A0:.5 2:E3:1 3:A2:1",
+    "0:A3:1 1:D2:.5 1.5:D0:.5 2:A3:1 3:D2:1",
+    "0:E1:1 1:A0:.5 1.5:E3:.5 2:E1:1 3:A0:1",
+    "0:E1:1 1:A0:1 2:A3:1 3:A0:1"
+   ]
+  },
+  {
+   "id": "jazz-05",
+   "name": "I – VI – II – V",
+   "bpm": 120,
+   "key": "F",
+   "grid": "Imaj7 | vi7 | ii7 | V7",
+   "swing": 0.66,
+   "tip": "Le tour classique : chaque approche vise la fondamentale suivante.",
+   "bars": [
+    "0:E1:1 1:A0:1 2:A3:1 3:A2:1",
+    "0:D0:1 1:D3:1 2:G2:1 3:E4:1",
+    "0:E3:1 1:A1:1 2:D0:1 3:A2:1",
+    "0:A3:1 1:D2:1 2:G0:1 3:D2:1"
+   ]
+  },
+  {
+   "id": "jazz-06",
+   "name": "Deux temps (two-feel)",
+   "bpm": 120,
+   "key": "F",
+   "grid": "ii7 | V7 | Imaj7 | Imaj7",
+   "swing": 0.66,
+   "tip": "Deux notes par mesure : fondamentale et quinte, pour les thèmes.",
+   "bars": [
+    "0:E3:2 2:D0:2",
+    "0:A3:2 2:E3:2",
+    "0:E1:2 2:A3:2",
+    "0:E1:2 2:A3:2"
+   ]
+  },
+  {
+   "id": "jazz-07",
+   "name": "Walking avec répétitions",
+   "bpm": 120,
+   "key": "F",
+   "grid": "ii7 | V7 | Imaj7 | Imaj7",
+   "swing": 0.66,
+   "tip": "Une note répétée donne du poids rythmique à la ligne.",
+   "bars": [
+    "0:E3:1 1:A1:1 2:A1:1 3:A2:1",
+    "0:A3:1 1:D2:1 2:D2:1 3:D2:1",
+    "0:E1:1 1:A0:1 2:A3:1 3:A0:1",
+    "0:E1:1 1:E1:1 2:A0:1 3:A3:1"
+   ]
+  },
+  {
+   "id": "jazz-08",
+   "name": "Descente chromatique",
+   "bpm": 120,
+   "key": "F",
+   "grid": "ii7 | V7 | Imaj7 | Imaj7",
+   "swing": 0.66,
+   "tip": "Descendez par demi-tons, mais finissez sur une note d’accord.",
+   "bars": [
+    "0:E3:1 1:E1:1 2:D0:1 3:A2:1",
+    "0:A3:1 1:A2:1 2:A1:1 3:A0:1",
+    "0:E1:1 1:A0:1 2:A3:1 3:D2:1",
+    "0:D3:1 1:A3:1 2:A0:1 3:E1:1"
+   ]
+  }
+ ]
+}

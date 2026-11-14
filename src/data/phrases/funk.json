@@ -1,0 +1,102 @@
+{
+ "style": "funk",
+ "phrases": [
+  {
+   "id": "funk-01",
+   "name": "Octaves syncopées",
+   "bpm": 98,
+   "key": "E",
+   "grid": "i7",
+   "swing": 0.0,
+   "tip": "Placez les notes courtes juste sur la double croche : laissez le reste silencieux.",
+   "bars": [
+    "0:E0:.5 .75:D2:.25 1.5:E0:.5 2.5:D2:.5 3:E0:.5 3.5:E3:.5"
+   ]
+  },
+  {
+   "id": "funk-02",
+   "name": "Le un et le « a »",
+   "bpm": 98,
+   "key": "E",
+   "grid": "i7",
+   "swing": 0.0,
+   "tip": "Le temps 1 est la base du funk : insistez dessus.",
+   "bars": [
+    "0:E0:.5 .75:E0:.25 1:E3:.5 2:A0:.5 2.75:E3:.25 3:E0:1"
+   ]
+  },
+  {
+   "id": "funk-03",
+   "name": "Montée pentatonique en 16es",
+   "bpm": 98,
+   "key": "E",
+   "grid": "i7",
+   "swing": 0.0,
+   "tip": "Alternez index-majeur sur les doubles croches.",
+   "bars": [
+    "0:E0:.25 .25:E3:.25 .5:A0:.25 .75:A2:.25 1:D0:.5 2:A2:.5 2.5:A0:.5 3.5:E3:.5"
+   ]
+  },
+  {
+   "id": "funk-04",
+   "name": "Chromatique funk",
+   "bpm": 98,
+   "key": "E",
+   "grid": "i7",
+   "swing": 0.0,
+   "tip": "Le chromatisme (Mi-Fa-Fa#-Sol) relie la fondamentale à la tierce.",
+   "bars": [
+    "0:E0:.5 .5:E1:.25 .75:E2:.25 1:E3:.5 2:E0:.5 2.5:D0:.5 3.5:A2:.5"
+   ]
+  },
+  {
+   "id": "funk-05",
+   "name": "Riff i7 – IV7",
+   "bpm": 98,
+   "key": "E",
+   "grid": "i7 | IV7",
+   "swing": 0.0,
+   "tip": "Même rythme sur les deux accords : seul le déplacement change.",
+   "bars": [
+    "0:E0:.5 .75:E0:.25 1.5:E3:.5 2.5:A0:.5",
+    "0:A0:.5 .75:A0:.25 1.5:A4:.5 2.5:D2:.5"
+   ]
+  },
+  {
+   "id": "funk-06",
+   "name": "Sixte dorienne",
+   "bpm": 98,
+   "key": "E",
+   "grid": "i7",
+   "swing": 0.0,
+   "tip": "Le Do# (sixte) donne la couleur dorienne propre au funk mineur.",
+   "bars": [
+    "0:E0:.5 .5:E3:.25 .75:A0:.25 1:A4:.5 2:A2:.5 2.5:A0:.25 2.75:E3:.25 3:E0:1"
+   ]
+  },
+  {
+   "id": "funk-07",
+   "name": "Approche chromatique",
+   "bpm": 98,
+   "key": "E",
+   "grid": "i7",
+   "swing": 0.0,
+   "tip": "Descente chromatique de Si à La : une approche par dessous.",
+   "bars": [
+    "0:E0:.5 1:E3:.5 2:D0:.5 3:A2:.25 3.25:A1:.25 3.5:A0:.5"
+   ]
+  },
+  {
+   "id": "funk-08",
+   "name": "Deux notes, un groove",
+   "bpm": 98,
+   "key": "E",
+   "grid": "i7",
+   "swing": 0.0,
+   "tip": "Quand le rythme est bon, deux notes suffisent.",
+   "bars": [
+    "0:E0:.5 .75:E0:.25 1:D2:.5 1.75:E0:.25 2:E0:.5 3:E3:.5"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,107 @@
+{
+ "style": "blues",
+ "phrases": [
+  {
+   "id": "blues-01",
+   "name": "Boogie classique",
+   "bpm": 100,
+   "key": "E",
+   "grid": "I7 | I7",
+   "swing": 0.66,
+   "tip": "Fondamentale, quinte, sixte, septième : le cœur du boogie. Gardez les croches bien régulières.",
+   "bars": [
+    "0:E0:.5 .5:A2:.5 1:A4:.5 1.5:D0:.5 2:A4:.5 2.5:A2:.5 3:E0:.5 3.5:A2:.5",
+    "0:E0:.5 .5:A2:.5 1:A4:.5 1.5:D0:.5 2:A4:.5 2.5:A2:.5 3:E0:1"
+   ]
+  },
+  {
+   "id": "blues-02",
+   "name": "Walking en E7",
+   "bpm": 100,
+   "key": "E",
+   "grid": "I7 | IV7",
+   "swing": 0.66,
+   "tip": "Quatre noires par mesure : montez dans l’arpège, la septième de A7 (Sol) ramène vers Mi.",
+   "bars": [
+    "0:E0:1 1:E4:1 2:A2:1 3:A4:1",
+    "0:A0:1 1:A4:1 2:D2:1 3:G0:1"
+   ]
+  },
+  {
+   "id": "blues-03",
+   "name": "Octaves shuffle",
+   "bpm": 100,
+   "key": "E",
+   "grid": "I7 | IV7",
+   "swing": 0.66,
+   "tip": "Forme d’octave : même doigté qui se déplace avec l’accord.",
+   "bars": [
+    "0:E0:.5 .5:D2:.5 1:E0:.5 1.5:D2:.5 2:E0:.5 2.5:D2:.5 3:E0:.5 3.5:D2:.5",
+    "0:A0:.5 .5:G2:.5 1:A0:.5 1.5:G2:.5 2:A0:.5 2.5:G2:.5 3:A0:.5 3.5:G2:.5"
+   ]
+  },
+  {
+   "id": "blues-04",
+   "name": "Riff pentatonique blues",
+   "bpm": 100,
+   "key": "E",
+   "grid": "I7",
+   "swing": 0.66,
+   "tip": "La « blue note » (Si bémol) est une note de passage : ne la tenez pas.",
+   "bars": [
+    "0:E0:1 1:E3:.5 1.5:A0:.5 2:A1:.5 2.5:A2:.5 3:A0:.5 3.5:E3:.5"
+   ]
+  },
+  {
+   "id": "blues-05",
+   "name": "Changement I → IV",
+   "bpm": 100,
+   "key": "E",
+   "grid": "I7 | IV7",
+   "swing": 0.66,
+   "tip": "Arrivez sur la fondamentale du IV au temps 1 : c’est le rôle de la basse.",
+   "bars": [
+    "0:E0:1 1:E0:.5 1.5:E4:.5 2:A2:1 3:A4:.5 3.5:D0:.5",
+    "0:A0:1 1:A0:.5 1.5:A4:.5 2:D2:1 3:G0:1"
+   ]
+  },
+  {
+   "id": "blues-06",
+   "name": "Turnaround vers le V",
+   "bpm": 100,
+   "key": "E",
+   "grid": "I7 | V7",
+   "swing": 0.66,
+   "tip": "Descente sur E7, puis arpège de B7 : le V7 appelle le retour sur le I.",
+   "bars": [
+    "0:D2:1 1:D0:1 2:A2:1 3:E4:1",
+    "0:A2:1 1:D1:1 2:D4:1 3:G2:1"
+   ]
+  },
+  {
+   "id": "blues-07",
+   "name": "Blues lent",
+   "bpm": 68,
+   "key": "E",
+   "grid": "I7",
+   "swing": 0.66,
+   "tip": "Peu de notes, bien tenues : le blues lent vit des silences et des durées.",
+   "bars": [
+    "0:E0:1.5 1.5:E3:.5 2:A2:1 3:A1:.5 3.5:A0:.5"
+   ]
+  },
+  {
+   "id": "blues-08",
+   "name": "Dialogue et silence",
+   "bpm": 100,
+   "key": "E",
+   "grid": "I7 | I7",
+   "swing": 0.66,
+   "tip": "La longue note finale laisse respirer le groupe.",
+   "bars": [
+    "0:E0:.5 .5:E0:.5 1:E3:.5 1.5:A0:.5 2:A2:1 3:D0:1",
+    "0:E3:.5 .5:E0:.5 1:E0:3"
+   ]
+  }
+ ]
+}

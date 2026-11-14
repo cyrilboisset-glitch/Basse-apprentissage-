@@ -3,16 +3,21 @@ import { DEFAULT_SETTINGS, type Settings } from '../storage/settings';
 import { Tuner } from './Tuner';
 import { Materiel } from './Materiel';
 import { MancheModule } from './Manche';
+import { Vocabulaire } from './Vocabulaire';
+import { Oreille } from './Oreille';
 import { Groove } from './Groove';
 import { Impro } from './Impro';
 import { Jam } from './Jam';
 import { Outils } from './Outils';
 import { loadSettings, saveSettings, requestPersistence, exportAll, importAll } from '../storage/db';
 
-const TABS = [
-  ['#/', 'Séance'], ['#/manche', 'Manche'], ['#/impro', 'Impro'], ['#/groove', 'Groove'],
-  ['#/jam', 'Jam'], ['#/outils', 'Outils'], ['#/reglages', 'Réglages'],
-] as const;
+const TABS = [['#/', 'Séance'], ['#/manche', 'Manche'], ['#/pratique', 'Pratique'], ['#/outils', 'Outils'], ['#/reglages', 'Réglages']] as const;
+const PRATIQUE = [['#/impro', 'Improvisation', '9 exercices sur backing track'], ['#/groove', 'Groove', 'Mise en place, clic qui disparaît'], ['#/jam', 'Jam', 'Backings 9 styles, grilles'],
+  ['#/vocabulaire', 'Vocabulaire', '64 phrases, 12 tonalités'], ['#/oreille', 'Oreille', 'Intervalles, accords, degrés, relevé']] as const;
+const tabOf = (h: string) => (PRATIQUE.some(p => p[0] === h) || h === '#/pratique' ? '#/pratique' : h === '#/materiel' ? '#/outils' : h);
+function Pratique() {
+  return <><h1>Pratique</h1>{PRATIQUE.map(([h, t, d]) => <a class="card" href={h} style="display:block;text-decoration:none;color:inherit"><b style="font-size:1.2rem">{t}</b><div class="muted">{d}</div></a>)}</>;
+}
 
 function Placeholder({ title, phase }: { title: string; phase: string }) {
   return <div class="card"><h1>{title}</h1><p class="muted">Module prévu en {phase}.</p></div>;
@@ -86,6 +91,9 @@ export function App() {
   switch (hash) {
     case '#/manche': page = <MancheModule s={s} />; break;
     case '#/impro': page = <Impro s={s} />; break;
+    case '#/pratique': page = <Pratique />; break;
+    case '#/vocabulaire': page = <Vocabulaire s={s} />; break;
+    case '#/oreille': page = <Oreille s={s} />; break;
     case '#/groove': page = <Groove s={s} />; break;
     case '#/jam': page = <Jam s={s} />; break;
     case '#/outils': page = <Outils />; break;
@@ -98,7 +106,7 @@ export function App() {
     <button class="tuner-fab" aria-label="Accordeur" onClick={() => setTuner(true)}>♩</button>
     {tuner && <Tuner s={s} set={set} onClose={() => setTuner(false)} />}
     <nav aria-label="Navigation principale">
-      {TABS.map(([h, label]) => <a href={h} aria-current={hash === h ? 'page' : undefined}>{label}</a>)}
+      {TABS.map(([h, label]) => <a href={h} aria-current={tabOf(hash) === h ? 'page' : undefined}>{label}</a>)}
     </nav>
   </>);
 }

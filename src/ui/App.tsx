@@ -2,6 +2,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { DEFAULT_SETTINGS, type Settings } from '../storage/settings';
 import { Tuner } from './Tuner';
 import { Materiel } from './Materiel';
+import { Explorer } from './Manche';
 import { Outils } from './Outils';
 import { loadSettings, saveSettings, requestPersistence, exportAll, importAll } from '../storage/db';
 
@@ -79,7 +80,7 @@ export function App() {
 
   let page;
   switch (hash) {
-    case '#/manche': page = <Placeholder title="Manche" phase="phases 3-4" />; break;
+    case '#/manche': page = <><h1>Manche</h1><Explorer s={s} /></>; break;
     case '#/impro': page = <Placeholder title="Improvisation" phase="phase 6" />; break;
     case '#/jam': page = <Placeholder title="Jam" phase="phase 5" />; break;
     case '#/outils': page = <Outils />; break;

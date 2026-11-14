@@ -9,6 +9,8 @@ import { Groove } from './Groove';
 import { Impro } from './Impro';
 import { Jam } from './Jam';
 import { Outils } from './Outils';
+import { engine } from '../audio/engine';
+import { useEngineStatus } from './useEngine';
 import { loadSettings, saveSettings, requestPersistence, exportAll, importAll } from '../storage/db';
 
 const TABS = [['#/', 'Séance'], ['#/manche', 'Manche'], ['#/pratique', 'Pratique'], ['#/outils', 'Outils'], ['#/reglages', 'Réglages']] as const;
@@ -74,7 +76,7 @@ function Reglages({ s, set }: { s: Settings; set: (p: Partial<Settings>) => void
 
 export function App() {
   const [s, setS] = useState<Settings>(DEFAULT_SETTINGS);
-  const [tuner, setTuner] = useState(false);
+  const [tuner, setTuner] = useState(false); const est = useEngineStatus();
   const [hash, setHash] = useState(location.hash || '#/');
   useEffect(() => {
     loadSettings().then(setS); requestPersistence();
@@ -102,6 +104,9 @@ export function App() {
     default: page = <Home s={s} />;
   }
   return (<>
+    {est === 'disconnected' && <div role="alert" style="position:sticky;top:0;z-index:20;background:var(--danger);color:#fff;padding:12px;border-radius:0 0 12px 12px;margin:0 -16px">
+      Entrée audio déconnectée : exercice en pause. Rebranchez le Plug Pro (reconnexion automatique).
+      <button class="btn" style="margin-top:8px;border-color:#fff;color:#fff;min-height:44px" onClick={() => engine.start(s.inputDeviceId || undefined)}>Réessayer maintenant</button></div>}
     <main>{page}</main>
     <button class="tuner-fab" aria-label="Accordeur" onClick={() => setTuner(true)}>♩</button>
     {tuner && <Tuner s={s} set={set} onClose={() => setTuner(false)} />}

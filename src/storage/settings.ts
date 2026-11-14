@@ -16,14 +16,17 @@ export interface Settings {
   inputMode: 'usb' | 'bluetooth';
   inputDeviceId: string;
   unlockAll: boolean;
+  nuxAuto: boolean;
+  presetMap: Record<string, number>;   // catégorie → preset 1-7 (0 = ne pas changer)
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   notation: 'fr', theme: 'dark', leftHanded: false, strings: 4, frets: 24,
   tuning: 'standard4', refA: 440, sessionMinutes: 20, fontScale: 1,
-  latencyUsbMs: 0, latencyBluetoothMs: 0, inputMode: 'usb', inputDeviceId: '', unlockAll: false,
+  latencyUsbMs: 0, latencyBluetoothMs: 0, inputMode: 'usb', inputDeviceId: '', unlockAll: false, nuxAuto: false,
+  presetMap: { clean: 1, blues: 2, funk: 3, rock: 4, pop: 1, reggae: 1, soul: 3, jazz: 1, latin: 1 },
 };
 
 export function mergeSettings(partial: Partial<Settings> | undefined): Settings {
-  return { ...DEFAULT_SETTINGS, ...(partial ?? {}) };
+  return { ...DEFAULT_SETTINGS, ...(partial ?? {}), presetMap: { ...DEFAULT_SETTINGS.presetMap, ...(partial?.presetMap ?? {}) } };
 }

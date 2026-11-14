@@ -18,6 +18,8 @@ import { KEYS } from './Jam';
 import { db } from '../storage/db';
 import { today } from '../storage/stats';
 import { keepAwake } from './wakeLock';
+import { applyPresetFor, BACKING_CATEGORY } from '../nux/presets';
+import { useOnDisconnect } from './useEngine';
 
 export function Impro({ s }: { s: Settings }) {
   const [ex, setEx] = useState<ExDef | null>(null);
@@ -53,7 +55,7 @@ function Runner({ s, ex, onExit }: { s: Settings; ex: ExDef; onExit: () => void 
       const bd = 60 / info.bpm; sc.phrase.forEach(n => playBassNote(ctx, b.bus, info.time + n.beat * bd, n.midi, Math.max(0.1, n.dur * bd)));
     };
     b.onBar = setCur; b.onEnd = () => finish(b);
-    bk.current = b; setPhase('run'); b.start(); keepAwake(true);
+    bk.current = b; setPhase('run'); b.start(); keepAwake(true); applyPresetFor(BACKING_CATEGORY[ex.style] ?? 'clean', s);
   };
   const finish = async (b: Backing) => {
     const bars = b.barTimes.filter(x => !x.countIn).map(x => ({ time: x.time, bpm: x.bpm, bar: x.bar }));
@@ -74,6 +76,7 @@ function Runner({ s, ex, onExit }: { s: Settings; ex: ExDef; onExit: () => void 
     <button class="btn" style="margin-top:8px" onClick={onExit}>Retour</button>
   </>);
 
+  useOnDisconnect(() => { if (phase === 'run') stop(); });
   const idx = cur ? cur.seq - 1 : -1; const sc: BarScript | undefined = idx >= 0 ? scripts.current[idx] : undefined;
   const g = grid.current; const chord = cur && g && !cur.countIn ? g.bars[cur.bar][0].chord : null;
   const marks = new Map<string, Mark>();

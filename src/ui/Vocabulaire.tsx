@@ -14,6 +14,8 @@ import { today } from '../storage/stats';
 import { useNotes } from './useNotes';
 import { keepAwake } from './wakeLock';
 import { Metronome } from '../audio/metronome';
+import { applyPresetFor } from '../nux/presets';
+import { useOnDisconnect } from './useEngine';
 
 const BACK: Record<string, string> = { blues: 'blues-shuffle', funk: 'funk', rock: 'rock', pop: 'pop', reggae: 'reggae', soul: 'soul', jazz: 'jazz', latin: 'bossa', perso: 'pop' };
 const GLYPH = (d: number) => (d >= 3.5 ? '𝅝' : d >= 1.75 ? '𝅗𝅥' : d >= 0.9 ? '♩' : d >= 0.45 ? '♪' : '𝅘𝅥𝅯');
@@ -70,7 +72,7 @@ function Detail({ s, base, onExit, onDelete }: { s: Settings; base: Phrase; onEx
     };
     b.onBar = i => { info.current = i.countIn ? null : { time: i.time, bpm: i.bpm, bar: i.bar }; };
     b.onEnd = () => { if (m === 'play') finish(b); stop(); };
-    bk.current = b; b.start(); setMode(m); keepAwake(true);
+    bk.current = b; b.start(); setMode(m); keepAwake(true); applyPresetFor(base.style === 'perso' ? 'clean' : base.style, s);
     const tick = () => { const i = info.current; if (i && bk.current) setPos(i.bar * 4 + (ctx.currentTime - i.time) / (60 / i.bpm)); else setPos(-1); raf.current = requestAnimationFrame(tick); }; tick();
   };
   const finish = async (b: Backing) => {
@@ -80,6 +82,7 @@ function Detail({ s, base, onExit, onDelete }: { s: Settings; base: Phrase; onEx
     setRes(r); await recordSrs(`phrase:${base.id}`, r.success >= 0.8);
     await db.sessions.add({ date: today(), module: `vocab:${base.id}`, seconds: 60, score: Math.round(r.success * 100) });
   };
+  useOnDisconnect(() => { if (mode === 'play') stop(); });
   return (<>
     <button class="btn" style="min-height:44px" onClick={() => { stop(); onExit(); }}>← Retour</button>
     <h1>{base.name}</h1><p class="muted">{base.tip}</p>

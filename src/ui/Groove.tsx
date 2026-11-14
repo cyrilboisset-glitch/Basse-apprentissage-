@@ -8,6 +8,8 @@ import { STATUS_MSG, useEngineStatus } from './useEngine';
 import { db } from '../storage/db';
 import { today } from '../storage/stats';
 import { keepAwake } from './wakeLock';
+import { applyPresetFor } from '../nux/presets';
+import { useOnDisconnect } from './useEngine';
 
 const VANISH = [{ v: '', l: 'Clic permanent' }, { v: '2', l: 'Clic 1 mesure sur 2' }, { v: '4', l: 'Clic 1 mesure sur 4 (3/4 muettes)' }, { v: '8', l: 'Clic 1 mesure sur 8 (7/8 muettes)' }];
 
@@ -54,7 +56,7 @@ function Run({ s, p, onExit }: { s: Settings; p: GroovePattern; onExit: () => vo
       setTimeout(() => setBeat(b), Math.max(0, (t - ctx.currentTime) * 1000));
       if (seq >= total && b === 0 && !finished) { finished = true; mt.stop(); bars.current.pop(); setTimeout(() => finish(), 500); }
     });
-    m.current = mt; setPhase('run'); setBar(0); mt.start(); keepAwake(true);
+    m.current = mt; setPhase('run'); setBar(0); mt.start(); keepAwake(true); applyPresetFor(p.id === 'funk16' || p.id === 'ghost' ? 'funk' : 'clean', s);
   };
   const finish = async () => {
     const lat = (s.inputMode === 'usb' ? s.latencyUsbMs : s.latencyBluetoothMs) / 1000;
@@ -65,6 +67,7 @@ function Run({ s, p, onExit }: { s: Settings; p: GroovePattern; onExit: () => vo
   };
   const stop = () => { m.current?.stop(); keepAwake(false); setPhase('setup'); };
 
+  useOnDisconnect(() => { if (phase === 'run') stop(); });
   if (phase === 'result' && res) {
     const nt = nextTempo(used.current, res.success);
     return (<>

@@ -32,3 +32,6 @@
 - **Capture audio → phrase** : attaques quantifiées à la double croche, durée = jusqu'à la note suivante ; à corriger via la saisie en tablature si besoin.
 - **Oreille** : 4 exercices (intervalles, accords, degrés, relevé de ligne), 3 niveaux, répétition espacée ; sons 100 % synthétisés.
 - **Navigation** : 5 onglets (Séance, Manche, Pratique, Outils, Réglages) ; « Pratique » regroupe Impro, Groove, Jam, Vocabulaire, Oreille.
+- **Plug Pro / BLE MIDI** : trames reprises de Mightier Amp (MIT) ; `acceptAllDevices` + service MIDI optionnel (nom BLE inconnu). Tout est testé avec un faux périphérique ; aucun essai sur matériel réel (voir `docs/nux-protocol.md`).
+- **Accordeur du Plug Pro** : disponibilité détectée par absence de réponse (2,5 s) faute de lecture fiable du firmware.
+- **Pause sur déconnexion** : si la piste audio d'entrée se termine (câble USB retiré), les exercices s'arrêtent, une bannière s'affiche et la reconnexion est tentée automatiquement (événement `devicechange`) ou via « Réessayer ».

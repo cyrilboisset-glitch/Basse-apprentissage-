@@ -3,11 +3,13 @@ import { engine } from '../audio/engine';
 import { describeFreq, getTuning, midiName, midiToFreq, TUNINGS } from '../audio/notes';
 import type { Settings } from '../storage/settings';
 import { STATUS_MSG, useEngineStatus } from './useEngine';
+import { nux } from '../nux/plugpro';
+import { useNuxStatus } from '../nux/presets';
 
 const median = (a: number[]) => [...a].sort((x, y) => x - y)[Math.floor(a.length / 2)];
 
 export function Tuner({ s, set, onClose }: { s: Settings; set: (p: Partial<Settings>) => void; onClose: () => void }) {
-  const status = useEngineStatus();
+  const status = useEngineStatus(); const nst = useNuxStatus(); const [src, setSrc] = useState<'app' | 'nux'>('app'); const [nuxCap, setNuxCap] = useState(nux.caps.tuner);
   const tuning = getTuning(s.tuning);
   const [guided, setGuided] = useState(false);
   const [target, setTarget] = useState(0);
@@ -15,8 +17,15 @@ export function Tuner({ s, set, onClose }: { s: Settings; set: (p: Partial<Setti
   const [weak, setWeak] = useState(false);
   const hist = useRef<number[]>([]); const centsAvg = useRef(0); const okSince = useRef(0); const lastSeen = useRef(0);
 
-  useEffect(() => { engine.start(s.inputDeviceId || undefined); return () => engine.stop(); }, []);
+  useEffect(() => { if (src !== 'app') return; engine.start(s.inputDeviceId || undefined); return () => engine.stop(); }, [src]);
   useEffect(() => {
+    if (src !== 'nux') return; setView(null); hist.current = [];
+    const off = nux.subscribeTuner(t => { setNuxCap(nux.caps.tuner); if (t.pc === null || t.cents === null) { setView(null); return; } const n = midiName(t.pc + 24, s.notation); setView({ name: n.name, oct: n.octave, cents: t.cents, freq: 0 }); });
+    nux.tunerSet({ on: true, mode: 'bass', refHz: s.refA, mute: false });
+    return () => { off(); nux.tunerSet({ on: false, mode: 'bass', refHz: s.refA, mute: false }); };
+  }, [src]);
+  useEffect(() => {
+    if (src !== 'app') return;
     return engine.onPitch(e => {
       const now = performance.now();
       if (e.freq === null || e.clarity < 0.8) {
@@ -40,7 +49,7 @@ export function Tuner({ s, set, onClose }: { s: Settings; set: (p: Partial<Setti
         } else okSince.current = 0;
       }
     });
-  }, [guided, target, s.tuning, s.refA, s.notation]);
+  }, [guided, target, s.tuning, s.refA, s.notation, src]);
 
   const c = view ? Math.max(-50, Math.min(50, view.cents)) : 0;
   const inTune = view && Math.abs(view.cents) <= 3;
@@ -49,13 +58,18 @@ export function Tuner({ s, set, onClose }: { s: Settings; set: (p: Partial<Setti
   return (
     <div role="dialog" aria-label="Accordeur" style="position:fixed;inset:0;z-index:10;background:var(--bg);padding:16px;overflow:auto">
       <button class="btn" onClick={onClose} style="min-height:48px">Fermer</button>
-      {status !== 'running' && status !== 'idle' && (
+      <div style="display:flex;gap:8px;margin:8px 0" role="tablist" aria-label="Source de l'accordeur">
+        <button role="tab" aria-selected={src === 'app'} class="btn" style={src === 'app' ? 'background:var(--accent);color:#04210f' : ''} onClick={() => setSrc('app')}>Accordeur de l'appli</button>
+        <button role="tab" aria-selected={src === 'nux'} class="btn" disabled={nst !== 'connected' || nuxCap === 'unavailable'} style={src === 'nux' ? 'background:var(--accent);color:#04210f' : ''} onClick={() => setSrc('nux')}>Plug Pro</button></div>
+      {nst !== 'connected' && <p class="muted">Accordeur du Plug Pro : connectez-le dans Outils → Matériel.</p>}
+      {nuxCap === 'unavailable' && <p class="muted" role="note">Accordeur du Plug Pro non disponible (firmware trop ancien ?) : utilisez celui de l'appli.</p>}
+      {src === 'app' && status !== 'running' && status !== 'idle' && (
         <div class="card" role="alert">{STATUS_MSG[status]}
           {status !== 'starting' && <button class="btn" style="margin-top:8px" onClick={() => engine.start(s.inputDeviceId || undefined)}>Réessayer</button>}
         </div>)}
       <div style={`text-align:center;color:${color};margin-top:16px`}>
-        <div style="font-size:7rem;font-weight:800;line-height:1" aria-live="polite">{view ? view.name : '—'}<small style="font-size:2rem">{view?.oct}</small></div>
-        <div style="font-size:1.6rem">{view ? `${view.cents > 0 ? '+' : ''}${view.cents.toFixed(1)} cents · ${view.freq.toFixed(2)} Hz` : weak ? 'Signal trop faible' : 'Jouez une corde à vide'}</div>
+        <div style="font-size:7rem;font-weight:800;line-height:1" aria-live="polite">{view ? view.name : '—'}<small style="font-size:2rem">{src === 'app' ? view?.oct : ''}</small></div>
+        <div style="font-size:1.6rem">{view ? `${view.cents > 0 ? '+' : ''}${view.cents.toFixed(1)} cents${view.freq ? ` · ${view.freq.toFixed(2)} Hz` : ''}` : weak ? 'Signal trop faible' : src === 'nux' ? 'Jouez une corde (accordeur Plug Pro)' : 'Jouez une corde à vide'}</div>
         <div role="img" aria-label="Aiguille" style="position:relative;height:90px;margin:16px 0;border-bottom:2px solid var(--border)">
           <div style="position:absolute;left:44%;width:12%;top:0;bottom:0;background:var(--accent);opacity:.2"/>
           <div style="position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--muted)"/>

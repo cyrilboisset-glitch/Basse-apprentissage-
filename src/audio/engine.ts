@@ -22,8 +22,14 @@ class AudioEngine {
   onStatus(l: (s: EngineStatus) => void) { this.statusL.add(l); return () => this.statusL.delete(l); }
   private setStatus(s: EngineStatus) { this.status = s; this.statusL.forEach(l => l(s)); }
 
+  private lastDevice?: string;
+  constructor() {
+    try { navigator.mediaDevices?.addEventListener?.('devicechange', () => { if (this.status === 'disconnected') this.start(this.lastDevice); }); } catch { /* hors navigateur */ }
+  }
+
   async start(deviceId?: string): Promise<void> {
     if (this.status === 'running' || this.status === 'starting') return;
+    this.lastDevice = deviceId;
     if (!navigator.mediaDevices?.getUserMedia) { this.setStatus('unavailable'); return; }
     this.setStatus('starting');
     try {

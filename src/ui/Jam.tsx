@@ -6,6 +6,8 @@ import { getStyle, STYLES } from '../audio/backing/styles';
 import { GRID_PRESETS, parseAnyGrid, progressionToGrid, type Grid } from '../theory/grid';
 import { formatSymbol } from '../theory/chords';
 import { keepAwake } from './wakeLock';
+import { applyPresetFor, BACKING_CATEGORY } from '../nux/presets';
+import { useOnDisconnect } from './useEngine';
 
 export const KEYS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 const sel = (e: Event) => (e.target as HTMLSelectElement).value;
@@ -43,8 +45,9 @@ export function Jam({ s }: { s: Settings }) {
       section: loopOn ? { from: Math.max(0, loopFrom - 1), to: Math.min(grid.bars.length, loopTo) - 1 } : undefined };
     const b = new Backing(ctx, grid, opts); b.onBar = setCur; b.onEnd = () => { b.dispose(); setOn(false); setCur(null); keepAwake(false); };
     bk.current = b; b.start(); setOn(true);
-    keepAwake(true);
+    keepAwake(true); applyPresetFor(BACKING_CATEGORY[styleId] ?? 'clean', s);
   };
+  useOnDisconnect(() => { if (bk.current) { bk.current.dispose(); bk.current = null; setOn(false); setCur(null); keepAwake(false); } });
   const chords = cur && grid ? grid.bars[cur.bar] : null;
   return (<>
     <h1>Jam</h1>

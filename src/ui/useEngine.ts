@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { engine, type EngineStatus } from '../audio/engine';
 
 export function useEngineStatus(): EngineStatus {
@@ -12,3 +12,9 @@ export const STATUS_MSG: Record<EngineStatus, string> = {
   unavailable: "Entrée audio indisponible. Vérifiez que le Plug Pro est branché en USB-C (ou autorisez le micro).",
   disconnected: 'Entrée audio déconnectée. Rebranchez le câble puis appuyez sur Réessayer.',
 };
+
+/** Appelle `cb` quand l'entrée audio (USB/micro) disparaît : les exercices se mettent en pause. */
+export function useOnDisconnect(cb: () => void) {
+  const ref = useRef(cb); ref.current = cb;
+  useEffect(() => engine.onStatus(st => { if (st === 'disconnected') ref.current(); }), []);
+}

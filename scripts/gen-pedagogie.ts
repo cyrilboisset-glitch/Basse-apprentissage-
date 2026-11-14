@@ -2,7 +2,7 @@
 import { writeFileSync } from 'node:fs';
 import { LEVELS } from '../src/progress/levels';
 import { EXERCISES } from '../src/exercises/impro';
-import { LESSONS } from '../src/exercises/theory';
+import { LESSONS, CHAPTERS } from '../src/exercises/theory';
 import { RHYTHMS, TECHNIQUE } from '../src/exercises/groove';
 import { DRILL_LABEL } from '../src/exercises/manche';
 import { ZONES } from '../src/theory/fretboard';
@@ -29,7 +29,7 @@ for (const l of LEVELS) { L.push(`### Niveau ${l.n} — ${l.title}`, '', `**Obje
 L.push('Le niveau courant est le premier niveau dont tous les critères ne sont pas remplis. Le **test de positionnement** (10 min) débloque les zones déjà maîtrisées et conseille un niveau de départ (1 à 6 au plus) ; il peut être refait à tout moment.', '',
   '## Module « Connaître le manche »', '', 'Zones : ' + ZONES.map(z => z.label).join(' → ') + '.', '', ...Object.values(DRILL_LABEL).map(x => `- ${x}`), '',
   'Validation par **hauteur** détectée (l\'audio ne distingue pas la corde) ; carte de chaleur : ✓ maîtrisée (≥ 90 % et < 3 s), ⏱ lente, ✗ ratée (< 70 %).', '',
-  '## Module « Théorie appliquée »', '', ...LESSONS.map(l => `- **${l.title}** — ${l.text.join(' ').split(/\s+/).length} mots, quiz + exercice joué`), '',
+  '## Module « Théorie appliquée »', '', ...CHAPTERS.flatMap(c => [`### ${c.n}. ${c.title}`, ...LESSONS.filter(l => l.chapter === c.n).map(l => `- **${l.title}** — ${l.text.join(' ').split(/\s+/).length} mots, quiz + exercice joué`), '']), '',
   '## Module « Improvisation » (le cœur)', '', ...EXERCISES.map(e => `${e.n}. **${e.name}** — ${e.summary} (${STYLES.find(s => s.id === e.style)!.name}, ${e.bpm} BPM, ${e.laps} tour(s))`), '',
   'Après chaque exercice : % de notes dans l\'accord, justesse rythmique, notes cibles réussies, notes « à éviter », et jusqu\'à trois conseils.', '',
   '## Module « Groove et mise en place »', '', '**Rythmes :** ' + RHYTHMS.map(r => r.name).join(' · '), '', '**Technique :** ' + TECHNIQUE.map(r => r.name).join(' · '), '',

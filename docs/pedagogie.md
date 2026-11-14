@@ -111,12 +111,47 @@ Validation par **hauteur** détectée (l'audio ne distingue pas la corde) ; cart
 
 ## Module « Théorie appliquée »
 
-- **Construire accords et arpèges** — 71 mots, quiz + exercice joué
+### 1. Bases, gammes et modes
+- **Les notes et les altérations** — 72 mots, quiz + exercice joué
+- **Tons et demi-tons** — 62 mots, quiz + exercice joué
+- **La gamme majeure** — 61 mots, quiz + exercice joué
+- **Les intervalles** — 68 mots, quiz + exercice joué
+- **La gamme mineure naturelle** — 58 mots, quiz + exercice joué
+- **Armures et cycle des quintes** — 79 mots, quiz + exercice joué
+- **Les pentatoniques et le blues** — 66 mots, quiz + exercice joué
+- **Les modes** — 69 mots, quiz + exercice joué
 - **Quelle gamme sur quel accord ?** — 56 mots, quiz + exercice joué
+
+### 2. Harmonie : accords et grilles
+- **Construire accords et arpèges** — 71 mots, quiz + exercice joué
+- **Les accords de quatre sons** — 67 mots, quiz + exercice joué
+- **Les accords d’une tonalité** — 71 mots, quiz + exercice joué
+- **Tonique, sous-dominante, dominante** — 72 mots, quiz + exercice joué
 - **Degrés et grilles courantes** — 72 mots, quiz + exercice joué
+- **Le II – V – I** — 82 mots, quiz + exercice joué
+- **Accords sur basse et renversements** — 77 mots, quiz + exercice joué
+- **Le blues à 12 mesures** — 70 mots, quiz + exercice joué
+
+### 3. Rythme et solfège rythmique
+- **Pulsation, tempo et mesure** — 77 mots, quiz + exercice joué
+- **Les figures de notes et les silences** — 82 mots, quiz + exercice joué
+- **Le point et la liaison** — 79 mots, quiz + exercice joué
+- **Croches et doubles croches : savoir compter** — 80 mots, quiz + exercice joué
+- **La syncope et le contretemps** — 84 mots, quiz + exercice joué
+- **Les triolets et le swing** — 83 mots, quiz + exercice joué
+- **Mesures composées : 6/8 et 12/8** — 81 mots, quiz + exercice joué
+- **Lire une tablature** — 79 mots, quiz + exercice joué
+
+### 4. Jeu de basse et styles
+- **Le rôle de la basse** — 56 mots, quiz + exercice joué
+- **Fondamentale, quinte, octave** — 63 mots, quiz + exercice joué
 - **Notes cibles et notes de passage** — 50 mots, quiz + exercice joué
 - **Approches chromatiques et diatoniques** — 51 mots, quiz + exercice joué
-- **Le rôle de la basse** — 56 mots, quiz + exercice joué
+- **Le walking bass** — 90 mots, quiz + exercice joué
+- **Le blues à la basse : le boogie** — 65 mots, quiz + exercice joué
+- **Funk, rock, reggae, soul** — 78 mots, quiz + exercice joué
+- **Dialoguer avec la batterie** — 70 mots, quiz + exercice joué
+
 
 ## Module « Improvisation » (le cœur)
 

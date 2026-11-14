@@ -40,7 +40,7 @@
 - **Test de positionnement** (~10 min) : repérage visuel cases 0-5 / 5-12, rythme à 80 BPM, 4 questions de théorie, 4 intervalles. Niveau conseillé = 1 + une étape réussie (≤ 6) ; débloque les zones 0-5 ou 0-12 via des séances synthétiques `placement`. Étapes audio ignorables.
 - **Séance du jour** : 10 min = échauffement + manche + impro ; 20 = + vocabulaire + groove ; 30 = + théorie + oreille. Le type de manche est celui où l'utilisateur est le plus faible dans la zone ; la phrase proposée est celle dont la répétition espacée est la plus urgente.
 - **Rappel quotidien** : impossible en push sans serveur → fichier .ics (événement quotidien + alarme).
-- **Théorie appliquée** : 6 leçons ≤ 260 mots, quiz + exercice joué validé à l'audio.
+- **Théorie appliquée** : parcours de 33 leçons en 4 chapitres (bases/modes, harmonie, rythme avec solfège rythmique, basse et styles) ≤ 260 mots, quiz + exercice joué (notes ou rythme analysé par `analyzeGroove`). Validée à 70 % ; la séance de 30 min propose la première leçon non validée.
 - **Badges** : 12, tous liés à des progrès mesurés.
 - **Entrée audio comptée** : `engine.start/stop` sont comptés (accordeur + exercice + enregistrement + note commande peuvent coexister) ; `reconnect()` ne compte pas.
 - **Enregistrement** : MediaRecorder (WebM/Opus ou MP4 selon le navigateur) sur un nœud de destination alimenté par l'entrée (basse) et, au choix, le bus de l'accompagnement ; limiteur avant l'enregistreur (la première version saturait à pleine échelle). La basse n'est jamais renvoyée aux haut-parleurs. Notes détectées et mesures enregistrées avec l'audio pour la réécoute. Export WebM natif ou WAV 16 bits (décodage puis encodage RIFF, testé).

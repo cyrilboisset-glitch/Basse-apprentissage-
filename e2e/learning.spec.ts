@@ -15,10 +15,17 @@ test('séance du jour de 10 minutes : plan, étapes, passage, journal', async ({
 });
 
 test('théorie : lecture, quiz, exercice joué', async ({ page }) => {
-  await page.goto('./#/theorie'); await page.getByText('Construire accords et arpèges').click(); await page.getByRole('button', { name: /J'ai lu/ }).click();
+  await page.goto('./#/theorie'); await page.getByText('2. Harmonie').click(); await page.getByText('Construire accords et arpèges').click(); await page.getByRole('button', { name: /J'ai lu/ }).click();
   await expect(page.getByText('Question 1 / 2')).toBeVisible(); await page.getByRole('button', { name: '3', exact: true }).click(); await page.getByRole('button', { name: 'Suivant' }).click();
   await page.getByRole('button', { name: 'Septième mineure' }).click(); await page.getByRole('button', { name: 'Suivant' }).click();
   await expect(page.getByText(/Exercice 1 \/ 3/)).toBeVisible();
+});
+
+test('théorie : parcours en 4 chapitres, leçon de rythme avec bandeau de figures', async ({ page }) => {
+  await page.goto('./#/theorie'); await expect(page.getByText('PROCHAINE LEÇON')).toBeVisible(); await expect(page.getByText('0 / 33')).toBeVisible();
+  for (const t of ['1. Bases', '2. Harmonie', '3. Rythme', '4. Jeu de basse']) await expect(page.getByText(t)).toBeVisible();
+  await page.getByText('3. Rythme').click(); await page.getByText('Les figures de notes et les silences').click();
+  await page.getByRole('button', { name: /J'ai lu/ }).click(); await expect(page.getByText(/Question 1 \//)).toBeVisible();
 });
 
 test('oreille : une question d’intervalle reçoit une correction', async ({ page }) => {

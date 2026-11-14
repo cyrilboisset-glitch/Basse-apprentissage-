@@ -57,7 +57,7 @@ export function GrooveRun({ s, p, onExit }: { s: Settings; p: GroovePattern; onE
     const mt = new Metronome(ctx, { bpm, beatsPerBar: 4, subdivision: 1, accent: true, muteBars: mb }, (b, t) => {
       if (b === 0) { seq++; if (seq >= 1) bars.current.push({ time: t, bpm, audible: !mb || seq % mb.of < mb.play }); setBar(seq); }
       setTimeout(() => setBeat(b), Math.max(0, (t - ctx.currentTime) * 1000));
-      if (seq >= total && b === 0 && !finished) { finished = true; mt.stop(); bars.current.pop(); setTimeout(() => finish(), 500); }
+      if (seq >= total + 1 && b === 0 && !finished) { finished = true; mt.stop(); bars.current.pop(); setTimeout(() => finish(), 500); }
     });
     m.current = mt; setPhase('run'); setBar(0); mt.start(); keepAwake(true); applyPresetFor(p.id === 'funk16' || p.id === 'ghost' ? 'funk' : 'clean', s);
   };

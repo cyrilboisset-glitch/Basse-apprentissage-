@@ -8,7 +8,7 @@ Application web installable (PWA), **entièrement en français, sans compte, san
 | **Séance du jour** | 10, 20 ou 30 min générées selon votre niveau et vos faiblesses ; série de jours avec un joker par semaine ; prochain objectif |
 | **Accordeur** (bouton ♩ partout) | Détection YIN en AudioWorklet, Mi grave et Si grave, ±3 cents, 5 accordages, La réglable, mode guidé corde par corde, accordeur du Plug Pro si le firmware le permet |
 | **Manche** | Manche interactif (couleurs **et** formes), 6 exercices par zones, déblocage à 90 %, carte de chaleur |
-| **Théorie appliquée** | 6 leçons courtes suivies d'un exercice joué |
+| **Théorie appliquée** | Parcours de 33 leçons en 4 chapitres (bases/gammes/modes, harmonie, rythme et solfège rythmique, jeu de basse et styles) : lecture, quiz, exercice joué ; leçon validée à 70 % |
 | **Improvisation** | 9 exercices progressifs sur backing track avec analyse et conseil de prof |
 | **Groove** | Mise en place en ms, clic qui disparaît, tempo +5 BPM, technique des doigts |
 | **Vocabulaire** | 64 phrases originales, 8 styles, tablature animée, 12 tonalités, vos propres phrases |

@@ -5,6 +5,8 @@ import { ZONES } from '../theory/fretboard';
 import { PHRASES } from '../exercises/vocab';
 import { EXERCISES, type ImproId } from '../exercises/impro';
 import { weight } from '../storage/srs';
+import { LESSONS } from '../exercises/theory';
+import { countSessions } from './data';
 
 export type Step =
   | { type: 'warmup'; minutes: number; title: string; pattern: string }
@@ -16,7 +18,8 @@ export type Step =
   | { type: 'ear'; minutes: number; title: string; kind: 'interval' | 'chord' | 'degree' | 'line' };
 
 const IMPRO_BY_LEVEL: ImproId[][] = [['root'], ['root'], ['root', 'add'], ['add', 'targets'], ['targets', 'chromatic'], ['root', 'add', 'targets'], ['chromatic', 'walking', 'constraints'], ['qa', 'copy', 'free', 'walking']];
-const LESSON_BY_LEVEL = ['chords', 'chords', 'scale-chord', 'scale-chord', 'degrees', 'targets', 'approach', 'role'];
+/** Première leçon du parcours pas encore validée (70 %), sinon on révise dans l'ordre. */
+export const nextLesson = (d: ProgressData, rng: () => number = Math.random) => (LESSONS.find(l => countSessions(d, `theory:${l.id}`, 70) === 0) ?? LESSONS[Math.floor(rng() * LESSONS.length)]).id;
 const GROOVE_BY_LEVEL = ['q', 'q', 'e', 'e', 's', 'sync', 'off', 'funk16'];
 
 /** Choisit la valeur la plus « urgente » : poids de répétition espacée le plus fort. */
@@ -40,7 +43,7 @@ export function buildSession(minutes: 10 | 20 | 30, d: ProgressData, level?: num
   const warm: Step = { type: 'warmup', minutes: minutes === 10 ? 1 : 2, title: 'Échauffement : cordes à vide au métronome', pattern: 'open' };
   const manche: Step = { type: 'manche', minutes: minutes === 10 ? 3 : 5, title: `Manche — ${z.label}`, kind: weakestKind(d, zone), zone };
   const ph = urgentPhrase(d, rng); const vocab: Step = { type: 'vocab', minutes: minutes === 10 ? 2 : 4, title: `Phrase : ${ph.name}`, phrase: ph.id };
-  const theory: Step = { type: 'theory', minutes: 3, title: 'Théorie appliquée', lesson: LESSON_BY_LEVEL[lv] };
+  const theory: Step = { type: 'theory', minutes: 3, title: 'Théorie appliquée', lesson: nextLesson(d, rng) };
   const imp: Step = { type: 'impro', minutes: minutes === 10 ? 4 : minutes === 20 ? 7 : 10, title: `Improvisation — ${exName}`, ex: impro };
   const gr: Step = { type: 'groove', minutes: minutes === 30 ? 5 : 3, title: 'Groove et mise en place', pattern: GROOVE_BY_LEVEL[lv] };
   const ear: Step = { type: 'ear', minutes: 3, title: 'Oreille', kind: (['interval', 'chord', 'degree', 'line'] as const)[lv % 4] };

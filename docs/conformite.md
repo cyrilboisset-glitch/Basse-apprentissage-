@@ -26,7 +26,7 @@
 | Web Bluetooth (BLE MIDI) | ✅ (simulé) | Contrôleur + 17 tests unitaires + 2 e2e avec faux GATT |
 | Entrée/sortie USB-C via `getUserMedia` | ✅ (simulé) | Contraintes sans écho/bruit/AGC ; jamais essayé sur un vrai Plug Pro |
 | Déploiement GitHub Pages + workflow Actions | 🟡 | Workflows `deploy.yml` et `ci.yml` écrits ; **non exécutés** (nécessite `main` + activation de Pages) |
-| Vitest (théorie, détection sur WAV, scoring) | ✅ | **176 tests** dont 45 WAV de référence |
+| Vitest (théorie, détection sur WAV, scoring) | ✅ | **192 tests** dont 45 WAV de référence |
 | Playwright (parcours clés) | ✅ | **31 parcours** + 1 test d'endurance optionnel |
 | Modules `audio/ theory/ nux/ exercises/ ui/ storage/` | ✅ | + `progress/` |
 
@@ -77,7 +77,7 @@
 | 6.3 | 6 exercices du manche | ✅ | Chasse, corde imposée, quiz, intervalles, gammes, arpèges |
 | 6.3 | « Gammes en positions : … puis la relier à la position suivante » | ✅ | Une manche sur deux relie deux positions voisines ; test unitaire et e2e |
 | 6.3 | Validation audio ; déblocage à 90 % sur 3 séances ; carte de chaleur | 🟡 | ✅ — mais l'audio donne la **hauteur, pas la corde ni la case** : « toutes les positions » = toutes les hauteurs de la zone ; « corde imposée » accepte n'importe quelle octave de la corde dans la zone |
-| 6.4 | Leçons ≤ 2 min suivies d'un exercice joué (6 thèmes) | ✅ | 6 leçons ≤ 260 mots |
+| 6.4 | Leçons ≤ 2 min suivies d'un exercice joué (4 chapitres) | ✅ | 33 leçons ≤ 260 mots, dont solfège rythmique mesuré en ms |
 | 6.5 | 9 exercices d'improvisation sur backing avec grille et accord en cours | ✅ | Joueurs simulés parfaits = 100 % sur chacun |
 | 6.5 | « Une seule corde » (contraintes) | 🟡 | Non détectable : remplacé par un ambitus ≤ 7 demi-tons |
 | 6.5 | Retour : % dans l'accord, justesse rythmique, cibles, conseil de prof | ✅ | Règles locales, 3 conseils max |

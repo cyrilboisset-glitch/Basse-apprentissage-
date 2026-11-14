@@ -17,6 +17,7 @@ export interface Round {
   ordered: boolean; any?: boolean;        // any : un seul des targets suffit
   show: Pos[]; labels?: string[]; hideNames?: boolean;
   quizPc?: number;                         // quiz : réponse attendue (classe de hauteur)
+  detail?: string;                         // texte à chasse fixe sous l'énoncé (ex. tablature)
   srsId?: string;
 }
 type Rng = () => number;

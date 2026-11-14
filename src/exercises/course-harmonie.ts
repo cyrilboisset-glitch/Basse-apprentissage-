@@ -1,0 +1,65 @@
+import { type Lesson, low, nm, rnd, round, qz, names } from './theory-kit';
+
+/** Chapitre 2 — Harmonie : accords et grilles. */
+export const HARMONIE: Lesson[] = [
+  { id: 'chords', chapter: 2, title: 'Construire accords et arpèges',
+    text: ['Un accord se construit en empilant des tierces à partir de la fondamentale. Majeur : tierce majeure (4 demi-tons) + quinte juste (7). Mineur : tierce mineure (3) + quinte (7).',
+      'Ajoutez la septième mineure (10 demi-tons) : c’est la septième de dominante (accord « 7 »). Un arpège, c’est simplement jouer ces notes l’une après l’autre.',
+      'À la basse, l’arpège est votre outil n°1 : fondamentale, tierce, quinte, puis retour.'],
+    build: (r, n) => { const rt = rnd(12, r); const R = low(rt);
+      return { quiz: [{ q: 'Combien de demi-tons entre la fondamentale et la tierce d’un accord MINEUR ?', choices: ['3', '4', '5'], answer: 0 }, { q: 'Quelle note ajoute-t-on à un accord majeur pour obtenir un accord de 7e de dominante ?', choices: ['Septième majeure', 'Septième mineure', 'Sixte'], answer: 1 }],
+        rounds: [round(`Arpège ${nm(R, n)} majeur : fondamentale, tierce, quinte`, [R, R + 4, R + 7]), round(`Arpège ${nm(R, n)} mineur : fondamentale, tierce, quinte`, [R, R + 3, R + 7]), round(`Arpège ${nm(R, n)}7 : fondamentale, tierce, quinte, septième`, [R, R + 4, R + 7, R + 10])] }; } },
+  { id: 'seventh', chapter: 2, title: 'Les accords de quatre sons',
+    text: ['On ajoute une quatrième note, la septième, pour enrichir l’accord. Maj7 : 1, 3, 5, 7 majeure (11 demi-tons). Accord « 7 » (dominante) : 1, 3, 5, b7 (10). Mineur 7 : 1, b3, 5, b7. Demi-diminué (m7b5) : 1, b3, b5, b7.',
+      'À la basse, ce sont les arpèges que vous jouerez le plus : la septième colore le son et prépare le changement d’accord.'],
+    build: (r, n) => { const R = low(rnd(12, r)); return { quiz: [
+      qz('Quelle septième trouve-t-on dans un accord de dominante (« 7 ») ?', 'La septième mineure', ['La septième majeure', 'La sixte', 'La neuvième'], r),
+      qz('Un accord m7 est composé de…', 'tierce mineure, quinte juste, septième mineure', ['tierce majeure, quinte juste, septième mineure', 'tierce mineure, quinte juste, septième majeure', 'tierce majeure, quinte juste, septième majeure'], r),
+      qz('Quelle note de plus contient Do maj7 par rapport à Do ?', 'Si', ['Si bémol', 'La', 'Ré'], r)],
+      rounds: [round(`Arpège ${nm(R, n)}maj7 : ${names([R, R + 4, R + 7, R + 11], n)}`, [R, R + 4, R + 7, R + 11]), round(`Arpège ${nm(R, n)}7 : ${names([R, R + 4, R + 7, R + 10], n)}`, [R, R + 4, R + 7, R + 10]), round(`Arpège ${nm(R, n)}m7 : ${names([R, R + 3, R + 7, R + 10], n)}`, [R, R + 3, R + 7, R + 10])] }; } },
+  { id: 'harmonized', chapter: 2, title: 'Les accords d’une tonalité',
+    text: ['En construisant un accord sur chaque degré de la gamme majeure, on obtient les accords de la tonalité : I majeur, ii mineur, iii mineur, IV majeur, V majeur (ou 7), vi mineur, vii diminué (m7b5 à quatre sons).',
+      'En Do majeur : Do, Rém, Mim, Fa, Sol, Lam, Si dim. Les majuscules sont les accords majeurs, les minuscules les mineurs. Cette règle ne change jamais : seule la tonalité varie.'],
+    build: (r, n) => { const k = rnd(12, r); const R = low(k); const roots = [0, 2, 4, 5, 7, 9].map(o => R + o); return { quiz: [
+      qz('Quels accords sont majeurs dans une tonalité majeure ?', 'I, IV et V', ['ii, iii et vi', 'I, ii et V', 'IV, vi et vii'], r),
+      qz('Quel est l’accord du vi en Do majeur ?', 'La mineur', ['Mi mineur', 'Ré mineur', 'La majeur'], r),
+      qz('Quel accord se construit sur le 7e degré ?', 'Un accord diminué (m7b5)', ['Un accord majeur', 'Un accord mineur', 'Un accord de 7e de dominante'], r)],
+      rounds: [round(`Fondamentales des accords I à vi : ${names(roots, n)}`, roots)] }; } },
+  { id: 'functions', chapter: 2, title: 'Tonique, sous-dominante, dominante',
+    text: ['Les accords ont des fonctions. Tonique (I, vi, iii) : le repos. Sous-dominante (IV, ii) : le mouvement, on s’éloigne. Dominante (V, vii) : la tension, qui appelle un retour vers la tonique.',
+      'Le V7 est le plus tendu : il contient un triton (tierce et septième à 6 demi-tons) qui « veut » se résoudre sur I. Ce mouvement V → I est le plus fort de toute la musique tonale.'],
+    build: (r, n) => { const k = rnd(12, r); const V = low(k + 7), I = low(k); const seq = [V, V + 4, V + 7, V + 10, I]; return { quiz: [
+      qz('Quel accord crée le plus de tension avant de revenir au I ?', 'Le V (dominante)', ['Le IV', 'Le vi', 'Le ii'], r),
+      qz('À quelle fonction appartient l’accord ii ?', 'Sous-dominante', ['Tonique', 'Dominante', 'Aucune'], r),
+      qz('Quel accord donne l’impression de repos, d’arrivée ?', 'Le I (tonique)', ['Le V7', 'Le IV', 'Le vii'], r)],
+      rounds: [round(`Arpège de V7 puis résolution sur I : ${names(seq, n)}`, seq)] }; } },
+  { id: 'degrees', chapter: 2, title: 'Degrés et grilles courantes',
+    text: ['Les degrés numérotent les accords d’une tonalité : I (tonique), IV (sous-dominante), V (dominante). Une grille comme « I – IV – V » se transpose dans toutes les tonalités.',
+      'Grilles à connaître : blues 12 mesures (I – IV – I – V – IV – I), II – V – I (jazz), I – VI – II – V, et la boucle pop I – V – vi – IV.'],
+    build: (r, n) => { const k = rnd(12, r); const I = low(k), IV = low(k + 5), V = low(k + 7); return { quiz: [{ q: 'Dans une grille de blues, sur quel degré joue-t-on la 5e mesure ?', choices: ['I', 'IV', 'V'], answer: 1 }, { q: 'II – V – I en Do : quel est l’accord du V ?', choices: ['Sol', 'Fa', 'Ré mineur'], answer: 0 }],
+      rounds: [round(`Fondamentales de I – IV – V – I en ${nm(I, n)} : ${nm(I, n)}, ${nm(IV, n)}, ${nm(V, n)}, ${nm(I, n)}`, [I, IV, V, I])] }; } },
+  { id: 'ii-v-i', chapter: 2, title: 'Le II – V – I',
+    text: ['Le II – V – I est l’enchaînement de base du jazz : en Do, Rém7 – Sol7 – Do maj7. Les fondamentales descendent de quinte en quinte (Ré, Sol, Do) : c’est un chemin naturel pour la basse.',
+      'Les notes guides sont la tierce et la septième de chaque accord. Elles se relient par demi-ton descendant : la septième de Rém7 (Do) descend sur la tierce de Sol7 (Si), dont la septième (Fa) descend sur la tierce de Do maj7 (Mi).'],
+    build: (r, n) => { const k = rnd(12, r); const ii = low(k + 2), V = low(k + 7), I = low(k); const b = low(k) + 12; const guide = [b, b - 1, b + 5, b + 4]; return { quiz: [
+      qz('Que contient un II – V – I en Do majeur ?', 'Rém7 – Sol7 – Do maj7', ['Sol7 – Rém7 – Do maj7', 'Fa – Sol – Do', 'Lam7 – Rém7 – Sol7'], r),
+      qz('Quelles notes appelle-t-on « notes guides » ?', 'La tierce et la septième', ['La fondamentale et la quinte', 'L’octave et la quarte', 'La seconde et la sixte'], r),
+      qz('De quel intervalle descendent les notes guides d’un accord au suivant ?', 'D’un demi-ton', ['D’un ton', 'D’une tierce', 'D’une quarte'], r)],
+      rounds: [round(`Fondamentales II – V – I : ${names([ii, V, I], n)}`, [ii, V, I]), round(`Notes guides (septième, tierce, septième, tierce) : ${names(guide, n)}`, guide)] }; } },
+  { id: 'inversions', chapter: 2, title: 'Accords sur basse et renversements',
+    text: ['Un accord noté « C/E » se lit « Do sur Mi » : c’est l’accord de Do, mais la note la plus grave est Mi. On l’appelle renversement. La basse ne joue plus la fondamentale, elle joue la note après la barre.',
+      'Pourquoi ? Pour que la ligne de basse avance par notes voisines (Do, Mi, Fa, Si, Do…) au lieu de sauter d’accord en accord. Lisez toujours la note de droite : c’est la vôtre.'],
+    build: (r, n) => { const R = low(rnd(12, r)); const line = [R, R + 4, R + 5, R + 11, R + 12]; return { quiz: [
+      qz('Que joue la basse sur un accord noté C/E ?', 'Un Mi', ['Un Do', 'Un Sol', 'Un Si'], r),
+      qz('Dans G/B, quelle est la note de basse ?', 'Si', ['Sol', 'Ré', 'Fa'], r),
+      qz('À quoi servent les accords sur basse ?', 'À faire avancer la basse par notes voisines', ['À jouer plus fort', 'À changer de tonalité', 'À raccourcir la grille'], r)],
+      rounds: [round(`Ligne de basse sur C – C/E – F – G/B – C (en Do : Do Mi Fa Si Do) depuis ${nm(R, n)} : ${names(line, n)}`, line)] }; } },
+  { id: 'blues', chapter: 2, title: 'Le blues à 12 mesures',
+    text: ['La grille de blues dure 12 mesures et n’utilise que trois accords, tous en septième : I7 (4 mesures), IV7 (2 mesures), I7 (2), V7 (1), IV7 (1), I7 (1), V7 ou I7 (1). En La : A7, D7, E7.',
+      'Elle se joue en boucle des milliers de fois dans le blues, le rock, le jazz. La connaître par cœur, c’est pouvoir jouer avec n’importe qui, dans n’importe quelle tonalité.'],
+    build: (r, n) => { const k = rnd(12, r); const I = low(k), IV = low(k + 5), V = low(k + 7); const seq = [I, IV, I, V, IV, I]; return { quiz: [
+      qz('Combien de mesures dans le blues classique ?', '12', ['8', '16', '10'], r),
+      qz('Quel accord joue-t-on à la mesure 5 ?', 'IV7', ['I7', 'V7', 'ii7'], r),
+      qz('Quels accords utilise le blues en La ?', 'A7, D7, E7', ['Am, Dm, Em', 'A, C, G', 'A7, B7, C7'], r)],
+      rounds: [round(`Fondamentales des changements : I – IV – I – V – IV – I en ${nm(I, n)} : ${names(seq, n)}`, seq)] }; } },
+];

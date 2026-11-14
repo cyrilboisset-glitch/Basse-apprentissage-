@@ -29,7 +29,7 @@ export function Vocabulaire({ s }: { s: Settings }) {
   const reload = () => loadUser().then(setMine);
   useEffect(() => { reload(); }, []);
   if (adding) return <Editor s={s} onDone={() => { setAdding(false); reload(); }} />;
-  if (sel) return <Detail s={s} base={sel} onExit={() => { setSel(null); reload(); }} onDelete={sel.user ? async () => { await saveUser(mine.filter(x => x.id !== sel.id)); setSel(null); reload(); } : undefined} />;
+  if (sel) return <PhraseDetail s={s} base={sel} onExit={() => { setSel(null); reload(); }} onDelete={sel.user ? async () => { await saveUser(mine.filter(x => x.id !== sel.id)); setSel(null); reload(); } : undefined} />;
   const list = style === 'perso' ? mine : PHRASES.filter(p => p.style === style);
   return (<>
     <h1>Vocabulaire</h1>
@@ -54,7 +54,7 @@ function Tab({ p, pos, score }: { p: Phrase; pos: number; score: boolean }) {
   </svg></div>;
 }
 
-function Detail({ s, base, onExit, onDelete }: { s: Settings; base: Phrase; onExit: () => void; onDelete?: () => void }) {
+export function PhraseDetail({ s, base, onExit, onDelete }: { s: Settings; base: Phrase; onExit: () => void; onDelete?: () => void }) {
   const [key, setKey] = useState(base.key); const [bpm, setBpm] = useState(base.bpm); const [loop, setLoop] = useState(true); const [score, setScore] = useState(false);
   const [mode, setMode] = useState<'off' | 'listen' | 'play'>('off'); const [pos, setPos] = useState(-1); const [res, setRes] = useState<GrooveResult | null>(null);
   const p = key === base.key ? base : transpose(base, key);

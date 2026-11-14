@@ -16,12 +16,12 @@ const N = 10;
 
 export function Oreille({ s }: { s: Settings }) {
   const [kind, setKind] = useState<Kind | null>(null);
-  if (kind) return <Quiz s={s} kind={kind} onExit={() => setKind(null)} />;
+  if (kind) return <EarQuiz s={s} kind={kind} onExit={() => setKind(null)} />;
   return (<><h1>Oreille</h1><p class="muted">Écoutez, identifiez. Les types ratés reviennent plus souvent.</p>
     {KINDS.map(([k, l]) => <button class="card" style="width:100%;text-align:left;color:inherit;font-size:1.2rem;cursor:pointer" onClick={() => setKind(k)}><b>{l}</b></button>)}</>);
 }
 
-function Quiz({ s, kind, onExit }: { s: Settings; kind: Kind; onExit: () => void }) {
+export function EarQuiz({ s, kind, onExit }: { s: Settings; kind: Kind; onExit: () => void }) {
   const [level, setLevel] = useState(0); const [i, setI] = useState(-1); const [q, setQ] = useState<any>(null); const [fb, setFb] = useState<{ ok: boolean; text: string } | null>(null);
   const [ok, setOk] = useState(0); const [done, setDone] = useState(false); const [replays, setReplays] = useState(0);
   const srs = useRef<Map<string, SrsItem>>(new Map()); const out = useRef<ReturnType<typeof makeBuses> | null>(null);

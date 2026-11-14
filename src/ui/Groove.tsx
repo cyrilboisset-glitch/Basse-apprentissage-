@@ -17,7 +17,7 @@ export function Groove({ s }: { s: Settings }) {
   const [p, setP] = useState<GroovePattern | null>(null);
   const [best, setBest] = useState<Record<string, number>>({});
   useEffect(() => { db.sessions.where('module').startsWith('groove:').toArray().then(rows => { const b: Record<string, number> = {}; rows.forEach(r => { const id = r.module.slice(7); b[id] = Math.max(b[id] ?? 0, r.score ?? 0); }); setBest(b); }); }, [p]);
-  if (p) return <Run s={s} p={p} onExit={() => setP(null)} />;
+  if (p) return <GrooveRun s={s} p={p} onExit={() => setP(null)} />;
   const list = (title: string, items: GroovePattern[]) => <div class="card"><h2>{title}</h2>
     {items.map(x => <button class="btn" style="margin:6px 0;text-align:left;padding:8px 16px" onClick={() => setP(x)}>{x.name}{best[x.id] !== undefined && <span class="muted" style="float:right">{best[x.id]} %</span>}</button>)}</div>;
   return (<>
@@ -37,7 +37,7 @@ function Slots({ p, beat }: { p: GroovePattern; beat: number }) {
       return <div style={`height:28px;border-radius:6px;display:grid;place-items:center;border:2px solid ${now ? 'var(--accent)' : 'var(--border)'};${i % (n / 4) === 0 ? 'border-bottom-color:var(--muted)' : ''}`}>{k === 'note' ? '●' : k === 'ghost' ? '○' : ''}</div>; })}</div>;
 }
 
-function Run({ s, p, onExit }: { s: Settings; p: GroovePattern; onExit: () => void }) {
+export function GrooveRun({ s, p, onExit }: { s: Settings; p: GroovePattern; onExit: () => void }) {
   const status = useEngineStatus();
   const [bpm, setBpm] = useState(80); const [nBars, setNBars] = useState(patternBars(p) > 1 ? 8 : 8); const [vanish, setVanish] = useState('');
   const [selfGhost, setSelfGhost] = useState(false);

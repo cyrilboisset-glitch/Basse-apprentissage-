@@ -25,7 +25,7 @@ export function Impro({ s }: { s: Settings }) {
   const [ex, setEx] = useState<ExDef | null>(null);
   const [best, setBest] = useState<Record<string, number>>({});
   useEffect(() => { db.sessions.where('module').startsWith('impro:').toArray().then(rows => { const b: Record<string, number> = {}; rows.forEach(r => { const id = r.module.slice(6); b[id] = Math.max(b[id] ?? 0, r.score ?? 0); }); setBest(b); }); }, [ex]);
-  if (ex) return <Runner s={s} ex={ex} onExit={() => setEx(null)} />;
+  if (ex) return <ImproRunner s={s} ex={ex} onExit={() => setEx(null)} />;
   return (<>
     <h1>Improvisation</h1>
     <p class="muted">9 étapes progressives sur backing track. Faites-les dans l'ordre.</p>
@@ -35,7 +35,7 @@ export function Impro({ s }: { s: Settings }) {
   </>);
 }
 
-function Runner({ s, ex, onExit }: { s: Settings; ex: ExDef; onExit: () => void }) {
+export function ImproRunner({ s, ex, onExit }: { s: Settings; ex: ExDef; onExit: () => void }) {
   const tuning = getTuning(s.tuning).midi, status = useEngineStatus();
   const [key, setKey] = useState(ex.key); const [bpm, setBpm] = useState(ex.bpm); const [help, setHelp] = useState(ex.id === 'free');
   const [phase, setPhase] = useState<'setup' | 'run' | 'result'>('setup');
@@ -62,7 +62,7 @@ function Runner({ s, ex, onExit }: { s: Settings; ex: ExDef; onExit: () => void 
     const lat = (s.inputMode === 'usb' ? s.latencyUsbMs : s.latencyBluetoothMs) / 1000;
     const r = analyze(ex, bars, scripts.current, grid.current!, notes.current.map(n => ({ t: n.t - lat, midi: n.midi })));
     b.dispose(); bk.current = null; keepAwake(false); setRes(r); setPhase('result'); setCur(null);
-    await db.sessions.add({ date: today(), module: `impro:${ex.id}`, seconds: Math.round((performance.now() - t0.current) / 1000), score: r.score });
+    await db.sessions.add({ date: today(), module: `impro:${ex.id}`, seconds: Math.round((performance.now() - t0.current) / 1000), score: r.score, note: `${key} ${bpm} BPM` });
   };
   const stop = () => { bk.current?.dispose(); bk.current = null; keepAwake(false); setPhase('setup'); setCur(null); };
 

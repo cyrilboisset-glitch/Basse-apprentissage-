@@ -3,6 +3,12 @@ import { DEFAULT_SETTINGS, type Settings } from '../storage/settings';
 import { Tuner } from './Tuner';
 import { Materiel } from './Materiel';
 import { MancheModule } from './Manche';
+import { Home } from './Home';
+import { Session } from './Session';
+import { Dashboard } from './Dashboard';
+import { Placement } from './Placement';
+import { Theorie } from './Theory';
+import { makeIcs } from './reminder';
 import { Vocabulaire } from './Vocabulaire';
 import { Oreille } from './Oreille';
 import { Groove } from './Groove';
@@ -15,22 +21,14 @@ import { loadSettings, saveSettings, requestPersistence, exportAll, importAll } 
 
 const TABS = [['#/', 'Séance'], ['#/manche', 'Manche'], ['#/pratique', 'Pratique'], ['#/outils', 'Outils'], ['#/reglages', 'Réglages']] as const;
 const PRATIQUE = [['#/impro', 'Improvisation', '9 exercices sur backing track'], ['#/groove', 'Groove', 'Mise en place, clic qui disparaît'], ['#/jam', 'Jam', 'Backings 9 styles, grilles'],
-  ['#/vocabulaire', 'Vocabulaire', '64 phrases, 12 tonalités'], ['#/oreille', 'Oreille', 'Intervalles, accords, degrés, relevé']] as const;
-const tabOf = (h: string) => (PRATIQUE.some(p => p[0] === h) || h === '#/pratique' ? '#/pratique' : h === '#/materiel' ? '#/outils' : h);
+  ['#/vocabulaire', 'Vocabulaire', '64 phrases, 12 tonalités'], ['#/oreille', 'Oreille', 'Intervalles, accords, degrés, relevé'], ['#/theorie', 'Théorie appliquée', '6 leçons courtes + exercice joué']] as const;
+const tabOf = (h: string) => (['#/seance', '#/bord', '#/placement'].includes(h) ? '#/' : PRATIQUE.some(p => p[0] === h) || h === '#/pratique' ? '#/pratique' : h === '#/materiel' ? '#/outils' : h);
 function Pratique() {
   return <><h1>Pratique</h1>{PRATIQUE.map(([h, t, d]) => <a class="card" href={h} style="display:block;text-decoration:none;color:inherit"><b style="font-size:1.2rem">{t}</b><div class="muted">{d}</div></a>)}</>;
 }
 
 function Placeholder({ title, phase }: { title: string; phase: string }) {
   return <div class="card"><h1>{title}</h1><p class="muted">Module prévu en {phase}.</p></div>;
-}
-
-function Home({ s }: { s: Settings }) {
-  return (<>
-    <h1>BassLab</h1>
-    <button class="btn primary" disabled>Démarrer ma séance ({s.sessionMinutes} min)</button>
-    <div class="card muted">La séance du jour sera disponible en phase 10.</div>
-  </>);
 }
 
 function Reglages({ s, set }: { s: Settings; set: (p: Partial<Settings>) => void }) {
@@ -66,6 +64,10 @@ function Reglages({ s, set }: { s: Settings; set: (p: Partial<Settings>) => void
           <option value="10">10 min</option><option value="20">20 min</option><option value="30">30 min</option></select></label>
       <label>Taille du texte <input type="range" min="0.9" max="1.5" step="0.05" value={s.fontScale} onInput={e => set({ fontScale: Number((e.target as HTMLInputElement).value) })} /></label>
     </div>
+    <div class="card"><h2>Rappel quotidien</h2>
+      <label>Heure <input type="time" value={s.reminderTime} onChange={e => set({ reminderTime: (e.target as HTMLInputElement).value })} /></label>
+      <button class="btn" disabled={!s.reminderTime} onClick={() => { const url = URL.createObjectURL(new Blob([makeIcs(s.reminderTime, s.sessionMinutes)], { type: 'text/calendar' })); Object.assign(document.createElement('a'), { href: url, download: 'basslab-rappel.ics' }).click(); URL.revokeObjectURL(url); }}>Ajouter à mon agenda (.ics)</button>
+      <p class="muted">Une appli web ne peut pas envoyer de notification à heure fixe sans serveur (et rien ne doit quitter votre téléphone). Le fichier .ics crée un événement quotidien avec alarme dans votre agenda.</p></div>
     <div class="card">
       <button class="btn" onClick={doExport}>Exporter mes données</button>
       <label>Importer <input type="file" accept="application/json" onChange={doImport} /></label>
@@ -93,6 +95,10 @@ export function App() {
   switch (hash) {
     case '#/manche': page = <MancheModule s={s} />; break;
     case '#/impro': page = <Impro s={s} />; break;
+    case '#/seance': page = <Session s={s} onClose={() => { location.hash = '#/'; }} />; break;
+    case '#/bord': page = <Dashboard s={s} />; break;
+    case '#/placement': page = <Placement s={s} />; break;
+    case '#/theorie': page = <Theorie s={s} />; break;
     case '#/pratique': page = <Pratique />; break;
     case '#/vocabulaire': page = <Vocabulaire s={s} />; break;
     case '#/oreille': page = <Oreille s={s} />; break;
@@ -101,7 +107,7 @@ export function App() {
     case '#/outils': page = <Outils />; break;
     case '#/materiel': page = <Materiel s={s} set={set} />; break;
     case '#/reglages': page = <Reglages s={s} set={set} />; break;
-    default: page = <Home s={s} />;
+    default: page = <Home s={s} set={set} />;
   }
   return (<>
     {est === 'disconnected' && <div role="alert" style="position:sticky;top:0;z-index:20;background:var(--danger);color:#fff;padding:12px;border-radius:0 0 12px 12px;margin:0 -16px">

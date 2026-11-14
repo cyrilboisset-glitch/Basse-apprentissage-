@@ -35,3 +35,10 @@
 - **Plug Pro / BLE MIDI** : trames reprises de Mightier Amp (MIT) ; `acceptAllDevices` + service MIDI optionnel (nom BLE inconnu). Tout est testé avec un faux périphérique ; aucun essai sur matériel réel (voir `docs/nux-protocol.md`).
 - **Accordeur du Plug Pro** : disponibilité détectée par absence de réponse (2,5 s) faute de lecture fiable du firmware.
 - **Pause sur déconnexion** : si la piste audio d'entrée se termine (câble USB retiré), les exercices s'arrêtent, une bannière s'affiche et la reconnexion est tentée automatiquement (événement `devicechange`) ou via « Réessayer ».
+- **Niveaux** : 8 niveaux à critères mesurables (zones validées, tempos de groove, scores d'impro, phrases validées…) évalués à partir de l'historique ; `evaluateLevels` renvoie 9 quand tout est validé. Les notes de séance « 90 BPM ±12 ms » / « F 90 BPM » portent les critères de tempo, de régularité et de tonalité (ex. « walking sur un blues en Fa à 90 BPM »).
+- **Série** : un joker par semaine ISO, utilisable seulement si la veille a été pratiquée ; si aujourd'hui n'est pas encore pratiqué, la série d'hier reste valable.
+- **Test de positionnement** (~10 min) : repérage visuel cases 0-5 / 5-12, rythme à 80 BPM, 4 questions de théorie, 4 intervalles. Niveau conseillé = 1 + une étape réussie (≤ 6) ; débloque les zones 0-5 ou 0-12 via des séances synthétiques `placement`. Étapes audio ignorables.
+- **Séance du jour** : 10 min = échauffement + manche + impro ; 20 = + vocabulaire + groove ; 30 = + théorie + oreille. Le type de manche est celui où l'utilisateur est le plus faible dans la zone ; la phrase proposée est celle dont la répétition espacée est la plus urgente.
+- **Rappel quotidien** : impossible en push sans serveur → fichier .ics (événement quotidien + alarme).
+- **Théorie appliquée** : 6 leçons ≤ 260 mots, quiz + exercice joué validé à l'audio.
+- **Badges** : 12, tous liés à des progrès mesurés.

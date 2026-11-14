@@ -22,7 +22,7 @@ export function Exercices({ s }: { s: Settings }) {
   const reload = () => allDrills().then(setDrills);
   useEffect(() => { reload(); }, [run]);
   const open = unlockedZones(drills, s.unlockAll);
-  if (run) return <Runner s={s} kind={kind} zoneId={zone} onExit={() => setRun(false)} />;
+  if (run) return <DrillRunner s={s} kind={kind} zoneId={zone} onExit={() => setRun(false)} />;
   return (<>
     <div class="card"><h2>Zone</h2>
       {ZONES.map(z => {
@@ -41,7 +41,7 @@ export function Exercices({ s }: { s: Settings }) {
 }
 const k2n = (k: DrillKind) => (k === 'quiz' ? 12 : ROUNDS);
 
-function Runner({ s, kind, zoneId, onExit }: { s: Settings; kind: DrillKind; zoneId: string; onExit: () => void }) {
+export function DrillRunner({ s, kind, zoneId, onExit }: { s: Settings; kind: DrillKind; zoneId: string; onExit: () => void }) {
   const tuning = getTuning(s.tuning).midi, z = ZONES.find(x => x.id === zoneId)!;
   const total = k2n(kind), audio = kind !== 'quiz';
   const [idx, setIdx] = useState(0); const [, tick] = useState(0);

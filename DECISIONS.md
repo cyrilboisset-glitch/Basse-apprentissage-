@@ -47,3 +47,8 @@
 - **Sauvegarde JSON** : n'inclut pas les enregistrements audio (volumineux) ; export fichier par fichier. Pas de ZIP (pas de dépendance ajoutée).
 - **Import audio** : lecture via `<audio>` avec `preservesPitch` (ralenti 50-100 % sans changer la hauteur), boucle A-B mémorisée par fichier, forme d'onde décodée localement.
 - **Note commande** : même note deux fois (≤ 1 s) après ≥ 1,2 s de silence ; footswitch : toute note-on / CC ≥ 64 / Program Change, anti-rebond 300 ms. Les deux pilotent l'exercice ouvert (démarrer/arrêter).
+- **Fichiers WAV de référence** (45 notes B0→G4) générés par script et versionnés (`tests/audio`, 2 Mo) ; mesure CLI sur ses propres enregistrements. Les chiffres (100 % à 20 dB, 75,6 % à 10 dB de rapport signal/bruit) sont publiés tels que mesurés : le seuil de test du bruit est calé sur la mesure, pas gonflé.
+- **Accessibilité** : audit axe-core automatisé (17 écrans × 2 thèmes) ; variable `--on-accent` pour garder le contraste en thème clair ; badges verrouillés sans `opacity`.
+- **Performance** : pas de découpage de code (96 Ko gzip, démarrage 0,38 s à CPU ×4) ; page Pratique comme point d'entrée des modules.
+- **Test d'endurance de 160 s** (pas 1 h) : voir `docs/qualite.md` pour la portée exacte de la conclusion.
+- **Licence** : non choisie (décision de l'auteur).

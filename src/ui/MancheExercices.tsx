@@ -11,6 +11,7 @@ import type { Drill, NoteStat, SrsItem } from '../storage/db';
 import { STATUS_MSG, useEngineStatus } from './useEngine';
 import { pc } from '../theory/scales';
 import { applyPresetFor } from '../nux/presets';
+import { keepAwake } from './wakeLock';
 
 const KINDS = Object.keys(DRILL_LABEL) as DrillKind[];
 const ROUNDS = 8;
@@ -54,6 +55,7 @@ export function DrillRunner({ s, kind, zoneId, onExit }: { s: Settings; kind: Dr
   const tot = useRef({ c: 0, w: 0 }); const lock = useRef(false);
   const mk = () => makeRound(kind, { tuning, frets: s.frets, zone: { from: z.from, to: z.to }, notation: s.notation, srs: srs.current, rng: Math.random });
 
+  useEffect(() => { keepAwake(true); return () => { keepAwake(false); }; }, []);
   useEffect(() => { applyPresetFor('clean', s); loadSrs().then(m => { srs.current = m; round.current = mk(); st.current = newState(); t0.current = tLast.current = performance.now(); tick(x => x + 1); }); }, []);
 
   const finishRound = async (ok: boolean) => {

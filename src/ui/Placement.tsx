@@ -13,6 +13,7 @@ import { getTuning } from '../audio/notes';
 import { useNotes } from './useNotes';
 import { db } from '../storage/db';
 import { saveDrill, today } from '../storage/stats';
+import { keepAwake } from './wakeLock';
 
 
 type Phase = 'intro' | 'quiz' | 'rhythm' | 'theory' | 'ear' | 'result';
@@ -30,7 +31,7 @@ export function Placement({ s }: { s: Settings }) {
   // 2. rythme
   const [rBusy, setRBusy] = useState(false); const [rMsg, setRMsg] = useState(''); const ons = useRef<{ t: number; midi: number | null }[]>([]);
   useNotes(rBusy, s.refA, e => ons.current.push({ t: e.t, midi: e.midi }), s.inputDeviceId);
-  useEffect(() => () => { out.current?.out.disconnect(); }, []);
+  useEffect(() => { keepAwake(true); return () => { keepAwake(false); out.current?.out.disconnect(); }; }, []);
 
   const answerQuiz = (p: number) => { const ok = p === qs[qi].quizPc; const a = [...ans, ok]; setAns(a); if (qi + 1 < qs.length) setQi(qi + 1); else { setSc(x => ({ ...x, a: a.slice(0, 4).filter(Boolean).length / 4, b: a.slice(4).filter(Boolean).length / 4 })); setPhase('rhythm'); } };
   const runRhythm = async () => {

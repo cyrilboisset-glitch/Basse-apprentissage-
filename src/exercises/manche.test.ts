@@ -18,6 +18,11 @@ describe('génération des manches', () => {
       if (k === 'scale') expect([...r.targets]).toEqual([...r.targets].sort((a, b) => a - b));
     }
   });
+  it('gammes : une partie des manches relie deux positions voisines (plus de notes, toujours croissant)', () => {
+    let linked = 0, single = 0; const sizes: number[] = [];
+    for (let i = 0; i < 200; i++) { const r = makeRound('scale', ctx(0, 12)); if (/reliez/.test(r.prompt)) { linked++; sizes.push(r.targets.length); expect(r.targets).toEqual([...r.targets].sort((a, b) => a - b)); } else single++; }
+    expect(linked).toBeGreaterThan(20); expect(single).toBeGreaterThan(20); expect(Math.max(...sizes)).toBeGreaterThan(7);
+  });
   it('hunt : cases 0-5 de Mi = Mi grave à vide, La case 7 hors zone', () => {
     const r = makeRound('hunt', { ...ctx(0, 5), rng: () => 0 }); // 1re classe de hauteur de la zone
     expect(r.targets.every(m => m >= 28 && m <= 48)).toBe(true);

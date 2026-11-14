@@ -39,7 +39,7 @@ export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) 
       m.stop(); rec.current = false;
       const lat = estimateLatencyMs(clicks.slice(2), detectOnsets(frames.current));
       if (lat === null) setResult("Mesure impossible : pas assez de notes détectées. Jouez plus fort et réessayez.");
-      else { set(s.inputMode === 'usb' ? { latencyUsbMs: lat } : { latencyBluetoothMs: lat }); setResult(`Décalage mesuré : ${lat} ms (enregistré pour le mode ${s.inputMode === 'usb' ? 'USB' : 'Bluetooth'}).`); }
+      else { set(s.inputMode === 'usb' ? { latencyUsbMs: lat, calibrated: { ...s.calibrated, usb: true } } : { latencyBluetoothMs: lat, calibrated: { ...s.calibrated, bluetooth: true } }); setResult(`Décalage mesuré : ${lat} ms (enregistré pour le mode ${s.inputMode === 'usb' ? 'USB' : 'Bluetooth'}).`); }
       setCalib('done');
     };
     m.start();
@@ -58,7 +58,7 @@ export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) 
           <option value="">Par défaut</option>{devs.map(d => <option value={d.id}>{d.label}</option>)}</select></label>
       <button class="btn" onClick={engine.status === 'running' && mine.current ? stopMine : start}>{status === 'running' ? "Arrêter l'écoute" : "Tester l'entrée"}</button>
       {STATUS_MSG[status] && <p role="alert">{STATUS_MSG[status]}</p>}
-      <div style="height:20px;background:var(--bg);border-radius:10px;margin-top:12px;overflow:hidden" aria-label="Niveau d'entrée">
+      <div style="height:20px;background:var(--bg);border-radius:10px;margin-top:12px;overflow:hidden" role="progressbar" aria-label="Niveau d'entrée" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.min(100, Math.round(level * 400))}>
         <div style={`height:100%;width:${Math.min(100, level * 400)}%;background:var(--accent)`}/></div>
       <p class="muted">Dans le Plug Pro, choisissez le routage USB « Dry Out » (basse seule) ; évitez « Loopback », qui renverrait le backing dans l'entrée.</p>
     </div>
@@ -92,7 +92,9 @@ export function Materiel({ s, set }: { s: Settings; set: (p: Partial<Settings>) 
       {fst === 'error' && <p role="alert">Connexion impossible : le footswitch doit être en mode BLE MIDI.</p>}</div>
     <div class="card">
       <h2>Calibration de latence</h2>
-      <p class="muted">Réglée : USB {s.latencyUsbMs} ms · Bluetooth {s.latencyBluetoothMs} ms. À faire avant les exercices de rythme, casque branché.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><label style="display:block">USB (ms)<input type="number" min="-100" max="600" value={s.latencyUsbMs} onChange={e => set({ latencyUsbMs: Number((e.target as HTMLInputElement).value), calibrated: { ...s.calibrated, usb: true } })} /></label>
+        <label style="display:block">Bluetooth (ms)<input type="number" min="-100" max="600" value={s.latencyBluetoothMs} onChange={e => set({ latencyBluetoothMs: Number((e.target as HTMLInputElement).value), calibrated: { ...s.calibrated, bluetooth: true } })} /></label></div>
+      <p class="muted">Valeurs mesurées par la calibration, modifiables à la main. À faire avant les exercices de rythme, casque branché.</p>
       <button class="btn" disabled={calib === 'run'} onClick={calibrate}>Calibrer ({s.inputMode === 'usb' ? 'USB' : 'Bluetooth'})</button>
       <p role="status">{result}</p>
     </div>

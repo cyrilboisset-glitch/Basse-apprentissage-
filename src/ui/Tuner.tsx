@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { engine } from '../audio/engine';
-import { describeFreq, getTuning, midiName, midiToFreq, TUNINGS } from '../audio/notes';
+import { allTunings, describeFreq, getTuning, midiName, midiToFreq } from '../audio/notes';
+import { CustomTuningEditor } from './CustomTuning';
 import type { Settings } from '../storage/settings';
 import { STATUS_MSG, useEngineStatus } from './useEngine';
 import { nux } from '../nux/plugpro';
@@ -59,8 +60,8 @@ export function Tuner({ s, set, onClose }: { s: Settings; set: (p: Partial<Setti
     <div role="dialog" aria-label="Accordeur" style="position:fixed;inset:0;z-index:10;background:var(--bg);padding:16px;overflow:auto">
       <button class="btn" onClick={onClose} style="min-height:48px">Fermer</button>
       <div style="display:flex;gap:8px;margin:8px 0" role="tablist" aria-label="Source de l'accordeur">
-        <button role="tab" aria-selected={src === 'app'} class="btn" style={src === 'app' ? 'background:var(--accent);color:#04210f' : ''} onClick={() => setSrc('app')}>Accordeur de l'appli</button>
-        <button role="tab" aria-selected={src === 'nux'} class="btn" disabled={nst !== 'connected' || nuxCap === 'unavailable'} style={src === 'nux' ? 'background:var(--accent);color:#04210f' : ''} onClick={() => setSrc('nux')}>Plug Pro</button></div>
+        <button role="tab" aria-selected={src === 'app'} class="btn" style={src === 'app' ? 'background:var(--accent);color:var(--on-accent)' : ''} onClick={() => setSrc('app')}>Accordeur de l'appli</button>
+        <button role="tab" aria-selected={src === 'nux'} class="btn" disabled={nst !== 'connected' || nuxCap === 'unavailable'} style={src === 'nux' ? 'background:var(--accent);color:var(--on-accent)' : ''} onClick={() => setSrc('nux')}>Plug Pro</button></div>
       {nst !== 'connected' && <p class="muted">Accordeur du Plug Pro : connectez-le dans Outils → Matériel.</p>}
       {nuxCap === 'unavailable' && <p class="muted" role="note">Accordeur du Plug Pro non disponible (firmware trop ancien ?) : utilisez celui de l'appli.</p>}
       {src === 'app' && status !== 'running' && status !== 'idle' && (
@@ -80,13 +81,14 @@ export function Tuner({ s, set, onClose }: { s: Settings; set: (p: Partial<Setti
       </div>
       <div class="card">
         <label>Accordage
-          <select value={s.tuning} onChange={e => { set({ tuning: (e.target as HTMLSelectElement).value }); setTarget(0); }}>
-            {TUNINGS.map(t => <option value={t.id}>{t.label}</option>)}</select></label>
+          <select value={s.tuning} onChange={e => { const id = (e.target as HTMLSelectElement).value; set({ tuning: id, strings: getTuning(id).midi.length >= 5 ? 5 : 4 }); setTarget(0); }}>
+            {allTunings().map(t => <option value={t.id}>{t.label}</option>)}</select></label>
+        {s.tuning === 'custom' && <CustomTuningEditor s={s} set={set} />}
         <label>La de référence (Hz) <input type="number" min="415" max="466" value={s.refA} onChange={e => set({ refA: Number((e.target as HTMLInputElement).value) })} /></label>
         <label>Mode guidé corde par corde <input type="checkbox" checked={guided} onChange={e => { setGuided((e.target as HTMLInputElement).checked); setTarget(0); }} /></label>
         {guided && <div style="display:flex;gap:8px">{tuning.midi.map((m, i) => {
           const n = midiName(m, s.notation);
-          return <button class="btn" style={i === target ? 'background:var(--accent);color:#04210f' : ''} onClick={() => setTarget(i)}>{n.name}{n.octave}</button>; })}</div>}
+          return <button class="btn" style={i === target ? 'background:var(--accent);color:var(--on-accent)' : ''} onClick={() => setTarget(i)}>{n.name}{n.octave}</button>; })}</div>}
       </div>
       <p class="muted">Ordre conseillé : de la corde la plus grave à la plus aiguë. L'accordeur du Plug Pro sera proposé en phase 9 si le firmware le permet.</p>
     </div>

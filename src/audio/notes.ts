@@ -26,4 +26,8 @@ export const TUNINGS: Tuning[] = [
   { id: 'dropD', label: 'Drop D', midi: [26, 33, 38, 43] },
   { id: 'halfDown', label: 'Un demi-ton plus bas', midi: [27, 32, 37, 42] },
 ];
-export const getTuning = (id: string) => TUNINGS.find(t => t.id === id) ?? TUNINGS[0];
+let CUSTOM: number[] = [28, 33, 38, 43];
+/** Accordage personnalisé (du grave à l'aigu), tenu à jour depuis les réglages. */
+export const setCustomTuning = (m: number[]) => { if (m.length >= 4 && m.length <= 6) CUSTOM = [...m]; };
+export const allTunings = (): Tuning[] => [...TUNINGS, { id: 'custom', label: 'Personnalisé', midi: CUSTOM }];
+export const getTuning = (id: string): Tuning => allTunings().find(t => t.id === id) ?? TUNINGS[0];

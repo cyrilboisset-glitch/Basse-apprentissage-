@@ -40,8 +40,8 @@ export function AudioFile() {
           <button class="btn primary" style="min-height:64px" onClick={() => { const el = au.current!; el.paused ? el.play() : el.pause(); }}>▶ / ⏸</button>
           <button class="btn" onClick={() => { if (au.current) au.current.currentTime = A ?? 0; }}>⏮ Début de boucle</button>
           <button class="btn" onClick={() => setA(au.current!.currentTime)}>A ici</button><button class="btn" onClick={() => setB(au.current!.currentTime)}>B ici</button>
-          <button class="btn" onClick={() => { setA(null); setB(null); }}>Effacer A-B</button><button class="btn" aria-pressed={loop} style={loop ? 'background:var(--accent);color:#04210f' : ''} onClick={() => setLoop(l => !l)}>Boucle A-B {loop ? 'activée' : 'coupée'}</button></div></div>
+          <button class="btn" onClick={() => { setA(null); setB(null); }}>Effacer A-B</button><button class="btn" aria-pressed={loop} style={loop ? 'background:var(--accent);color:var(--on-accent)' : ''} onClick={() => setLoop(l => !l)}>Boucle A-B {loop ? 'activée' : 'coupée'}</button></div></div>
       <div class="card"><b>Vitesse (la hauteur ne change pas)</b>
-        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px">{SPEEDS.map(v => <button class="btn" style={`min-height:48px;${rate === v ? 'background:var(--accent);color:#04210f' : ''}`} onClick={() => setRate(v)}>{Math.round(v * 100)}%</button>)}</div></div></>}
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px">{SPEEDS.map(v => <button class="btn" style={`min-height:48px;${rate === v ? 'background:var(--accent);color:var(--on-accent)' : ''}`} onClick={() => setRate(v)}>{Math.round(v * 100)}%</button>)}</div></div></>}
   </>);
 }

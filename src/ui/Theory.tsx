@@ -7,6 +7,7 @@ import { STATUS_MSG, useEngineStatus } from './useEngine';
 import { db } from '../storage/db';
 import { today } from '../storage/stats';
 import { midiName } from '../audio/notes';
+import { keepAwake } from './wakeLock';
 
 export function Theorie({ s }: { s: Settings }) {
   const [id, setId] = useState<string | null>(null);
@@ -16,6 +17,7 @@ export function Theorie({ s }: { s: Settings }) {
 }
 
 export function LessonRunner({ s, lessonId, onExit }: { s: Settings; lessonId: string; onExit: () => void }) {
+  useEffect(() => { keepAwake(true); return () => { keepAwake(false); }; }, []);
   const lesson: Lesson = getLesson(lessonId); const status = useEngineStatus();
   const [built] = useState(() => lesson.build(Math.random, s.notation));
   const [phase, setPhase] = useState<'read' | 'quiz' | 'play' | 'done'>('read'); const [qi, setQi] = useState(0); const [picked, setPicked] = useState<number | null>(null);

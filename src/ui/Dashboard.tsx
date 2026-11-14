@@ -30,7 +30,7 @@ export function Dashboard({ s }: { s: Settings }) {
         <svg viewBox="0 0 320 110" style="width:100%" role="img" aria-label="Évolution de la régularité"><polyline fill="none" stroke="var(--accent)" stroke-width="2" points={sds.map((v, i) => `${10 + i * 300 / (sds.length - 1)},${100 - Math.min(80, v) * 1.1}`).join(' ')} />
           {sds.map((v, i) => <circle cx={10 + i * 300 / (sds.length - 1)} cy={100 - Math.min(80, v) * 1.1} r="3" fill="var(--accent)" />)}</svg>}</div>
     <div class="card"><h2>Carte du manche</h2><Carte s={s} /></div>
-    <div class="card"><h2>Badges</h2>{BADGES.map(b => <div style={`padding:6px 0;opacity:${earned.has(b.id) ? 1 : .5}`}>{earned.has(b.id) ? '🏅' : '🔒'} <b>{b.name}</b> <span class="muted">— {b.how}</span></div>)}</div>
+    <div class="card"><h2>Badges</h2>{BADGES.map(b => <div style={`padding:6px 0;${earned.has(b.id) ? '' : 'border-left:3px dashed var(--border);padding-left:8px'}`}>{earned.has(b.id) ? '🏅 ' : '🔒 '}<b>{b.name}</b> <span class="muted">— {b.how}{earned.has(b.id) ? ' (obtenu)' : ' (à gagner)'}</span></div>)}</div>
     <div class="card"><h2>Journal de pratique</h2>{j.length === 0 ? <p class="muted">Aucune note pour l'instant : elles s'ajoutent à la fin de chaque séance.</p> : j.map(e => <p><b>{e.date}</b> · {e.minutes} min<br />{e.text || <span class="muted">(sans note)</span>}</p>)}</div>
   </>);
 }

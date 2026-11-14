@@ -59,7 +59,7 @@ export function MancheModule({ s }: { s: Settings }) {
     <h1>Manche</h1>
     <div style="display:flex;gap:8px;margin-bottom:8px" role="tablist">
       {([['ex', 'Exercices'], ['explorer', 'Explorer'], ['carte', 'Carte']] as const).map(([k, l]) =>
-        <button role="tab" aria-selected={tab === k} class="btn" style={tab === k ? 'background:var(--accent);color:#04210f' : ''} onClick={() => setTab(k)}>{l}</button>)}
+        <button role="tab" aria-selected={tab === k} class="btn" style={tab === k ? 'background:var(--accent);color:var(--on-accent)' : ''} onClick={() => setTab(k)}>{l}</button>)}
     </div>
     {tab === 'ex' ? <Exercices s={s} /> : tab === 'explorer' ? <Explorer s={s} /> : <Carte s={s} />}
   </>);

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { engine } from '../audio/engine';
 import { Metronome, defaultMetronome, type MetronomeOptions } from '../audio/metronome';
+import { DrumBox } from './DrumMachine';
 
 export function Outils() {
   const [o, setO] = useState<MetronomeOptions>(defaultMetronome);
@@ -33,6 +34,9 @@ export function Outils() {
         <option value="">Non</option><option value="1/2">1 mesure sur 2</option><option value="1/4">1 sur 4</option><option value="1/8">1 sur 8</option></select></label>
       <button class="btn primary" onClick={toggle}>{on ? 'Arrêter' : 'Démarrer'}</button>
     </div>
-    <a class="btn" href="#/materiel" style="text-align:center;line-height:56px;text-decoration:none">Matériel et calibration</a>
+    <DrumBox />
+    <a class="btn" href="#/materiel" style="display:block;text-align:center;line-height:56px;text-decoration:none">Matériel et calibration</a>
+    <a class="btn" href="#/manche" style="display:block;text-align:center;line-height:56px;text-decoration:none;margin-top:8px">Manche de référence (gammes, arpèges)</a>
+    <a class="btn" href="#/jam" style="display:block;text-align:center;line-height:56px;text-decoration:none;margin-top:8px">Éditeur de grilles (Jam → grille personnalisée)</a>
   </>);
 }

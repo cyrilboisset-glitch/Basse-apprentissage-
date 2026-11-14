@@ -21,6 +21,7 @@ import { keepAwake } from './wakeLock';
 import { applyPresetFor, BACKING_CATEGORY } from '../nux/presets';
 import { useOnDisconnect } from './useEngine';
 import { useRemote } from './useRemote';
+import { CalibGate, needsCalibration } from './CalibGate';
 
 export function Impro({ s }: { s: Settings }) {
   const [ex, setEx] = useState<ExDef | null>(null);
@@ -39,6 +40,7 @@ export function Impro({ s }: { s: Settings }) {
 export function ImproRunner({ s, ex, onExit }: { s: Settings; ex: ExDef; onExit: () => void }) {
   const tuning = getTuning(s.tuning).midi, status = useEngineStatus();
   const [key, setKey] = useState(ex.key); const [bpm, setBpm] = useState(ex.bpm); const [help, setHelp] = useState(ex.id === 'free');
+  const [skipCal, setSkipCal] = useState(false); const gated = needsCalibration(s) && !skipCal;
   const [phase, setPhase] = useState<'setup' | 'run' | 'result'>('setup');
   const [cur, setCur] = useState<BarInfo | null>(null); const [res, setRes] = useState<Result | null>(null);
   const bk = useRef<Backing | null>(null); const scripts = useRef<BarScript[]>([]); const grid = useRef<Grid | null>(null);
@@ -78,7 +80,7 @@ export function ImproRunner({ s, ex, onExit }: { s: Settings; ex: ExDef; onExit:
   </>);
 
   useOnDisconnect(() => { if (phase === 'run') stop(); });
-  useRemote(() => { if (phase === 'run') stop(); else if (phase === 'setup') start(); }, s);
+  useRemote(() => { if (phase === 'run') stop(); else if (phase === 'setup' && !gated) start(); }, s);
   const idx = cur ? cur.seq - 1 : -1; const sc: BarScript | undefined = idx >= 0 ? scripts.current[idx] : undefined;
   const g = grid.current; const chord = cur && g && !cur.countIn ? g.bars[cur.bar][0].chord : null;
   const marks = new Map<string, Mark>();
@@ -95,7 +97,7 @@ export function ImproRunner({ s, ex, onExit }: { s: Settings; ex: ExDef; onExit:
         <label>Tempo <span>{bpm} BPM</span></label><input type="range" style="width:100%" min={getStyle(ex.style).bpmRange[0]} max={getStyle(ex.style).bpmRange[1]} value={bpm} onInput={e => setBpm(Number((e.target as HTMLInputElement).value))} aria-label="Tempo" />
         <label>Afficher les notes sûres sur le manche <input type="checkbox" checked={help} onChange={e => setHelp((e.target as HTMLInputElement).checked)} /></label>
         <p class="muted">Casque branché, calibration de latence faite (Outils → Matériel). {ex.laps} tour(s) de grille, décompte d'une mesure.</p></div>
-      <button class="btn primary" onClick={start}>Démarrer</button><button class="btn" style="margin-top:8px" onClick={onExit}>Retour</button>
+      {gated ? <CalibGate s={s} onSkip={() => setSkipCal(true)} /> : <button class="btn primary" onClick={start}>Démarrer</button>}<button class="btn" style="margin-top:8px" onClick={onExit}>Retour</button>
     </> : <>
       <div class="card" style="text-align:center" aria-live="polite">
         <div class="muted">{cur?.countIn ? 'Décompte…' : cur ? `Tour ${cur.lap + 1}/${ex.laps} · mesure ${cur.bar + 1}` : ''}</div>

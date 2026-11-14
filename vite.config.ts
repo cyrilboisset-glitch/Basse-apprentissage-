@@ -13,10 +13,15 @@ export default defineConfig({
         description: "Apprendre l'improvisation à la basse",
         theme_color: '#111418', background_color: '#111418',
         display: 'standalone', start_url: '.', scope: '.',
-        icons: [{ src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }],
+        icons: [
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          { src: 'icon.svg', sizes: 'any', type: 'image/svg+xml' },
+        ],
       },
-      workbox: { globPatterns: ['**/*.{js,css,html,svg,json,wav}'] },
+      workbox: { globPatterns: ['**/*.{js,css,html,svg,png,json,webmanifest}'] },
     }),
   ],
-  test: { environment: 'node' },
+  test: { environment: 'node', include: ['src/**/*.test.ts'] },
 });

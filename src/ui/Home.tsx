@@ -16,7 +16,7 @@ export function Home({ s, set }: { s: Settings; set: (p: Partial<Settings>) => v
     <h1>BassLab</h1>
     <a class="btn primary" href="#/seance" style="display:grid;place-items:center;text-decoration:none">Démarrer ma séance ({s.sessionMinutes} min)</a>
     <div style="display:flex;gap:8px;margin:8px 0" role="group" aria-label="Durée de la séance">
-      {([10, 20, 30] as const).map(m => <button class="btn" aria-pressed={s.sessionMinutes === m} style={`min-height:48px;${s.sessionMinutes === m ? 'background:var(--accent);color:#04210f' : ''}`} onClick={() => set({ sessionMinutes: m })}>{m} min</button>)}
+      {([10, 20, 30] as const).map(m => <button class="btn" aria-pressed={s.sessionMinutes === m} style={`min-height:48px;${s.sessionMinutes === m ? 'background:var(--accent);color:var(--on-accent)' : ''}`} onClick={() => set({ sessionMinutes: m })}>{m} min</button>)}
     </div>
     {d && st && <div class="card">
       <div style="display:grid;grid-template-columns:repeat(3,1fr);text-align:center;gap:8px">

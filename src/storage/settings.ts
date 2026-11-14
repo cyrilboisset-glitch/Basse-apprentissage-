@@ -20,16 +20,18 @@ export interface Settings {
   reminderTime: string;
   cmdNoteOn: boolean;
   cmdNote: number;
+  customTuning: number[];
+  calibrated: { usb: boolean; bluetooth: boolean };
   presetMap: Record<string, number>;   // catégorie → preset 1-7 (0 = ne pas changer)
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   notation: 'fr', theme: 'dark', leftHanded: false, strings: 4, frets: 24,
   tuning: 'standard4', refA: 440, sessionMinutes: 20, fontScale: 1,
-  latencyUsbMs: 0, latencyBluetoothMs: 0, inputMode: 'usb', inputDeviceId: '', unlockAll: false, nuxAuto: false, reminderTime: '', cmdNoteOn: false, cmdNote: 28,
+  latencyUsbMs: 0, latencyBluetoothMs: 0, inputMode: 'usb', inputDeviceId: '', unlockAll: false, nuxAuto: false, reminderTime: '', cmdNoteOn: false, cmdNote: 28, customTuning: [28, 33, 38, 43], calibrated: { usb: false, bluetooth: false },
   presetMap: { clean: 1, blues: 2, funk: 3, rock: 4, pop: 1, reggae: 1, soul: 3, jazz: 1, latin: 1 },
 };
 
 export function mergeSettings(partial: Partial<Settings> | undefined): Settings {
-  return { ...DEFAULT_SETTINGS, ...(partial ?? {}), presetMap: { ...DEFAULT_SETTINGS.presetMap, ...(partial?.presetMap ?? {}) } };
+  return { ...DEFAULT_SETTINGS, ...(partial ?? {}), presetMap: { ...DEFAULT_SETTINGS.presetMap, ...(partial?.presetMap ?? {}) }, calibrated: { ...DEFAULT_SETTINGS.calibrated, ...(partial?.calibrated ?? {}) } };
 }

@@ -9,6 +9,7 @@ import { db, type SrsItem } from '../storage/db';
 import { today } from '../storage/stats';
 import { midiName } from '../audio/notes';
 import { useNotes } from './useNotes';
+import { keepAwake } from './wakeLock';
 
 type Kind = 'interval' | 'chord' | 'degree' | 'line';
 const KINDS: [Kind, string][] = [['interval', 'Intervalles'], ['chord', 'Accords'], ['degree', 'Degrés'], ['line', 'Relevé de ligne']];
@@ -26,7 +27,7 @@ export function EarQuiz({ s, kind, onExit }: { s: Settings; kind: Kind; onExit: 
   const [ok, setOk] = useState(0); const [done, setDone] = useState(false); const [replays, setReplays] = useState(0);
   const srs = useRef<Map<string, SrsItem>>(new Map()); const out = useRef<ReturnType<typeof makeBuses> | null>(null);
   const [lineActive, setLineActive] = useState(false); const round = useRef<Round | null>(null); const st = useRef(newState()); const [prog, setProg] = useState(0);
-  useEffect(() => { loadSrs().then(m => { srs.current = m; }); return () => { out.current?.out.disconnect(); }; }, []);
+  useEffect(() => { keepAwake(true); loadSrs().then(m => { srs.current = m; }); return () => { keepAwake(false); out.current?.out.disconnect(); }; }, []);
   const ctxOut = async () => { const ctx = await engine.getContext(); out.current ??= makeBuses(ctx); return { ctx, o: out.current }; };
 
   const play = async (qq: any) => {

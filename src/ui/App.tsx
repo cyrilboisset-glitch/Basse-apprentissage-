@@ -4,6 +4,8 @@ import { Tuner } from './Tuner';
 import { Materiel } from './Materiel';
 import { MancheModule } from './Manche';
 import { Home } from './Home';
+import { CustomTuningEditor } from './CustomTuning';
+import { allTunings, setCustomTuning } from '../audio/notes';
 import { Session } from './Session';
 import { Dashboard } from './Dashboard';
 import { Placement } from './Placement';
@@ -29,9 +31,6 @@ function Pratique() {
   return <><h1>Pratique</h1>{PRATIQUE.map(([h, t, d]) => <a class="card" href={h} style="display:block;text-decoration:none;color:inherit"><b style="font-size:1.2rem">{t}</b><div class="muted">{d}</div></a>)}</>;
 }
 
-function Placeholder({ title, phase }: { title: string; phase: string }) {
-  return <div class="card"><h1>{title}</h1><p class="muted">Module prévu en {phase}.</p></div>;
-}
 
 function Reglages({ s, set }: { s: Settings; set: (p: Partial<Settings>) => void }) {
   const [msg, setMsg] = useState('');
@@ -56,8 +55,10 @@ function Reglages({ s, set }: { s: Settings; set: (p: Partial<Settings>) => void
           <option value="dark">Sombre</option><option value="light">Clair</option></select></label>
       <label>Gaucher <input type="checkbox" checked={s.leftHanded} onChange={e => set({ leftHanded: (e.target as HTMLInputElement).checked })} /></label>
       <label>Cordes
-        <select value={s.strings} onChange={e => set({ strings: Number((e.target as HTMLSelectElement).value) as 4 | 5 })}>
+        <select value={s.strings} onChange={e => { const n = Number((e.target as HTMLSelectElement).value) as 4 | 5; set({ strings: n, tuning: n === 5 ? 'standard5' : (s.tuning === 'standard5' ? 'standard4' : s.tuning) }); }}>
           <option value="4">4</option><option value="5">5</option></select></label>
+      <label>Accordage <select value={s.tuning} onChange={e => { const id = (e.target as HTMLSelectElement).value; set({ tuning: id, strings: allTunings().find(t => t.id === id)!.midi.length >= 5 ? 5 : 4 }); }}>{allTunings().map(t => <option value={t.id}>{t.label}</option>)}</select></label>
+      {s.tuning === 'custom' && <CustomTuningEditor s={s} set={set} />}
       <label>Cases <input type="number" min="12" max="24" value={s.frets} onChange={e => set({ frets: Number((e.target as HTMLInputElement).value) })} /></label>
       <label>La de référence (Hz) <input type="number" min="415" max="466" value={s.refA} onChange={e => set({ refA: Number((e.target as HTMLInputElement).value) })} /></label>
       <label>Tout débloquer (zones) <input type="checkbox" checked={s.unlockAll} onChange={e => set({ unlockAll: (e.target as HTMLInputElement).checked })} /></label>
@@ -79,13 +80,16 @@ function Reglages({ s, set }: { s: Settings; set: (p: Partial<Settings>) => void
 }
 
 export function App() {
-  const [s, setS] = useState<Settings>(DEFAULT_SETTINGS);
-  const [tuner, setTuner] = useState(false); const est = useEngineStatus();
+  const [s, setS] = useState<Settings>(DEFAULT_SETTINGS); const [ready, setReady] = useState(false);
+  const [tuner, setTuner] = useState(false);
+  setCustomTuning(s.customTuning); const est = useEngineStatus();
   const [hash, setHash] = useState(location.hash || '#/');
   useEffect(() => {
-    loadSettings().then(setS); requestPersistence();
+    // Les réglages enregistrés sont chargés AVANT d'afficher quoi que ce soit : sinon un réglage modifié très tôt serait écrasé par le chargement tardif.
+    loadSettings().then(x => { setS(x); setReady(true); }, () => setReady(true)); requestPersistence();
     const h = () => setHash(location.hash || '#/');
-    addEventListener('hashchange', h); return () => removeEventListener('hashchange', h);
+    addEventListener('hashchange', h); h(); // resynchronise si le hash a changé avant l'abonnement
+    return () => removeEventListener('hashchange', h);
   }, []);
   useEffect(() => {
     document.documentElement.dataset.theme = s.theme;
@@ -93,6 +97,7 @@ export function App() {
   }, [s.theme, s.fontScale]);
   const set = (p: Partial<Settings>) => setS(prev => { const n = { ...prev, ...p }; saveSettings(n); return n; });
 
+  if (!ready) return <main aria-busy="true" aria-label="Chargement" />;
   let page;
   switch (hash) {
     case '#/manche': page = <MancheModule s={s} />; break;

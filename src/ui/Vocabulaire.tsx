@@ -35,7 +35,7 @@ export function Vocabulaire({ s }: { s: Settings }) {
   return (<>
     <h1>Vocabulaire</h1>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px" role="tablist">
-      {[...STYLE_ORDER, 'perso'].map(k => <button role="tab" aria-selected={style === k} class="btn" style={`width:auto;min-height:44px;padding:0 14px;${style === k ? 'background:var(--accent);color:#04210f' : ''}`} onClick={() => setStyle(k)}>{STYLE_LABELS[k]}</button>)}
+      {[...STYLE_ORDER, 'perso'].map(k => <button role="tab" aria-selected={style === k} class="btn" style={`width:auto;min-height:44px;padding:0 14px;${style === k ? 'background:var(--accent);color:var(--on-accent)' : ''}`} onClick={() => setStyle(k)}>{STYLE_LABELS[k]}</button>)}
     </div>
     {list.map(p => <button class="card" style="width:100%;text-align:left;color:inherit;cursor:pointer" onClick={() => setSel(p)}><b>{p.name}</b><span class="muted" style="float:right">{p.bpm} BPM · {p.bars} mes.</span><div class="muted">{p.tip}</div></button>)}
     {style === 'perso' && <><button class="btn primary" style="min-height:64px" onClick={() => setAdding(true)}>+ Ajouter ma phrase</button>{!mine.length && <p class="muted">Aucune phrase pour l'instant : saisissez-la en tablature ou jouez-la, l'appli la retrouve.</p>}</>}
@@ -49,7 +49,7 @@ function Tab({ p, pos, score }: { p: Phrase; pos: number; score: boolean }) {
     {[0, 1, 2, 3].map(st => <><line x1="24" x2={W - 8} y1={Y(st)} y2={Y(st)} stroke="var(--muted)" /><text x="6" y={Y(st) + 5} fill="var(--muted)" font-size="14">{STR_NAMES[3 - st]}</text></>)}
     {Array.from({ length: p.bars + 1 }, (_, i) => <line x1={X(i * 4)} x2={X(i * 4)} y1={Y(3) - 10} y2={Y(0) + 10} stroke="var(--muted)" stroke-width={i === 0 || i === p.bars ? 3 : 1} />)}
     {p.notes.map(n => { const x = X(n.beat) + 4, y = Y(n.string), played = pos >= n.beat && pos < n.beat + Math.max(0.5, n.dur);
-      return <g><rect x={x - 12} y={y - 12} width="24" height="22" rx="5" fill={played ? 'var(--accent)' : 'var(--bg)'} stroke="var(--border)" /><text x={x} y={y + 5} text-anchor="middle" font-weight="700" font-size="15" fill={played ? '#04210f' : 'var(--text)'}>{n.fret}</text>
+      return <g><rect x={x - 12} y={y - 12} width="24" height="22" rx="5" fill={played ? 'var(--accent)' : 'var(--bg)'} stroke="var(--border)" /><text x={x} y={y + 5} text-anchor="middle" font-weight="700" font-size="15" fill={played ? 'var(--on-accent)' : 'var(--text)'}>{n.fret}</text>
         {score && <text x={x} y={H - 6} text-anchor="middle" font-size="12" fill="var(--muted)">{GLYPH(n.dur)}</text>}</g>; })}
     {pos >= 0 && <line x1={X(pos)} x2={X(pos)} y1="8" y2={H - 20} stroke="var(--danger)" stroke-width="2" />}
   </svg></div>;

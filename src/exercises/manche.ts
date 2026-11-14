@@ -66,9 +66,12 @@ export function makeRound(kind: DrillKind, c: Ctx): Round {
       const lowS = c.tuning[0];
       // tonique = une note de la corde grave dans la position
       const rootPc = pc(lowS + start + Math.floor(c.rng() * 3));
-      const pos = scalePosition(c.tuning, rootPc, d.steps, start, width);
+      let pos = scalePosition(c.tuning, rootPc, d.steps, start, width);
+      // « Relier à la position suivante » : une fois sur deux, on enchaîne deux positions voisines en montant.
+      const next = start + 3, linked = kind === 'scale' && next + width <= Math.min(c.zone.to + 3, c.frets) && c.rng() < 0.5;
+      if (linked) pos = [...pos, ...scalePosition(c.tuning, rootPc, d.steps, next, width)];
       const targets = [...new Set(pos.map(p => p.midi))].sort((a, b) => a - b);
-      return { kind, prompt: `${d.name} de ${nm(rootPc, c.notation)}, position case ${start} : montez les notes`, targets, ordered: true, show: pos, labels: pos.map(p => nm(p.midi, c.notation)), srsId: `${kind}:${d.id}` };
+      return { kind, prompt: linked ? `${d.name} de ${nm(rootPc, c.notation)} : reliez les positions cases ${start} et ${next}, en montant` : `${d.name} de ${nm(rootPc, c.notation)}, position case ${start} : montez les notes`, targets, ordered: true, show: pos, labels: pos.map(p => nm(p.midi, c.notation)), srsId: `${kind}:${d.id}` };
     }
   }
 }

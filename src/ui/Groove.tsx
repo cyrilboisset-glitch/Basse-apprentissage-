@@ -11,6 +11,7 @@ import { keepAwake } from './wakeLock';
 import { applyPresetFor } from '../nux/presets';
 import { useOnDisconnect } from './useEngine';
 import { useRemote } from './useRemote';
+import { CalibGate, needsCalibration } from './CalibGate';
 
 const VANISH = [{ v: '', l: 'Clic permanent' }, { v: '2', l: 'Clic 1 mesure sur 2' }, { v: '4', l: 'Clic 1 mesure sur 4 (3/4 muettes)' }, { v: '8', l: 'Clic 1 mesure sur 8 (7/8 muettes)' }];
 
@@ -41,7 +42,7 @@ function Slots({ p, beat }: { p: GroovePattern; beat: number }) {
 export function GrooveRun({ s, p, onExit }: { s: Settings; p: GroovePattern; onExit: () => void }) {
   const status = useEngineStatus();
   const [bpm, setBpm] = useState(80); const [nBars, setNBars] = useState(patternBars(p) > 1 ? 8 : 8); const [vanish, setVanish] = useState('');
-  const [selfGhost, setSelfGhost] = useState(false);
+  const [selfGhost, setSelfGhost] = useState(false); const [skipCal, setSkipCal] = useState(false); const gated = needsCalibration(s) && !skipCal;
   const [phase, setPhase] = useState<'setup' | 'run' | 'result'>('setup');
   const [bar, setBar] = useState(0); const [beat, setBeat] = useState(-1); const [res, setRes] = useState<GrooveResult | null>(null);
   const onsets = useRef<Onset[]>([]); const bars = useRef<BarT[]>([]); const m = useRef<Metronome | null>(null); const t0 = useRef(0); const used = useRef(80);
@@ -69,7 +70,7 @@ export function GrooveRun({ s, p, onExit }: { s: Settings; p: GroovePattern; onE
   const stop = () => { m.current?.stop(); keepAwake(false); setPhase('setup'); };
 
   useOnDisconnect(() => { if (phase === 'run') stop(); });
-  useRemote(() => { if (phase === 'run') stop(); else if (phase === 'setup') start(); }, s);
+  useRemote(() => { if (phase === 'run') stop(); else if (phase === 'setup' && !gated) start(); }, s);
   if (phase === 'result' && res) {
     const nt = nextTempo(used.current, res.success);
     return (<>
@@ -95,7 +96,7 @@ export function GrooveRun({ s, p, onExit }: { s: Settings; p: GroovePattern; onE
         <label>Clic <select value={vanish} onChange={e => setVanish((e.target as HTMLSelectElement).value)}>{VANISH.map(v => <option value={v.v}>{v.l}</option>)}</select></label>
         {p.events.some(e => e.kind === 'ghost') && <label>Ignorer les notes étouffées (auto-évaluation) <input type="checkbox" checked={selfGhost} onChange={e => setSelfGhost((e.target as HTMLInputElement).checked)} /></label>}
         <p class="muted">Une mesure de décompte, puis {total} mesures. À 90 % de réussite : +5 BPM.</p></div>
-      <button class="btn primary" onClick={start}>Démarrer</button><button class="btn" style="margin-top:8px" onClick={onExit}>Retour</button>
+      {gated ? <CalibGate s={s} onSkip={() => setSkipCal(true)} /> : <button class="btn primary" onClick={start}>Démarrer</button>}<button class="btn" style="margin-top:8px" onClick={onExit}>Retour</button>
     </> : <>
       <div class="card" style="text-align:center" aria-live="polite"><div style="font-size:3rem;font-weight:800">{bar === 0 ? 'Décompte' : `${Math.min(bar, total)} / ${total}`}</div>
         <div style="display:flex;gap:8px;justify-content:center">{[0, 1, 2, 3].map(i => <div style={`width:34px;height:34px;border-radius:50%;background:${beat === i ? (i === 0 ? 'var(--danger)' : 'var(--accent)') : 'var(--border)'}`} />)}</div>
